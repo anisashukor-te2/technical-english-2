@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { Lecturer } from '../types';
 
@@ -59,7 +60,7 @@ const LecturerLoginScreen: React.FC<LecturerLoginScreenProps> = ({ onLogin, onRe
 
     const filteredClassCodes = classCodes.map(c => c.trim()).filter(Boolean);
     if (filteredClassCodes.length === 0) {
-        setFormError('Please provide at least one Class Code.');
+        setFormError('Please provide at least one Class ID.');
         return;
     }
 
@@ -148,7 +149,7 @@ const LecturerLoginScreen: React.FC<LecturerLoginScreenProps> = ({ onLogin, onRe
             />
           </div>
           <div>
-            <label htmlFor="courseCode" className="block text-sm font-medium text-slate-300">Course Code</label>
+            <label htmlFor="courseCode" className="block text-sm font-medium text-slate-300">Course ID</label>
             <input
               id="courseCode"
               type="text"
@@ -163,7 +164,7 @@ const LecturerLoginScreen: React.FC<LecturerLoginScreenProps> = ({ onLogin, onRe
                 <div key={index} className="flex items-end gap-2 mb-2">
                     <div className="flex-grow">
                         <label htmlFor={`classCode-${index}`} className="block text-sm font-medium text-slate-300">
-                            {index === 0 ? 'Class Code' : `Class Code #${index + 1}`}
+                            {index === 0 ? 'Class ID' : `Class ID #${index + 1}`}
                         </label>
                         <input
                             id={`classCode-${index}`}
@@ -179,7 +180,7 @@ const LecturerLoginScreen: React.FC<LecturerLoginScreenProps> = ({ onLogin, onRe
                             type="button"
                             onClick={() => handleRemoveClassCode(index)}
                             className="p-3 bg-red-800 text-white rounded-md hover:bg-red-700"
-                            aria-label="Remove class code"
+                            aria-label="Remove class ID"
                         >
                             <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
                                 <path fillRule="evenodd" d="M5 10a1 1 0 011-1h8a1 1 0 110 2H6a1 1 0 01-1-1z" clipRule="evenodd" />

@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { Student } from '../types';
 
@@ -138,7 +139,7 @@ const StudentLoginScreen: React.FC<StudentLoginScreenProps> = ({ onLogin, onRegi
                                 />
                             </div>
                             <div>
-                                <label htmlFor="courseId" className="block text-sm font-medium text-slate-300">Course Code</label>
+                                <label htmlFor="courseId" className="block text-sm font-medium text-slate-300">Course ID</label>
                                 <input
                                 id="courseId"
                                 type="text"
@@ -149,7 +150,7 @@ const StudentLoginScreen: React.FC<StudentLoginScreenProps> = ({ onLogin, onRegi
                                 />
                             </div>
                              <div>
-                                <label htmlFor="lecturerClassCode" className="block text-sm font-medium text-slate-300">Lecturer's Class Code</label>
+                                <label htmlFor="lecturerClassCode" className="block text-sm font-medium text-slate-300">Lecturer's Class ID</label>
                                 <input
                                 id="lecturerClassCode"
                                 type="text"

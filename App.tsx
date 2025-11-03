@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect, useCallback } from 'react';
 // FIX: Import necessary services and types
 import { getPresentationFeedback, getFreePracticeFeedback } from './services/geminiService';
@@ -110,7 +111,7 @@ const App: React.FC = () => {
     const foundLecturer = lecturers.find(l => l.classCodes.includes(studentDetails.lecturerClassCode) && l.courseCode === studentDetails.courseId);
 
     if (!foundLecturer) {
-        setAuthError(`Registration failed: No lecturer found with Course Code "${studentDetails.courseId}" and Class Code "${studentDetails.lecturerClassCode}". Please check and try again.`);
+        setAuthError(`Registration failed: No lecturer found with Course ID "${studentDetails.courseId}" and Class ID "${studentDetails.lecturerClassCode}". Please check and try again.`);
         return;
     }
 
@@ -156,7 +157,7 @@ const App: React.FC = () => {
       };
 
       lecturers.push(newLecturer);
-      localStorage.setItem('lecturers', JSON.stringify(lecturers));
+      localStorage.setItem('lecturers', JSON.stringify(newLecturer));
 
       // Set user in local storage and update state for a clean transition
       localStorage.setItem('currentUser', JSON.stringify(newLecturer));
@@ -511,7 +512,7 @@ const ManageClassesModal: React.FC<{
     const handleSaveChanges = () => {
         const cleanedCodes = classCodes.map(c => c.trim()).filter(Boolean);
         if (cleanedCodes.length === 0) {
-            alert("Please provide at least one class code.");
+            alert("Please provide at least one class ID.");
             return;
         }
         onSave(cleanedCodes);
@@ -520,7 +521,7 @@ const ManageClassesModal: React.FC<{
     return (
         <Modal isOpen={isOpen} onClose={onClose} title="Manage Your Classes">
             <div className="space-y-4">
-                <p className="text-sm text-slate-400">Add, edit, or remove the class codes associated with your account. Students will use these to register under you.</p>
+                <p className="text-sm text-slate-400">Add, edit, or remove the class IDs associated with your account. Students will use these to register under you.</p>
                 {classCodes.map((code, index) => (
                     <div key={index} className="flex items-center gap-2">
                         <input
