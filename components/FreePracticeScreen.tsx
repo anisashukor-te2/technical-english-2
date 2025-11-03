@@ -97,7 +97,7 @@ const FreePracticeScreen: React.FC = () => {
 
     const addSlide = () => {
         const newSlideIndex = slides.length;
-        setSlides(prev => [...prev, { id: Date.now(), title: `Slide ${newSlideIndex + 1}`, script: '', transition: 'none' }]);
+        setSlides(prev => [...prev, { id: Date.now() + Math.random(), title: `Slide ${newSlideIndex + 1}`, script: '', transition: 'none' }]);
         setCurrentSlideIndex(newSlideIndex);
     };
 
@@ -117,18 +117,26 @@ const FreePracticeScreen: React.FC = () => {
             alert("You cannot delete the last slide.");
             return;
         }
-    
-        const slideToDelete = slides[safeCurrentSlideIndex];
-        if (!slideToDelete) return; 
-    
-        if (window.confirm(`Are you sure you want to delete "${slideToDelete.title}"? This action cannot be undone.`)) {
-            const newSlides = slides.filter(slide => slide.id !== slideToDelete.id);
-            setSlides(newSlides);
-    
-            // If the deleted slide was the last one (or after), adjust the current index to the new last slide.
-            if (currentSlideIndex >= newSlides.length) {
-                setCurrentSlideIndex(Math.max(0, newSlides.length - 1));
+
+        const indexToDelete = safeCurrentSlideIndex;
+        const slideToDelete = slides[indexToDelete];
+        if (!slideToDelete) return;
+
+        const slideTitle = slideToDelete.title || `Slide ${indexToDelete + 1}`;
+
+        if (window.confirm(`Are you sure you want to delete "${slideTitle}"? This action cannot be undone.`)) {
+            // Revoke blob URL if the deleted slide has one to prevent memory leaks
+            if (slideToDelete.media?.type === 'video' && slideToDelete.media.url.startsWith('blob:')) {
+                URL.revokeObjectURL(slideToDelete.media.url);
             }
+
+            const newSlides = slides.filter((_, index) => index !== indexToDelete);
+            
+            // Determine the new current slide index, ensuring it's within bounds
+            const newIndex = Math.min(currentSlideIndex, newSlides.length - 1);
+
+            setSlides(newSlides);
+            setCurrentSlideIndex(Math.max(0, newIndex)); // Ensure index is non-negative
         }
     };
 
@@ -499,9 +507,9 @@ const FreePracticeScreen: React.FC = () => {
                         <>
                             {currentSlide.media.type === 'video' && <video src={currentSlide.media.url} controls className="object-contain h-full w-full" />}
                             {currentSlide.media.type === 'image' && <img src={currentSlide.media.url} alt={`Slide ${safeCurrentSlideIndex + 1} background`} className="object-contain h-full w-full" />}
-                            <div className="absolute inset-0 bg-black/60 flex items-center justify-center gap-4 opacity-0 group-hover:opacity-100 transition-opacity">
-                                <button onClick={triggerMediaUpload} className="bg-slate-700 text-white py-2 px-4 rounded-lg hover:bg-slate-600 transition-colors">Change</button>
-                                <button onClick={() => removeMedia(safeCurrentSlideIndex)} className="bg-red-700 text-white py-2 px-4 rounded-lg hover:bg-red-600 transition-colors">Remove</button>
+                            <div className="absolute inset-0 bg-black/60 flex items-center justify-center gap-4 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
+                                <button onClick={triggerMediaUpload} className="bg-slate-700 text-white py-2 px-4 rounded-lg hover:bg-slate-600 transition-colors pointer-events-auto">Change</button>
+                                <button onClick={() => removeMedia(safeCurrentSlideIndex)} className="bg-red-700 text-white py-2 px-4 rounded-lg hover:bg-red-600 transition-colors pointer-events-auto">Remove</button>
                             </div>
                         </>
                     );

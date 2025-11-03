@@ -179,3 +179,18 @@ export interface ComplaintSession {
     userRole: string;
     messages: ComplaintMessage[];
 }
+
+export interface ComplaintEmailSession {
+    id: string;
+    timestamp: number;
+    studentUid: string;
+    studentEmail: string;
+    lecturerEmail: string;
+    classCode: string;
+    scenario: string;
+    userEmail: string;
+    feedbackData: ComplaintFeedbackData | null;
+    isSubmitted?: boolean;
+    grade?: number;
+    lecturerFeedback?: string;
+}

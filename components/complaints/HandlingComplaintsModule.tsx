@@ -3,7 +3,7 @@ import LearnScreen from './LearnScreen';
 import PracticeScenarioSelectionScreen from './PracticeScenarioSelectionScreen';
 import ReviewScreen from './ReviewScreen';
 import ComplaintSimulationScreen from './ComplaintSimulationScreen';
-import { Lecturer, Student, ComplaintScenario, ComplaintFeedbackData } from '../../types';
+import { Lecturer, Student, ComplaintScenario, ComplaintFeedbackData, ComplaintEmailSession } from '../../types';
 import Loader from '../Loader';
 import Card from '../Card';
 import ComplaintFeedbackDisplay from './ComplaintFeedbackDisplay';
@@ -42,6 +42,7 @@ const HandlingComplaintsModule: React.FC<HandlingComplaintsModuleProps> = ({ use
     const [emailFeedback, setEmailFeedback] = useState<ComplaintFeedbackData | null>(null);
     const [isLoadingEmail, setIsLoadingEmail] = useState(false);
     const [emailError, setEmailError] = useState<string | null>(null);
+    const [emailSessionId, setEmailSessionId] = useState<string | null>(null);
 
 
     const handleBackToMenu = () => {
@@ -61,30 +62,71 @@ const HandlingComplaintsModule: React.FC<HandlingComplaintsModuleProps> = ({ use
     const handleBackToPracticeSelection = () => {
         setIsEmailPractice(false);
         setSelectedScenario(null);
+        handlePracticeEmailAgain(); // Also reset email state
     };
 
-    const handleSubmitEmail = async () => {
-        if (!userEmail.trim()) {
-            setEmailError("Please write an email before submitting.");
+    const handleSaveEmailSession = async (isDirectSubmission: boolean) => {
+        if (!userEmail.trim() || !user || user.role !== 'student') {
             return;
         }
+
+        if (isDirectSubmission && !window.confirm("Are you sure you want to submit this to your lecturer for assessment? You will not be able to view AI feedback or edit it later.")) {
+            return;
+        }
+
         setIsLoadingEmail(true);
         setEmailError(null);
+        
         try {
-          const feedbackData = await getComplaintEmailFeedback(userEmail);
-          setEmailFeedback(feedbackData);
+            let feedbackData: ComplaintFeedbackData | null = null;
+            // Only get AI feedback if it's for self-practice, not direct submission
+            if (!isDirectSubmission) {
+                feedbackData = await getComplaintEmailFeedback(userEmail);
+            }
+
+            const studentUser = user as Student;
+            const newSessionId = `complaint_email_${Date.now()}`;
+            const newSession: ComplaintEmailSession = {
+                id: newSessionId,
+                timestamp: Date.now(),
+                studentUid: studentUser.uid,
+                studentEmail: studentUser.email,
+                lecturerEmail: studentUser.lecturerEmail,
+                classCode: studentUser.classCode,
+                scenario: COMPLAINT_EMAIL_SCENARIO,
+                userEmail: userEmail,
+                feedbackData: feedbackData,
+                isSubmitted: isDirectSubmission,
+            };
+
+            const allSessions: ComplaintEmailSession[] = JSON.parse(localStorage.getItem('complaintEmailSessions') || '[]');
+            allSessions.push(newSession);
+            localStorage.setItem('complaintEmailSessions', JSON.stringify(allSessions));
+
+            if (isDirectSubmission) {
+                alert("Your email response has been successfully submitted to your lecturer.");
+                handleBackToPracticeSelection(); // Go back to selection screen
+            } else {
+                setEmailFeedback(feedbackData);
+                setEmailSessionId(newSessionId); // Save session ID for the feedback screen
+            }
+
         } catch (e) {
-          setEmailError('Failed to get feedback from the AI. Please try again.');
-          console.error(e);
+            setEmailError('An error occurred. Please try again.');
+            console.error(e);
         } finally {
-          setIsLoadingEmail(false);
+            setIsLoadingEmail(false);
         }
     };
-    
+
+    const handleSubmitEmailForFeedback = () => handleSaveEmailSession(false);
+    const handleSubmitEmailToLecturer = () => handleSaveEmailSession(true);
+
     const handlePracticeEmailAgain = () => {
         setUserEmail('');
         setEmailFeedback(null);
         setEmailError(null);
+        setEmailSessionId(null);
     };
 
 
@@ -105,56 +147,61 @@ const HandlingComplaintsModule: React.FC<HandlingComplaintsModuleProps> = ({ use
                                     feedback={emailFeedback}
                                     userEmail={userEmail}
                                     onPracticeAgain={handlePracticeEmailAgain}
+                                    onBack={handleBackToPracticeSelection}
+                                    sessionId={emailSessionId}
+                                    isStudent={user?.role === 'student'}
                                 />
-                                 <div className="text-center mt-8">
-                                    <button onClick={handleBackToPracticeSelection} className="text-sm text-fuchsia-400 hover:text-fuchsia-300 flex items-center mx-auto">
-                                        <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                                            <path strokeLinecap="round" strokeLinejoin="round" d="M11 17l-5-5m0 0l5-5m-5 5h12" />
-                                        </svg>
-                                        Back to Practice Selection
-                                    </button>
-                                </div>
                             </div>
                         );
                     }
                     return (
-                        <div className="max-w-5xl mx-auto animate-fade-in space-y-6 pb-24">
+                        <div className="max-w-4xl mx-auto animate-fade-in space-y-6 pb-24">
                           <div className="text-center">
                             <h2 className="text-3xl font-bold text-white">Practice: Written Email Response</h2>
                             <p className="mt-2 text-lg text-slate-400">Read the scenario, then write a professional email to resolve the complaint.</p>
                           </div>
                           
-                          <div className="grid lg:grid-cols-2 gap-6">
-                            <Card title="Complaint Scenario">
-                                <div className="p-4 h-[60vh] overflow-y-auto">
-                                    <p className="text-sm text-slate-300">
-                                        {COMPLAINT_EMAIL_SCENARIO}
-                                    </p>
-                                </div>
-                            </Card>
-                            <div className="flex flex-col gap-6">
-                                <Card title="Your Email Response">
-                                    <div className="p-4">
-                                        <textarea
-                                            value={userEmail}
-                                            onChange={(e) => setUserEmail(e.target.value)}
-                                            placeholder="Dear [Client Name], ..."
-                                            className="w-full h-[calc(60vh-80px)] p-3 bg-slate-900 border border-slate-600 rounded-md focus:ring-2 focus:ring-fuchsia-500 focus:border-fuchsia-500 transition"
-                                        />
-                                    </div>
-                                </Card>
-                                <div className="bg-slate-800 p-4 rounded-lg border border-slate-700 space-y-3">
-                                    {emailError && <p className="text-red-400 text-center text-sm mb-2">{emailError}</p>}
+                          <Card title="Complaint Scenario">
+                              <div className="p-4">
+                                  <p className="text-sm text-slate-300">
+                                      {COMPLAINT_EMAIL_SCENARIO}
+                                  </p>
+                              </div>
+                          </Card>
+                          
+                          <Card title="Your Email Response">
+                              <div className="p-4">
+                                  <textarea
+                                      value={userEmail}
+                                      onChange={(e) => setUserEmail(e.target.value)}
+                                      placeholder="Dear [Client Name], ..."
+                                      className="w-full h-80 p-3 bg-slate-900 border border-slate-600 rounded-md focus:ring-2 focus:ring-fuchsia-500 focus:border-fuchsia-500 transition"
+                                  />
+                              </div>
+                          </Card>
+
+                          <div className="bg-slate-800 p-4 rounded-lg border border-slate-700 space-y-3">
+                              {emailError && <p className="text-red-400 text-center text-sm mb-2">{emailError}</p>}
+                              <div className="flex flex-col sm:flex-row gap-4">
+                                <button
+                                    onClick={handleSubmitEmailForFeedback}
+                                    disabled={!userEmail.trim()}
+                                    className="flex-1 bg-fuchsia-600 text-white font-bold py-3 px-4 rounded-lg hover:bg-fuchsia-700 transition-colors focus:outline-none focus:ring-4 focus:ring-fuchsia-500/50 disabled:bg-slate-600 disabled:cursor-not-allowed"
+                                >
+                                    Get AI Feedback
+                                </button>
+                                {user?.role === 'student' && (
                                     <button
-                                        onClick={handleSubmitEmail}
+                                        onClick={handleSubmitEmailToLecturer}
                                         disabled={!userEmail.trim()}
-                                        className="w-full bg-fuchsia-600 text-white font-bold py-3 px-4 rounded-lg hover:bg-fuchsia-700 transition-colors focus:outline-none focus:ring-4 focus:ring-fuchsia-500/50 disabled:bg-slate-600 disabled:cursor-not-allowed"
+                                        className="flex-1 bg-blue-600 text-white font-bold py-3 px-4 rounded-lg hover:bg-blue-700 transition-colors focus:outline-none focus:ring-4 focus:ring-blue-500/50 disabled:bg-slate-600 disabled:cursor-not-allowed"
                                     >
-                                        Submit for Feedback
+                                        Submit to Lecturer
                                     </button>
-                                </div>
-                            </div>
+                                )}
+                              </div>
                           </div>
+
                           <div className="text-center pt-4">
                             <button onClick={handleBackToPracticeSelection} className="text-sm text-fuchsia-400 hover:text-fuchsia-300 flex items-center mx-auto">
                                 <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>

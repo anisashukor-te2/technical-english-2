@@ -146,7 +146,7 @@ const MinuteTakingPracticeScreen: React.FC<MinuteTakingPracticeScreenProps> = ({
     setPlaybackState('idle');
   };
 
-  const saveSession = async (isSubmitting: boolean) => {
+  const handleSubmitForFeedback = async () => {
     setIsLoading(true);
     setError(null);
     try {
@@ -164,24 +164,17 @@ const MinuteTakingPracticeScreen: React.FC<MinuteTakingPracticeScreenProps> = ({
              classCode: studentUser.classCode,
              userMinutes: userMinutes,
              feedbackData: feedbackData,
-             isSubmitted: isSubmitting,
+             isSubmitted: false, // Can be submitted from the feedback screen
          };
          
          const allSessions: MinuteTakingSession[] = JSON.parse(localStorage.getItem('minuteTakingSessions') || '[]');
          allSessions.push(newSession);
          localStorage.setItem('minuteTakingSessions', JSON.stringify(allSessions));
-         if (!isSubmitting) {
-            setSessionId(newSessionId);
-         }
+         setSessionId(newSessionId);
       }
 
-      if (isSubmitting) {
-        alert("Your minutes have been successfully submitted to your lecturer.");
-        onBack();
-      } else {
-        setFeedback(feedbackData);
-        setView('FEEDBACK');
-      }
+      setFeedback(feedbackData);
+      setView('FEEDBACK');
 
     } catch (e) {
       setError('An error occurred. Please try again.');
@@ -191,18 +184,6 @@ const MinuteTakingPracticeScreen: React.FC<MinuteTakingPracticeScreenProps> = ({
     }
   };
 
-  const handleSubmitForFeedback = () => {
-    saveSession(false);
-  };
-
-  const handleSubmitToLecturer = () => {
-    if (!userMinutes.trim() || !user || user.role !== 'student') {
-        return;
-    }
-    if (window.confirm("Are you sure you want to submit this to your lecturer for assessment? You will not be able to view AI feedback or edit it later.")) {
-        saveSession(true);
-    }
-  };
 
   const handlePracticeAgain = () => {
     setView('PRACTICE');
@@ -304,15 +285,6 @@ const MinuteTakingPracticeScreen: React.FC<MinuteTakingPracticeScreenProps> = ({
               >
                   Get AI Feedback
               </button>
-              {user?.role === 'student' && (
-                  <button
-                    onClick={handleSubmitToLecturer}
-                    disabled={!userMinutes.trim()}
-                    className="flex-1 bg-blue-600 text-white font-bold py-3 px-4 rounded-lg hover:bg-blue-700 transition-colors focus:outline-none focus:ring-4 focus:ring-blue-500/50 disabled:bg-slate-600 disabled:cursor-not-allowed"
-                >
-                    Submit to Lecturer
-                </button>
-              )}
           </div>
       </div>
 
