@@ -1,0 +1,8 @@
+{
+  "name": "Technical English 2",
+  "description": "An AI-powered interactive e-Learning module to help students practice their communication skills. Get instant feedback on transcription, pacing, filler words, and many more.",
+  "requestFramePermissions": [
+    "microphone",
+    "camera"
+  ]
+}

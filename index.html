@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Technical English 2</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+  <script type="importmap">
+{
+  "imports": {
+    "react": "https://aistudiocdn.com/react@^19.2.0",
+    "react-dom/": "https://aistudiocdn.com/react-dom@^19.2.0/",
+    "react/": "https://aistudiocdn.com/react@^19.2.0/",
+    "@google/genai": "https://aistudiocdn.com/@google/genai@^1.23.0"
+  }
+}
+</script>
+<style>
+  html, body, #root {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+  }
+  html {
+    overscroll-behavior-y: contain;
+    background-color: #010a18; /* Dark navy fallback */
+  }
+
+  body {
+    position: relative;
+    overflow: hidden;
+    z-index: 0;
+    /* Layer 1: Base color gradient for depth and atmosphere */
+    background-image: radial-gradient(ellipse at center, hsl(217, 89%, 15%) 0%, hsl(220, 95%, 5%) 80%);
+  }
+  
+  #root {
+      position: relative;
+      z-index: 1;
+  }
+
+  /* Shared setup for pseudo-elements */
+  body::before,
+  body::after {
+    content: '';
+    position: absolute;
+    top: -50%; left: -50%;
+    width: 200%; height: 200%;
+    z-index: -1;
+    will-change: transform;
+  }
+
+  /* Layer 2: Deeper, slower background elements (faint grid, nodes) */
+  body::before {
+    --grid-color: hsla(210, 100%, 50%, 0.07);
+    --node-color: hsla(190, 100%, 75%, 0.12);
+    
+    background-image: 
+      /* Holographic Nodes/Spheres for depth */
+      radial-gradient(circle at 20% 30%, var(--node-color) 0%, transparent 5%),
+      radial-gradient(circle at 85% 75%, var(--node-color) 0%, transparent 8%),
+      radial-gradient(circle at 50% 90%, var(--node-color) 0%, transparent 4%),
+      radial-gradient(circle at 10% 80%, var(--node-color) 0%, transparent 5%),
+      radial-gradient(circle at 90% 20%, var(--node-color) 0%, transparent 6%),
+      
+      /* Faint geometric grid */
+      repeating-linear-gradient(var(--grid-color) 0 1px, transparent 1px 40px),
+      repeating-linear-gradient(90deg, var(--grid-color) 0 1px, transparent 1px 40px);
+
+    animation: slow-drift 120s linear infinite alternate;
+  }
+
+  /* Layer 3: Closer, more dynamic elements (circuitry, data flow) */
+  body::after {
+    --circuit-color: hsla(205, 100%, 60%, 0.15);
+    --circuit-glow-color: hsla(195, 100%, 70%, 0.22);
+    --data-line-color: hsla(195, 100%, 70%, 0.25);
+
+    /* Stacking gradients to create a motherboard/circuit pattern with thicker lines and nodes */
+    background-image:
+      /* 1. Fast-moving diagonal data lines (thicker) */
+      repeating-linear-gradient(-45deg, transparent 0 20px, var(--data-line-color) 20px 23px, transparent 23px 120px),
+
+      /* 2. Glowing circular "pads" or "vias" */
+      radial-gradient(var(--circuit-glow-color) 3px, transparent 3px), /* Main nodes */
+      radial-gradient(var(--circuit-color) 2px, transparent 2px),    /* Smaller nodes */
+
+      /* 3. Main circuit traces (thicker) */
+      repeating-linear-gradient(var(--circuit-color) 0 3px, transparent 3px 80px),
+      repeating-linear-gradient(90deg, var(--circuit-color) 0 3px, transparent 3px 80px),
+      
+      /* 4. Finer circuit details (thicker) */
+      repeating-linear-gradient(var(--circuit-color) 0 2px, transparent 2px 40px),
+      repeating-linear-gradient(90deg, var(--circuit-color) 0 2px, transparent 2px 40px);
+      
+    background-size:
+      120px 120px,  /* Data lines pattern size */
+      80px 80px,    /* Main glowing nodes */
+      40px 40px,    /* Smaller nodes */
+      80px 80px,    /* Main traces pattern size */
+      80px 80px,
+      40px 40px,    /* Finer traces pattern size */
+      40px 40px;
+
+    background-position:
+      0 0,          /* Data lines position (animated) */
+      0 0,          /* Main nodes */
+      20px 20px,    /* Smaller nodes (offset) */
+      0 0,          /* Main traces */
+      0 0,
+      10px 10px,    /* Finer traces (offset) */
+      10px 10px;
+
+    animation: 
+      fast-flow 35s linear infinite, /* Animates data lines */
+      fast-drift 80s linear infinite alternate-reverse; /* Animates overall position for parallax */
+  }
+  
+  /* New, more subtle animations for background */
+  @keyframes slow-drift {
+    from { transform: translate(-2%, -2%) rotate(0deg); }
+    to { transform: translate(2%, 2%) rotate(2deg); }
+  }
+  
+  @keyframes fast-drift {
+    from { transform: translate(3%, 3%) rotate(0deg); }
+    to { transform: translate(-3%, -3%) rotate(-3deg); }
+  }
+  
+  @keyframes fast-flow {
+    from { background-position: 0 0, 0 0, 20px 20px, 0 0, 0 0, 10px 10px, 10px 10px; }
+    to { background-position: -960px 960px, 0 0, 20px 20px, 0 0, 0 0, 10px 10px, 10px 10px; } /* Only animate the first background-image (data lines) */
+  }
+  
+  /* Add animations for slide transitions */
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+
+  @keyframes fadeOut {
+    from { opacity: 1; }
+    to { opacity: 0; }
+  }
+  
+  @keyframes slideInFromRight {
+    from { transform: translateX(5%); opacity: 0; }
+    to { transform: translateX(0); opacity: 1; }
+  }
+
+  @keyframes slideInFromLeft {
+    from { transform: translateX(-5%); opacity: 0; }
+    to { transform: translateX(0); opacity: 1; }
+  }
+
+  @keyframes slideInFromTop {
+    from { transform: translateY(-100%); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
+  }
+
+  .animate-fade-in {
+    animation: fadeIn 0.5s ease-in-out;
+  }
+  
+  .animate-slide-in-right {
+    animation: slideInFromRight 0.5s ease-in-out;
+  }
+
+  .animate-slide-in-left {
+      animation: slideInFromLeft 0.5s ease-in-out;
+  }
+
+  /* Add new animation for highlighting a completed/submitted item */
+  @keyframes highlightFade {
+    from { background-color: rgba(236, 72, 153, 0.2); } /* A fuchsia highlight */
+    to { background-color: rgba(15, 23, 42, 0.5); } /* The card's default bg-slate-900/50 */
+  }
+
+  .animate-highlight-fade {
+    animation: highlightFade 1.5s ease-out;
+  }
+</style>
+</head>
+  <body class="text-slate-200">
+    <div id="root"></div>
+    <script type="module" src="/index.tsx"></script>
+  </body>
+</html>
