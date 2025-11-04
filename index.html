@@ -17,122 +17,96 @@
 }
 </script>
 <style>
+  /* Base Setup */
   html, body, #root {
     height: 100%;
     margin: 0;
     padding: 0;
   }
   html {
+    background-color: #030712;
     overscroll-behavior-y: contain;
-    background-color: #010a18; /* Dark navy fallback */
   }
-
   body {
     position: relative;
-    overflow: hidden;
-    z-index: 0;
-    /* Layer 1: Base color gradient for depth and atmosphere */
-    background-image: radial-gradient(ellipse at center, hsl(217, 89%, 15%) 0%, hsl(220, 95%, 5%) 80%);
+    overflow: hidden; /* Hide anything that spills out from the animated background */
   }
-  
+
+  /* Animated Background Container */
+  body::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+
+    background-image: 
+      /* Layer 4: Concentric Glowing HUD (on the left) - more detailed */
+      radial-gradient(circle at 25% 50%, transparent 22%, rgba(0, 220, 255, 0.4) 22.2%, rgba(0, 220, 255, 0.1) 24%, transparent 25%),
+      radial-gradient(circle at 25% 50%, transparent 18%, rgba(0, 220, 255, 0.6) 18.2%, transparent 18.5%),
+      radial-gradient(circle at 25% 50%, rgba(0, 220, 255, 0.1) 0%, transparent 18%),
+      
+      /* Layer 3: Dynamic Circuit-like Lines */
+      repeating-linear-gradient(30deg, transparent, transparent 25px, rgba(0, 180, 255, 0.15) 25px, rgba(0, 180, 255, 0.15) 26px),
+      repeating-linear-gradient(-30deg, transparent, transparent 25px, rgba(0, 180, 255, 0.15) 25px, rgba(0, 180, 255, 0.15) 26px),
+
+      /* Layer 2: Faint Underlying Grid */
+      linear-gradient(rgba(20, 80, 150, 0.1) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(20, 80, 150, 0.1) 1px, transparent 1px),
+
+      /* Layer 1: Base Radial Glow */
+      radial-gradient(ellipse at 25% 50%, hsl(215, 90%, 12%) 0%, #030712 65%);
+
+    background-size: 
+      /* HUD */
+      140vmin 140vmin, 
+      140vmin 140vmin,
+      140vmin 140vmin,
+      /* Circuits */
+      160px 160px,
+      160px 160px,
+      /* Grid */
+      30px 30px,
+      30px 30px,
+      /* Base */
+      100% 100%;
+
+    background-position: center center, center center, center center, 0 0, 0 0, 0 0, 0 0, center center;
+    background-repeat: no-repeat, no-repeat, no-repeat, repeat, repeat, repeat, repeat, no-repeat;
+    
+    animation: 
+      hud-pulse 6s ease-in-out infinite, 
+      circuit-flow 30s linear infinite;
+  }
+
+  @keyframes hud-pulse {
+    0%, 100% {
+      background-size: 140vmin 140vmin, 140vmin 140vmin, 140vmin 140vmin, 160px 160px, 160px 160px, 30px 30px, 30px 30px, 100% 100%;
+      opacity: 0.95;
+    }
+    50% {
+      background-size: 150vmin 150vmin, 150vmin 150vmin, 150vmin 150vmin, 160px 160px, 160px 160px, 30px 30px, 30px 30px, 100% 100%;
+      opacity: 1;
+    }
+  }
+
+  @keyframes circuit-flow {
+    0% {
+      background-position: center center, center center, center center, 0 0, 0 0, 0 0, 0 0, center center;
+    }
+    100% {
+      background-position: center center, center center, center center, 320px 0, -320px 0, 60px 0, 0 60px, center center;
+    }
+  }
+
+
+  /* Root element with overlay */
   #root {
       position: relative;
       z-index: 1;
+      background-color: rgba(3, 10, 25, 0.75); /* Darker, bluer overlay */
+      height: 100%;
   }
 
-  /* Shared setup for pseudo-elements */
-  body::before,
-  body::after {
-    content: '';
-    position: absolute;
-    top: -50%; left: -50%;
-    width: 200%; height: 200%;
-    z-index: -1;
-    will-change: transform;
-  }
-
-  /* Layer 2: Deeper, slower background elements (faint grid, nodes) */
-  body::before {
-    --grid-color: hsla(210, 100%, 50%, 0.07);
-    --node-color: hsla(190, 100%, 75%, 0.12);
-    
-    background-image: 
-      /* Holographic Nodes/Spheres for depth */
-      radial-gradient(circle at 20% 30%, var(--node-color) 0%, transparent 5%),
-      radial-gradient(circle at 85% 75%, var(--node-color) 0%, transparent 8%),
-      radial-gradient(circle at 50% 90%, var(--node-color) 0%, transparent 4%),
-      radial-gradient(circle at 10% 80%, var(--node-color) 0%, transparent 5%),
-      radial-gradient(circle at 90% 20%, var(--node-color) 0%, transparent 6%),
-      
-      /* Faint geometric grid */
-      repeating-linear-gradient(var(--grid-color) 0 1px, transparent 1px 40px),
-      repeating-linear-gradient(90deg, var(--grid-color) 0 1px, transparent 1px 40px);
-
-    animation: slow-drift 120s linear infinite alternate;
-  }
-
-  /* Layer 3: Closer, more dynamic elements (circuitry, data flow) */
-  body::after {
-    --circuit-color: hsla(205, 100%, 60%, 0.15);
-    --circuit-glow-color: hsla(195, 100%, 70%, 0.22);
-    --data-line-color: hsla(195, 100%, 70%, 0.25);
-
-    /* Stacking gradients to create a motherboard/circuit pattern with thicker lines and nodes */
-    background-image:
-      /* 1. Fast-moving diagonal data lines (thicker) */
-      repeating-linear-gradient(-45deg, transparent 0 20px, var(--data-line-color) 20px 23px, transparent 23px 120px),
-
-      /* 2. Glowing circular "pads" or "vias" */
-      radial-gradient(var(--circuit-glow-color) 3px, transparent 3px), /* Main nodes */
-      radial-gradient(var(--circuit-color) 2px, transparent 2px),    /* Smaller nodes */
-
-      /* 3. Main circuit traces (thicker) */
-      repeating-linear-gradient(var(--circuit-color) 0 3px, transparent 3px 80px),
-      repeating-linear-gradient(90deg, var(--circuit-color) 0 3px, transparent 3px 80px),
-      
-      /* 4. Finer circuit details (thicker) */
-      repeating-linear-gradient(var(--circuit-color) 0 2px, transparent 2px 40px),
-      repeating-linear-gradient(90deg, var(--circuit-color) 0 2px, transparent 2px 40px);
-      
-    background-size:
-      120px 120px,  /* Data lines pattern size */
-      80px 80px,    /* Main glowing nodes */
-      40px 40px,    /* Smaller nodes */
-      80px 80px,    /* Main traces pattern size */
-      80px 80px,
-      40px 40px,    /* Finer traces pattern size */
-      40px 40px;
-
-    background-position:
-      0 0,          /* Data lines position (animated) */
-      0 0,          /* Main nodes */
-      20px 20px,    /* Smaller nodes (offset) */
-      0 0,          /* Main traces */
-      0 0,
-      10px 10px,    /* Finer traces (offset) */
-      10px 10px;
-
-    animation: 
-      fast-flow 35s linear infinite, /* Animates data lines */
-      fast-drift 80s linear infinite alternate-reverse; /* Animates overall position for parallax */
-  }
-  
-  /* New, more subtle animations for background */
-  @keyframes slow-drift {
-    from { transform: translate(-2%, -2%) rotate(0deg); }
-    to { transform: translate(2%, 2%) rotate(2deg); }
-  }
-  
-  @keyframes fast-drift {
-    from { transform: translate(3%, 3%) rotate(0deg); }
-    to { transform: translate(-3%, -3%) rotate(-3deg); }
-  }
-  
-  @keyframes fast-flow {
-    from { background-position: 0 0, 0 0, 20px 20px, 0 0, 0 0, 10px 10px, 10px 10px; }
-    to { background-position: -960px 960px, 0 0, 20px 20px, 0 0, 0 0, 10px 10px, 10px 10px; } /* Only animate the first background-image (data lines) */
-  }
-  
   /* Add animations for slide transitions */
   @keyframes fadeIn {
     from { opacity: 0; }
@@ -173,7 +147,7 @@
 
   /* Add new animation for highlighting a completed/submitted item */
   @keyframes highlightFade {
-    from { background-color: rgba(236, 72, 153, 0.2); } /* A fuchsia highlight */
+    from { background-color: rgba(59, 130, 246, 0.3); } /* A blue highlight */
     to { background-color: rgba(15, 23, 42, 0.5); } /* The card's default bg-slate-900/50 */
   }
 

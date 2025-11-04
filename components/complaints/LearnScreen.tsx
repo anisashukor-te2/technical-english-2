@@ -22,7 +22,7 @@ const LearnScreen: React.FC<LearnScreenProps> = ({ onBack }) => {
       <div className="space-y-6">
         <Card title="Step 1: L - Listen">
           <div className="p-4 text-slate-300 space-y-2 text-sm">
-            <h3 className="text-lg font-semibold text-fuchsia-400">Goal: Understand the Full Picture</h3>
+            <h3 className="text-lg font-semibold text-cyan-400">Goal: Understand the Full Picture</h3>
             <p>Your first job is not to solve, but to listen. Give the person your complete and uninterrupted attention. Let them explain their issue fully without jumping in with corrections or solutions. This shows respect and helps you gather all the necessary facts.</p>
             <p className="font-semibold mt-2">Key Actions:</p>
             <ul className="list-disc list-inside ml-4">
@@ -35,7 +35,7 @@ const LearnScreen: React.FC<LearnScreenProps> = ({ onBack }) => {
 
         <Card title="Step 2: A - Acknowledge & Apologize">
           <div className="p-4 text-slate-300 space-y-2 text-sm">
-            <h3 className="text-lg font-semibold text-fuchsia-400">Goal: Show Empathy and Validate Their Feelings</h3>
+            <h3 className="text-lg font-semibold text-cyan-400">Goal: Show Empathy and Validate Their Feelings</h3>
             <p>Before you solve the problem, you must acknowledge the person's feelings. A sincere, simple apology can be incredibly powerful in defusing anger and frustration. This is not necessarily about admitting fault, but about showing empathy for their negative experience.</p>
             <p className="font-semibold mt-2">Key Phrases:</p>
             <ul className="list-disc list-inside ml-4">
@@ -48,7 +48,7 @@ const LearnScreen: React.FC<LearnScreenProps> = ({ onBack }) => {
 
         <Card title="Step 3: S - Solve">
           <div className="p-4 text-slate-300 space-y-2 text-sm">
-            <h3 className="text-lg font-semibold text-fuchsia-400">Goal: Take Ownership and Propose a Solution</h3>
+            <h3 className="text-lg font-semibold text-cyan-400">Goal: Take Ownership and Propose a Solution</h3>
             <p>Now it's time to take action. Collaborate with the person to find a resolution. Where possible, offer a concrete solution immediately. If you can't, provide a clear plan of what you will do next and a timeline for a follow-up.</p>
             <p className="font-semibold mt-2">Key Actions:</p>
             <ul className="list-disc list-inside ml-4">
@@ -61,7 +61,7 @@ const LearnScreen: React.FC<LearnScreenProps> = ({ onBack }) => {
 
         <Card title="Step 4: T - Thank">
           <div className="p-4 text-slate-300 space-y-2 text-sm">
-            <h3 className="text-lg font-semibold text-fuchsia-400">Goal: Rebuild the Relationship</h3>
+            <h3 className="text-lg font-semibold text-cyan-400">Goal: Rebuild the Relationship</h3>
             <p>End the conversation on a positive and professional note. Thank the person for bringing the issue to your attention. This reframes their complaint as valuable feedback that helps you or your organization improve, which helps to repair the relationship.</p>
             <p className="font-semibold mt-2">Key Phrases:</p>
             <ul className="list-disc list-inside ml-4">
@@ -74,7 +74,7 @@ const LearnScreen: React.FC<LearnScreenProps> = ({ onBack }) => {
       </div>
 
       <div className="text-center pt-4">
-        <button onClick={onBack} className="text-sm text-fuchsia-400 hover:text-fuchsia-300 flex items-center mx-auto">
+        <button onClick={onBack} className="text-sm text-cyan-400 hover:text-cyan-300 flex items-center mx-auto">
             <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                 <path strokeLinecap="round" strokeLinejoin="round" d="M11 17l-5-5m0 0l5-5m-5 5h12" />
             </svg>

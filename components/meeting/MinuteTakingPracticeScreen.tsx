@@ -226,7 +226,7 @@ const MinuteTakingPracticeScreen: React.FC<MinuteTakingPracticeScreenProps> = ({
             <div className="flex items-center gap-4 bg-slate-900/50 p-3 rounded-lg border border-slate-700">
                 <button 
                   onClick={handlePlayPause}
-                  className="p-3 rounded-full bg-fuchsia-600 hover:bg-fuchsia-700 text-white disabled:bg-slate-600" 
+                  className="p-3 rounded-full bg-cyan-600 hover:bg-cyan-700 text-white disabled:bg-slate-600" 
                   aria-label={playbackState === 'playing' ? "Pause" : "Play"}
                   disabled={voices.length === 0}
                 >
@@ -254,7 +254,7 @@ const MinuteTakingPracticeScreen: React.FC<MinuteTakingPracticeScreenProps> = ({
                 </div>
             </div>
             <details className="text-sm">
-                <summary className="cursor-pointer text-fuchsia-400 hover:underline">View Full Transcript</summary>
+                <summary className="cursor-pointer text-cyan-400 hover:underline">View Full Transcript</summary>
                 <div className="mt-2 p-3 bg-slate-900/50 rounded-lg max-h-48 overflow-y-auto">
                     <pre className="text-xs text-slate-300 whitespace-pre-wrap font-sans">
                         {MINUTE_TAKING_TRANSCRIPT}
@@ -270,7 +270,7 @@ const MinuteTakingPracticeScreen: React.FC<MinuteTakingPracticeScreenProps> = ({
                   value={userMinutes}
                   onChange={(e) => setUserMinutes(e.target.value)}
                   placeholder="Start writing your meeting minutes here. Focus on capturing decisions and action items..."
-                  className="w-full h-64 p-3 bg-slate-900 border border-slate-600 rounded-md focus:ring-2 focus:ring-fuchsia-500 focus:border-fuchsia-500 transition"
+                  className="w-full h-64 p-3 bg-slate-900 border border-slate-600 rounded-md focus:ring-2 focus:ring-cyan-500 focus:border-cyan-500 transition"
               />
           </div>
       </Card>
@@ -281,7 +281,7 @@ const MinuteTakingPracticeScreen: React.FC<MinuteTakingPracticeScreenProps> = ({
               <button
                   onClick={handleSubmitForFeedback}
                   disabled={!userMinutes.trim()}
-                  className="flex-1 bg-fuchsia-600 text-white font-bold py-3 px-4 rounded-lg hover:bg-fuchsia-700 transition-colors focus:outline-none focus:ring-4 focus:ring-fuchsia-500/50 disabled:bg-slate-600 disabled:cursor-not-allowed"
+                  className="flex-1 bg-cyan-600 text-white font-bold py-3 px-4 rounded-lg hover:bg-cyan-700 transition-colors focus:outline-none focus:ring-4 focus:ring-cyan-500/50 disabled:bg-slate-600 disabled:cursor-not-allowed"
               >
                   Get AI Feedback
               </button>
@@ -289,7 +289,7 @@ const MinuteTakingPracticeScreen: React.FC<MinuteTakingPracticeScreenProps> = ({
       </div>
 
       <div className="text-center pt-4">
-        <button onClick={onBack} className="text-sm text-fuchsia-400 hover:text-fuchsia-300 flex items-center mx-auto">
+        <button onClick={onBack} className="text-sm text-cyan-400 hover:text-cyan-300 flex items-center mx-auto">
             <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                 <path strokeLinecap="round" strokeLinejoin="round" d="M11 17l-5-5m0 0l5-5m-5 5h12" />
             </svg>

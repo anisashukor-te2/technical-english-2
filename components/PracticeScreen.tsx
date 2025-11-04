@@ -4,7 +4,7 @@ import MicrophoneHelpModal from './common/MicrophoneHelpModal';
 
 const Scenario: React.FC = () => (
     <div className="bg-slate-800 p-6 rounded-lg border border-slate-700 mb-6">
-        <h2 className="text-xl font-bold text-fuchsia-400 mb-3">Module 1: Guided Practice</h2>
+        <h2 className="text-xl font-bold text-cyan-400 mb-3">Module 1: Guided Practice</h2>
         <p className="text-slate-400 mb-4">
             <span className="font-semibold text-slate-300">Scenario:</span> You are presenting the step-by-step process of designing a robust bolted joint for a structural application to a team of junior engineers. Focus on clarity, logical flow, and using appropriate technical language.
         </p>
@@ -16,7 +16,7 @@ const Scenario: React.FC = () => (
 
 const Script: React.FC = () => (
     <div className="bg-slate-800 p-6 rounded-lg border border-slate-700 h-96 overflow-y-auto">
-        <h3 className="text-lg font-bold text-fuchsia-400 mb-4">Starter Script</h3>
+        <h3 className="text-lg font-bold text-cyan-400 mb-4">Starter Script</h3>
         <div className="prose prose-invert text-slate-300 space-y-4">
             <details className="cursor-pointer">
                 <summary className="font-semibold">Slide 1: Title Slide & Opening</summary>
@@ -149,7 +149,7 @@ const PracticeScreen: React.FC = () => {
             return (
                 <div className="flex flex-col items-center justify-center w-full h-full text-center animate-fade-in">
                     <p className="text-lg text-slate-300">Recording Complete!</p>
-                    <p className="text-5xl font-mono font-bold text-fuchsia-400 my-4">
+                    <p className="text-5xl font-mono font-bold text-cyan-400 my-4">
                         {formatTime(audioData?.duration || 0)}
                     </p>
                     <div className="flex w-full max-w-xs gap-4 mt-4">
@@ -164,7 +164,7 @@ const PracticeScreen: React.FC = () => {
                         </button>
                         <button
                             onClick={handleCheckScore}
-                            className="flex-1 bg-fuchsia-600 text-white font-bold py-3 px-4 rounded-lg hover:bg-fuchsia-700 transition-colors focus:outline-none focus:ring-4 focus:ring-fuchsia-500/50 flex items-center justify-center gap-2"
+                            className="flex-1 bg-cyan-600 text-white font-bold py-3 px-4 rounded-lg hover:bg-cyan-700 transition-colors focus:outline-none focus:ring-4 focus:ring-cyan-500/50 flex items-center justify-center gap-2"
                         >
                             Check Score
                             <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
@@ -177,7 +177,7 @@ const PracticeScreen: React.FC = () => {
         }
 
         const isRecording = recordingStatus === 'recording';
-        const timerColor = isRecording ? 'text-red-500 animate-pulse' : 'text-fuchsia-400';
+        const timerColor = isRecording ? 'text-red-500 animate-pulse' : 'text-cyan-400';
 
         return (
             <div className="flex flex-col items-center justify-center w-full h-full text-center">
@@ -226,7 +226,7 @@ const PracticeScreen: React.FC = () => {
                                     <button onClick={() => setIsHelpModalOpen(true)} className="w-full bg-slate-600 text-white font-bold py-2 px-5 rounded-lg hover:bg-slate-500 transition-colors">
                                         Show Help
                                     </button>
-                                    <button onClick={() => setMicError(null)} className="w-full bg-fuchsia-600 text-white font-bold py-2 px-5 rounded-lg hover:bg-fuchsia-700 transition-colors">
+                                    <button onClick={() => setMicError(null)} className="w-full bg-cyan-600 text-white font-bold py-2 px-5 rounded-lg hover:bg-cyan-700 transition-colors">
                                         Retry
                                     </button>
                                 </div>
@@ -240,7 +240,7 @@ const PracticeScreen: React.FC = () => {
             </div>
             {error && <p className="text-red-400 text-center mt-4">{error}</p>}
             <div className="text-center mt-8">
-                <button onClick={handleBackToSelection} className="text-sm text-fuchsia-400 hover:text-fuchsia-300 flex items-center mx-auto">
+                <button onClick={handleBackToSelection} className="text-sm text-cyan-400 hover:text-cyan-300 flex items-center mx-auto">
                     <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                         <path strokeLinecap="round" strokeLinejoin="round" d="M11 17l-5-5m0 0l5-5m-5 5h12" />
                     </svg>

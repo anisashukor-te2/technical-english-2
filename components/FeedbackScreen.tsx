@@ -1,4 +1,5 @@
 
+
 import React from 'react';
 import { useState, useEffect } from 'react';
 import { FeedbackData, PracticeSession, Slide, PeerFeedback } from '../types';
@@ -96,7 +97,7 @@ const SlidesViewer: React.FC<{ slides: Slide[] }> = ({ slides }) => {
                         <li 
                             key={slide.id} 
                             onClick={() => setCurrentSlideIndex(index)}
-                            className={`p-3 rounded-lg cursor-pointer border-2 transition-colors ${currentSlideIndex === index ? 'border-fuchsia-500 bg-slate-700/50' : 'border-transparent bg-slate-900/50 hover:bg-slate-700'}`}
+                            className={`p-3 rounded-lg cursor-pointer border-2 transition-colors ${currentSlideIndex === index ? 'border-cyan-500 bg-slate-700/50' : 'border-transparent bg-slate-900/50 hover:bg-slate-700'}`}
                         >
                             <p className="text-sm font-semibold text-slate-200 truncate">{slide.title || `Slide ${index + 1}`}</p>
                             <p className="text-xs text-slate-400">Slide {index + 1}</p>
@@ -108,7 +109,7 @@ const SlidesViewer: React.FC<{ slides: Slide[] }> = ({ slides }) => {
             <div className="w-full md:w-2/3 overflow-y-auto">
                 {currentSlide ? (
                     <div>
-                        <h4 className="text-lg font-bold text-fuchsia-400 mb-2 sticky top-0 bg-slate-800 pb-2">{currentSlide.title}</h4>
+                        <h4 className="text-lg font-bold text-cyan-400 mb-2 sticky top-0 bg-slate-800 pb-2">{currentSlide.title}</h4>
                         <div className="text-slate-300 whitespace-pre-wrap text-sm leading-relaxed">
                             <p>{currentSlide.script || <span className="italic text-slate-500">No script provided for this slide.</span>}</p>
                         </div>
@@ -304,7 +305,7 @@ const FeedbackScreen: React.FC<FeedbackScreenProps> = ({ feedback, onPracticeAga
                 </Card>
                 <Card title="Pacing">
                     <div className="flex flex-col items-center justify-center p-3 h-full">
-                        <p className="text-5xl font-bold text-fuchsia-400">{feedback.pacing.wpm}<span className="text-xl font-normal text-slate-400"> WPM</span></p>
+                        <p className="text-5xl font-bold text-cyan-400">{feedback.pacing.wpm}<span className="text-xl font-normal text-slate-400"> WPM</span></p>
                         <p className="mt-1 text-center text-slate-400 text-sm">{feedback.pacing.feedback}</p>
                         <p className="text-xs text-slate-500 mt-1">(Aim for 140-160 WPM)</p>
                     </div>
@@ -315,7 +316,7 @@ const FeedbackScreen: React.FC<FeedbackScreenProps> = ({ feedback, onPracticeAga
                             <ul className="space-y-2">
                                 {feedback.fillerWords.map(fw => (
                                     <li key={fw.word} className="flex justify-between items-center text-slate-300">
-                                        <span className="font-mono bg-slate-700 px-2 py-1 rounded text-fuchsia-400 text-sm">"{fw.word}"</span>
+                                        <span className="font-mono bg-slate-700 px-2 py-1 rounded text-cyan-400 text-sm">"{fw.word}"</span>
                                         <span className="font-semibold">{fw.count} time(s)</span>
                                     </li>
                                 ))}
@@ -375,7 +376,7 @@ const FeedbackScreen: React.FC<FeedbackScreenProps> = ({ feedback, onPracticeAga
                 <Card title="Delivery & Content Analysis">
                     <div className="p-4 space-y-6">
                         <div>
-                            <h4 className="font-semibold text-fuchsia-400 mb-2 text-md">Technical Keyword Usage</h4>
+                            <h4 className="font-semibold text-cyan-400 mb-2 text-md">Technical Keyword Usage</h4>
                             <div className="space-y-2">
                                 <div>
                                     <h5 className="font-semibold text-green-400 mb-1 text-sm">Found ({feedback.keywordAnalysis.keywordsFound.length})</h5>
@@ -394,12 +395,12 @@ const FeedbackScreen: React.FC<FeedbackScreenProps> = ({ feedback, onPracticeAga
                         </div>
 
                         <div>
-                            <h4 className="font-semibold text-fuchsia-400 mb-2 text-md">Language & Clarity</h4>
+                            <h4 className="font-semibold text-cyan-400 mb-2 text-md">Language & Clarity</h4>
                             <p className="text-sm text-slate-300 leading-relaxed">{feedback.languageFeedback}</p>
                         </div>
 
                         <div>
-                            <h4 className="font-semibold text-fuchsia-400 mb-2 text-md">Voice Modulation</h4>
+                            <h4 className="font-semibold text-cyan-400 mb-2 text-md">Voice Modulation</h4>
                             <p className="text-sm text-slate-300 leading-relaxed">{feedback.voiceModulation.feedback}</p>
                         </div>
                     </div>
@@ -409,12 +410,12 @@ const FeedbackScreen: React.FC<FeedbackScreenProps> = ({ feedback, onPracticeAga
                     <Card title="Lecturer's Feedback">
                         <div className="p-4 space-y-4">
                             <div>
-                                <h4 className="font-semibold text-fuchsia-400 mb-1">Grade</h4>
+                                <h4 className="font-semibold text-cyan-400 mb-1">Grade</h4>
                                 <p className="text-2xl font-bold text-slate-200">{sessionData.grade}%</p>
                             </div>
                             <div>
-                                <h4 className="font-semibold text-fuchsia-400 mb-1">Comments</h4>
-                                <blockquote className="p-3 bg-slate-900 border-l-4 border-fuchsia-500 text-slate-300 italic text-sm">
+                                <h4 className="font-semibold text-cyan-400 mb-1">Comments</h4>
+                                <blockquote className="p-3 bg-slate-900 border-l-4 border-cyan-500 text-slate-300 italic text-sm">
                                     {sessionData.lecturerFeedback}
                                 </blockquote>
                             </div>
@@ -436,7 +437,7 @@ const FeedbackScreen: React.FC<FeedbackScreenProps> = ({ feedback, onPracticeAga
                                         value={selfReflection}
                                         onChange={(e) => setSelfReflection(e.target.value)}
                                         placeholder="What went well? What could be improved? Add your self-reflection notes here..."
-                                        className="w-full p-2 bg-slate-900 border border-slate-600 rounded-md focus:ring-2 focus:ring-fuchsia-500 focus:border-fuchsia-500 transition text-sm"
+                                        className="w-full p-2 bg-slate-900 border border-slate-600 rounded-md focus:ring-2 focus:ring-cyan-500 focus:border-cyan-500 transition text-sm"
                                         rows={2}
                                     ></textarea>
                                     <button
@@ -453,7 +454,7 @@ const FeedbackScreen: React.FC<FeedbackScreenProps> = ({ feedback, onPracticeAga
                                 <div className="flex flex-wrap items-center justify-center gap-4">
                                     <button
                                         onClick={onPracticeAgain}
-                                        className="bg-fuchsia-600 text-white font-bold py-2 px-4 rounded-lg hover:bg-fuchsia-700 transition-colors focus:outline-none focus:ring-4 focus:ring-fuchsia-500/50 text-sm"
+                                        className="bg-cyan-600 text-white font-bold py-2 px-4 rounded-lg hover:bg-cyan-700 transition-colors focus:outline-none focus:ring-4 focus:ring-cyan-500/50 text-sm"
                                     >
                                         Practice Again
                                     </button>
@@ -469,7 +470,7 @@ const FeedbackScreen: React.FC<FeedbackScreenProps> = ({ feedback, onPracticeAga
                                             <button
                                                 onClick={handleShareForReview}
                                                 disabled={isShared}
-                                                className="bg-purple-600 text-white font-bold py-2 px-4 rounded-lg hover:bg-purple-700 transition-colors focus:outline-none focus:ring-4 focus:ring-purple-500/50 flex items-center justify-center gap-2 disabled:bg-slate-500 disabled:cursor-not-allowed text-sm"
+                                                className="bg-indigo-600 text-white font-bold py-2 px-4 rounded-lg hover:bg-indigo-700 transition-colors focus:outline-none focus:ring-4 focus:ring-indigo-500/50 flex items-center justify-center gap-2 disabled:bg-slate-500 disabled:cursor-not-allowed text-sm"
                                             >
                                                 <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" viewBox="0 0 20 20" fill="currentColor"><path d="M15 8a3 3 0 10-2.977-2.63l-4.94 2.47a3 3 0 100 4.319l4.94 2.47a3 3 0 10.895-1.789l-4.94-2.47a3.027 3.027 0 000-.74l4.94-2.47C13.456 7.68 14.19 8 15 8z" /></svg>
                                                 {isShared ? 'Shared!' : 'Share for Peer Review'}
@@ -491,7 +492,7 @@ const FeedbackScreen: React.FC<FeedbackScreenProps> = ({ feedback, onPracticeAga
                     ) : (
                         <div className="p-4">
                             {selfReflection ? (
-                                <blockquote className="p-3 bg-slate-900 border-l-4 border-fuchsia-500 text-slate-300 italic text-sm">
+                                <blockquote className="p-3 bg-slate-900 border-l-4 border-cyan-500 text-slate-300 italic text-sm">
                                     {selfReflection}
                                 </blockquote>
                             ) : (
@@ -514,7 +515,7 @@ const FeedbackScreen: React.FC<FeedbackScreenProps> = ({ feedback, onPracticeAga
                                     min="0"
                                     max="100"
                                     placeholder="Enter a score from 0 to 100"
-                                    className="mt-1 w-full p-2 bg-slate-900 border border-slate-600 rounded-md focus:ring-2 focus:ring-fuchsia-500"
+                                    className="mt-1 w-full p-2 bg-slate-900 border border-slate-600 rounded-md focus:ring-2 focus:ring-cyan-500"
                                 />
                             </div>
                             <div>
@@ -525,7 +526,7 @@ const FeedbackScreen: React.FC<FeedbackScreenProps> = ({ feedback, onPracticeAga
                                     onChange={(e) => setLecturerFeedback(e.target.value)}
                                     rows={4}
                                     placeholder="Provide constructive feedback..."
-                                    className="mt-1 w-full p-2 bg-slate-900 border border-slate-600 rounded-md focus:ring-2 focus:ring-fuchsia-500"
+                                    className="mt-1 w-full p-2 bg-slate-900 border border-slate-600 rounded-md focus:ring-2 focus:ring-cyan-500"
                                 />
                             </div>
                             <button

@@ -104,7 +104,7 @@ const LecturerLoginScreen: React.FC<LecturerLoginScreenProps> = ({ onLogin, onRe
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               placeholder="e.g., lecturer@example.com"
-              className="mt-1 block w-full bg-slate-900 border border-slate-600 rounded-md shadow-sm p-3 focus:ring-fuchsia-500 focus:border-fuchsia-500"
+              className="mt-1 block w-full bg-slate-900 border border-slate-600 rounded-md shadow-sm p-3 focus:ring-cyan-500 focus:border-cyan-500"
             />
           </div>
            <div>
@@ -116,16 +116,16 @@ const LecturerLoginScreen: React.FC<LecturerLoginScreenProps> = ({ onLogin, onRe
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               placeholder="••••••••"
-              className="mt-1 block w-full bg-slate-900 border border-slate-600 rounded-md shadow-sm p-3 focus:ring-fuchsia-500 focus:border-fuchsia-500"
+              className="mt-1 block w-full bg-slate-900 border border-slate-600 rounded-md shadow-sm p-3 focus:ring-cyan-500 focus:border-cyan-500"
             />
           </div>
-          <button type="submit" className="w-full bg-fuchsia-600 text-white font-bold py-3 px-4 rounded-lg hover:bg-fuchsia-700 transition-colors">
+          <button type="submit" className="w-full bg-cyan-600 text-white font-bold py-3 px-4 rounded-lg hover:bg-cyan-700 transition-colors">
             Login
           </button>
         </form>
          <p className="text-center text-sm text-slate-400 mt-6">
             Don't have an account?{' '}
-            <button type="button" onClick={() => switchView('REGISTER')} className="font-semibold text-fuchsia-400 hover:underline focus:outline-none">
+            <button type="button" onClick={() => switchView('REGISTER')} className="font-semibold text-cyan-400 hover:underline focus:outline-none">
                 Register here
             </button>
         </p>
@@ -145,7 +145,7 @@ const LecturerLoginScreen: React.FC<LecturerLoginScreenProps> = ({ onLogin, onRe
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               placeholder="Enter your email address"
-              className="mt-1 block w-full bg-slate-900 border border-slate-600 rounded-md shadow-sm p-3 focus:ring-fuchsia-500 focus:border-fuchsia-500"
+              className="mt-1 block w-full bg-slate-900 border border-slate-600 rounded-md shadow-sm p-3 focus:ring-cyan-500 focus:border-cyan-500"
             />
           </div>
           <div>
@@ -156,7 +156,7 @@ const LecturerLoginScreen: React.FC<LecturerLoginScreenProps> = ({ onLogin, onRe
               value={courseCode}
               onChange={(e) => setCourseCode(e.target.value)}
               placeholder="e.g., DUE30072"
-              className="mt-1 block w-full bg-slate-900 border border-slate-600 rounded-md shadow-sm p-3 focus:ring-fuchsia-500 focus:border-fuchsia-500"
+              className="mt-1 block w-full bg-slate-900 border border-slate-600 rounded-md shadow-sm p-3 focus:ring-cyan-500 focus:border-cyan-500"
             />
           </div>
           <div>
@@ -172,7 +172,7 @@ const LecturerLoginScreen: React.FC<LecturerLoginScreenProps> = ({ onLogin, onRe
                             value={code}
                             onChange={(e) => handleClassCodeChange(index, e.target.value)}
                             placeholder="e.g., DKM5A"
-                            className="mt-1 block w-full bg-slate-900 border border-slate-600 rounded-md shadow-sm p-3 focus:ring-fuchsia-500 focus:border-fuchsia-500"
+                            className="mt-1 block w-full bg-slate-900 border border-slate-600 rounded-md shadow-sm p-3 focus:ring-cyan-500 focus:border-cyan-500"
                         />
                     </div>
                     {classCodes.length > 1 && (
@@ -192,7 +192,7 @@ const LecturerLoginScreen: React.FC<LecturerLoginScreenProps> = ({ onLogin, onRe
             <button
                 type="button"
                 onClick={handleAddClassCode}
-                className="w-full text-sm text-fuchsia-400 hover:text-fuchsia-300 transition-colors py-1 disabled:opacity-50"
+                className="w-full text-sm text-cyan-400 hover:text-cyan-300 transition-colors py-1 disabled:opacity-50"
                 disabled={classCodes.length >= 5}
             >
                 + Add Another Class
@@ -207,7 +207,7 @@ const LecturerLoginScreen: React.FC<LecturerLoginScreenProps> = ({ onLogin, onRe
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               placeholder="At least 6 characters"
-              className="mt-1 block w-full bg-slate-900 border border-slate-600 rounded-md shadow-sm p-3 focus:ring-fuchsia-500 focus:border-fuchsia-500"
+              className="mt-1 block w-full bg-slate-900 border border-slate-600 rounded-md shadow-sm p-3 focus:ring-cyan-500 focus:border-cyan-500"
             />
           </div>
            <div>
@@ -219,16 +219,16 @@ const LecturerLoginScreen: React.FC<LecturerLoginScreenProps> = ({ onLogin, onRe
               value={confirmPassword}
               onChange={(e) => setConfirmPassword(e.target.value)}
               placeholder="••••••••"
-              className="mt-1 block w-full bg-slate-900 border border-slate-600 rounded-md shadow-sm p-3 focus:ring-fuchsia-500 focus:border-fuchsia-500"
+              className="mt-1 block w-full bg-slate-900 border border-slate-600 rounded-md shadow-sm p-3 focus:ring-cyan-500 focus:border-cyan-500"
             />
           </div>
-          <button type="submit" className="w-full bg-fuchsia-600 text-white font-bold py-3 px-4 rounded-lg hover:bg-fuchsia-700 transition-colors">
+          <button type="submit" className="w-full bg-cyan-600 text-white font-bold py-3 px-4 rounded-lg hover:bg-cyan-700 transition-colors">
             Register
           </button>
         </form>
         <p className="text-center text-sm text-slate-400 mt-6">
             Already have an account?{' '}
-            <button type="button" onClick={() => switchView('LOGIN')} className="font-semibold text-fuchsia-400 hover:underline focus:outline-none">
+            <button type="button" onClick={() => switchView('LOGIN')} className="font-semibold text-cyan-400 hover:underline focus:outline-none">
                 Login here
             </button>
         </p>
@@ -242,7 +242,7 @@ const LecturerLoginScreen: React.FC<LecturerLoginScreenProps> = ({ onLogin, onRe
         <main className="flex-grow flex items-center justify-center p-4">
             <div className="w-full max-w-md">
                 <div className="text-center mb-8">
-                    <h1 className="text-3xl font-bold text-fuchsia-400">Technical English 2</h1>
+                    <h1 className="text-3xl font-bold text-cyan-400">Technical English 2</h1>
                     <p className="text-slate-400">Lecturer Portal</p>
                 </div>
                 <div className="bg-slate-800/70 backdrop-blur-sm border border-slate-700 rounded-lg shadow-lg p-8">
@@ -252,7 +252,7 @@ const LecturerLoginScreen: React.FC<LecturerLoginScreenProps> = ({ onLogin, onRe
                     <button
                         type="button"
                         onClick={onBack}
-                        className="text-sm text-slate-400 hover:text-fuchsia-400 transition-colors"
+                        className="text-sm text-slate-400 hover:text-cyan-400 transition-colors"
                     >
                         Not a lecturer? Go back to main page.
                     </button>

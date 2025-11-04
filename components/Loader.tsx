@@ -1,4 +1,5 @@
 
+
 import React from 'react';
 
 interface LoaderProps {
@@ -8,7 +9,7 @@ interface LoaderProps {
 const Loader: React.FC<LoaderProps> = ({ message }) => {
   return (
     <div className="flex flex-col items-center justify-center h-96 text-center">
-      <div className="w-16 h-16 border-4 border-dashed rounded-full animate-spin border-fuchsia-400"></div>
+      <div className="w-16 h-16 border-4 border-dashed rounded-full animate-spin border-cyan-400"></div>
       <p className="mt-6 text-xl text-slate-300">{message}</p>
     </div>
   );

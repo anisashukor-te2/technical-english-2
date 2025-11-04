@@ -10,9 +10,9 @@ interface RoleSelectionScreenProps {
 const RoleCard: React.FC<{ role: string; onSelect: () => void }> = ({ role, onSelect }) => (
     <div
         onClick={onSelect}
-        className="w-64 bg-slate-800/50 border border-slate-700 rounded-lg p-6 cursor-pointer hover:bg-slate-800 hover:border-fuchsia-500 transition-all transform hover:-translate-y-1 flex flex-col items-center justify-center text-center"
+        className="w-64 bg-slate-800/50 border border-slate-700 rounded-lg p-6 cursor-pointer hover:bg-slate-800 hover:border-cyan-500 transition-all transform hover:-translate-y-1 flex flex-col items-center justify-center text-center"
     >
-        <div className="flex justify-center items-center mb-4 text-fuchsia-400">
+        <div className="flex justify-center items-center mb-4 text-cyan-400">
              <svg xmlns="http://www.w3.org/2000/svg" className="h-12 w-12" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
               <path strokeLinecap="round" strokeLinejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
             </svg>
@@ -27,7 +27,7 @@ const RoleSelectionScreen: React.FC<RoleSelectionScreenProps> = ({ scenario, onB
         <div className="max-w-5xl mx-auto animate-fade-in">
             <div className="text-center mb-8">
                 <h2 className="text-3xl font-bold text-white">Select Your Role</h2>
-                <p className="mt-2 text-lg text-slate-400">Scenario: <span className="text-fuchsia-400 font-semibold">{scenario.title}</span></p>
+                <p className="mt-2 text-lg text-slate-400">Scenario: <span className="text-cyan-400 font-semibold">{scenario.title}</span></p>
             </div>
             <div className="flex flex-wrap justify-center gap-8">
                 {scenario.roles.map((role) => (
@@ -35,7 +35,7 @@ const RoleSelectionScreen: React.FC<RoleSelectionScreenProps> = ({ scenario, onB
                 ))}
             </div>
             <div className="text-center mt-8">
-                <button onClick={onBack} className="text-sm text-fuchsia-400 hover:text-fuchsia-300 flex items-center mx-auto">
+                <button onClick={onBack} className="text-sm text-cyan-400 hover:text-cyan-300 flex items-center mx-auto">
                     <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                         <path strokeLinecap="round" strokeLinejoin="round" d="M11 17l-5-5m0 0l5-5m-5 5h12" />
                     </svg>

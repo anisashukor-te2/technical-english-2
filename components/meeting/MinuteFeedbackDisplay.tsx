@@ -113,7 +113,7 @@ export const MinuteFeedbackDisplay: React.FC<MinuteFeedbackDisplayProps> = ({ fe
             <div className="p-4 space-y-4">
                  <div className="text-center">
                     <p className="text-slate-400 mt-2">Overall Accuracy Score</p>
-                    <p className="text-5xl font-bold text-fuchsia-400">{feedback.accuracyScore}<span className="text-2xl">%</span></p>
+                    <p className="text-5xl font-bold text-cyan-400">{feedback.accuracyScore}<span className="text-2xl">%</span></p>
                     <p className="text-xs text-slate-500">Based on capturing key decisions & action items.</p>
                 </div>
             </div>
@@ -156,7 +156,7 @@ export const MinuteFeedbackDisplay: React.FC<MinuteFeedbackDisplayProps> = ({ fe
                     ) : <p className="text-sm text-slate-400">Great job, you didn't miss any key items!</p>}
                 </div>
                  <div>
-                    <h4 className="font-semibold text-fuchsia-400 mb-2">Suggestions for Improvement</h4>
+                    <h4 className="font-semibold text-cyan-400 mb-2">Suggestions for Improvement</h4>
                      <ul className="list-disc list-inside text-slate-300 text-sm space-y-1">
                         {feedback.suggestions.map((item, i) => <li key={i}>{item}</li>)}
                     </ul>
@@ -168,12 +168,12 @@ export const MinuteFeedbackDisplay: React.FC<MinuteFeedbackDisplayProps> = ({ fe
            <Card title="Lecturer's Feedback">
                <div className="p-4 space-y-4">
                    <div>
-                       <h4 className="font-semibold text-fuchsia-400 mb-1">Grade</h4>
+                       <h4 className="font-semibold text-cyan-400 mb-1">Grade</h4>
                        <p className="text-2xl font-bold text-slate-200">{sessionData.grade}%</p>
                    </div>
                    <div>
-                       <h4 className="font-semibold text-fuchsia-400 mb-1">Comments</h4>
-                       <blockquote className="p-3 bg-slate-900 border-l-4 border-fuchsia-500 text-slate-300 italic text-sm">
+                       <h4 className="font-semibold text-cyan-400 mb-1">Comments</h4>
+                       <blockquote className="p-3 bg-slate-900 border-l-4 border-cyan-500 text-slate-300 italic text-sm">
                            {sessionData.lecturerFeedback}
                        </blockquote>
                    </div>
@@ -194,7 +194,7 @@ export const MinuteFeedbackDisplay: React.FC<MinuteFeedbackDisplayProps> = ({ fe
                            min="0"
                            max="100"
                            placeholder="Enter a score from 0 to 100"
-                           className="mt-1 w-full p-2 bg-slate-900 border border-slate-600 rounded-md focus:ring-2 focus:ring-fuchsia-500"
+                           className="mt-1 w-full p-2 bg-slate-900 border border-slate-600 rounded-md focus:ring-2 focus:ring-cyan-500"
                        />
                    </div>
                    <div>
@@ -205,7 +205,7 @@ export const MinuteFeedbackDisplay: React.FC<MinuteFeedbackDisplayProps> = ({ fe
                            onChange={(e) => setLecturerFeedback(e.target.value)}
                            rows={4}
                            placeholder="Provide constructive feedback..."
-                           className="mt-1 w-full p-2 bg-slate-900 border border-slate-600 rounded-md focus:ring-2 focus:ring-fuchsia-500"
+                           className="mt-1 w-full p-2 bg-slate-900 border border-slate-600 rounded-md focus:ring-2 focus:ring-cyan-500"
                        />
                    </div>
                    <button
@@ -226,7 +226,7 @@ export const MinuteFeedbackDisplay: React.FC<MinuteFeedbackDisplayProps> = ({ fe
                 </p>
             )}
             <div className="flex flex-wrap items-center justify-center gap-4">
-                <button onClick={onPracticeAgain} className="bg-fuchsia-600 text-white font-bold py-2 px-4 rounded-lg hover:bg-fuchsia-700 transition-colors focus:outline-none focus:ring-4 focus:ring-fuchsia-500/50 text-sm">
+                <button onClick={onPracticeAgain} className="bg-cyan-600 text-white font-bold py-2 px-4 rounded-lg hover:bg-cyan-700 transition-colors focus:outline-none focus:ring-4 focus:ring-cyan-500/50 text-sm">
                     Try Again
                 </button>
                 {isStudent && (
@@ -242,7 +242,7 @@ export const MinuteFeedbackDisplay: React.FC<MinuteFeedbackDisplayProps> = ({ fe
             {onBack && (
                  <button
                     onClick={onBack}
-                    className="text-sm text-fuchsia-400 hover:text-fuchsia-300 transition-colors flex items-center mx-auto mt-4"
+                    className="text-sm text-cyan-400 hover:text-cyan-300 transition-colors flex items-center mx-auto mt-4"
                 >
                     <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                         <path strokeLinecap="round" strokeLinejoin="round" d="M11 17l-5-5m0 0l5-5m-5 5h12" />

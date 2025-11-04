@@ -13,7 +13,7 @@ interface ReviewScreenProps {
 
 const StatCard: React.FC<{ label: string; value: string | number; icon: React.ReactNode; }> = ({ label, value, icon }) => (
     <div className="bg-slate-900/50 p-4 rounded-lg flex items-center gap-4 border border-slate-700">
-        <div className="flex-shrink-0 w-12 h-12 rounded-full flex items-center justify-center bg-slate-800 text-fuchsia-400">
+        <div className="flex-shrink-0 w-12 h-12 rounded-full flex items-center justify-center bg-slate-800 text-cyan-400">
             {icon}
         </div>
         <div>
@@ -29,11 +29,11 @@ const ChatTranscript: React.FC<{ session: ComplaintSession }> = ({ session }) =>
             <div key={index} className={`flex items-start gap-3 ${item.speaker === 'You' ? 'justify-end' : 'justify-start'}`}>
                  {item.speaker === 'AI' && (
                     <div className="w-8 h-8 rounded-full bg-slate-700 flex items-center justify-center flex-shrink-0">
-                       <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-fuchsia-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                       <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-cyan-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
                     </div>
                 )}
-                <div className={`max-w-lg p-3 rounded-lg ${item.speaker === 'You' ? 'bg-fuchsia-800/70' : 'bg-slate-700/70'}`}>
-                    <p className={`font-bold text-sm mb-1 ${item.speaker === 'You' ? 'text-fuchsia-300' : 'text-slate-300'}`}>{item.speaker === 'You' ? 'You' : 'AI'}</p>
+                <div className={`max-w-lg p-3 rounded-lg ${item.speaker === 'You' ? 'bg-cyan-800/70' : 'bg-slate-700/70'}`}>
+                    <p className={`font-bold text-sm mb-1 ${item.speaker === 'You' ? 'text-cyan-300' : 'text-slate-300'}`}>{item.speaker === 'You' ? 'You' : 'AI'}</p>
                     <p className="text-white whitespace-pre-wrap text-sm">{item.text}</p>
                 </div>
             </div>
@@ -96,7 +96,7 @@ const ReviewScreen: React.FC<ReviewScreenProps> = ({ onBack, user, userType, sel
                         <p className="text-slate-500 mt-1">{selectedClass === 'ALL' ? 'When students complete complaint simulations, they will appear here.' : `No sessions found for class "${selectedClass}".`}</p>
                     </div>
                      <div className="text-center mt-8">
-                        <button onClick={onBack} className="text-sm text-fuchsia-400 hover:text-fuchsia-300">Back to Menu Selection</button>
+                        <button onClick={onBack} className="text-sm text-cyan-400 hover:text-cyan-300">Back to Menu Selection</button>
                     </div>
                 </div>
             );
@@ -106,7 +106,7 @@ const ReviewScreen: React.FC<ReviewScreenProps> = ({ onBack, user, userType, sel
             <div className="max-w-5xl mx-auto animate-fade-in pb-24">
                 <div className="text-center mb-8">
                     <h2 className="text-3xl font-bold text-white">Review Complaint Submissions</h2>
-                    <p className="mt-2 text-lg text-slate-400">Viewing submissions for: <span className="font-semibold text-fuchsia-400">{selectedClass === 'ALL' ? 'All Classes' : selectedClass}</span></p>
+                    <p className="mt-2 text-lg text-slate-400">Viewing submissions for: <span className="font-semibold text-cyan-400">{selectedClass === 'ALL' ? 'All Classes' : selectedClass}</span></p>
                 </div>
                 <Card title="Completed Sessions">
                     <div className="p-4 space-y-2 max-h-[70vh] overflow-y-auto">
@@ -119,7 +119,7 @@ const ReviewScreen: React.FC<ReviewScreenProps> = ({ onBack, user, userType, sel
                                         <p className="text-xs text-slate-400">{title}</p>
                                         <p className="text-xs text-slate-400">Completed: {new Date(session.timestamp).toLocaleString()}</p>
                                     </div>
-                                    <button onClick={() => setSelectedSession(session)} className="text-sm bg-slate-700 hover:bg-fuchsia-600 px-3 py-1 rounded">Review</button>
+                                    <button onClick={() => setSelectedSession(session)} className="text-sm bg-slate-700 hover:bg-cyan-600 px-3 py-1 rounded">Review</button>
                                 </div>
                              )
                         })}
@@ -144,7 +144,7 @@ const ReviewScreen: React.FC<ReviewScreenProps> = ({ onBack, user, userType, sel
                     </Modal>
                 )}
                  <div className="text-center mt-8">
-                    <button onClick={onBack} className="text-sm text-fuchsia-400 hover:text-fuchsia-300">Back to Menu Selection</button>
+                    <button onClick={onBack} className="text-sm text-cyan-400 hover:text-cyan-300">Back to Menu Selection</button>
                 </div>
             </div>
         );
@@ -161,7 +161,7 @@ const ReviewScreen: React.FC<ReviewScreenProps> = ({ onBack, user, userType, sel
                     <p className="text-slate-500 mt-1">Complete a complaint handling simulation to see your performance analytics here.</p>
                 </div>
                 <div className="text-center mt-8">
-                    <button onClick={onBack} className="text-sm text-fuchsia-400 hover:text-fuchsia-300">Back to Menu Selection</button>
+                    <button onClick={onBack} className="text-sm text-cyan-400 hover:text-cyan-300">Back to Menu Selection</button>
                 </div>
             </div>
         );
@@ -187,14 +187,14 @@ const ReviewScreen: React.FC<ReviewScreenProps> = ({ onBack, user, userType, sel
                                     <p className="font-semibold text-slate-300">{title}</p>
                                     <p className="text-xs text-slate-400">Completed: {new Date(session.timestamp).toLocaleString()}</p>
                                 </div>
-                                <button onClick={() => setSelectedSession(session)} className="text-sm bg-slate-700 hover:bg-fuchsia-600 px-3 py-1 rounded">View Details</button>
+                                <button onClick={() => setSelectedSession(session)} className="text-sm bg-slate-700 hover:bg-cyan-600 px-3 py-1 rounded">View Details</button>
                             </div>
                         )
                     })}
                 </div>
             </Card>
             <div className="text-center mt-8">
-                <button onClick={onBack} className="text-sm text-fuchsia-400 hover:text-fuchsia-300">Back to Menu Selection</button>
+                <button onClick={onBack} className="text-sm text-cyan-400 hover:text-cyan-300">Back to Menu Selection</button>
             </div>
             {selectedSession && (
                 <Modal isOpen={!!selectedSession} onClose={() => setSelectedSession(null)} title={`Reviewing Session`}>

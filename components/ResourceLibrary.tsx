@@ -183,7 +183,7 @@ const downloadTextFile = (content: string, filename: string) => {
 const PresentationChecklistContent = () => (
     <div className="space-y-4 text-slate-300">
         <div>
-            <h4 className="font-bold text-fuchsia-400">1. Content & Structure (The "What")</h4>
+            <h4 className="font-bold text-cyan-400">1. Content & Structure (The "What")</h4>
             <ul className="list-disc list-inside mt-1 text-sm space-y-1">
                 <li>Define your core objective: What's the key takeaway for your audience?</li>
                 <li>Analyze your audience: Who are they and what do they already know?</li>
@@ -193,7 +193,7 @@ const PresentationChecklistContent = () => (
             </ul>
         </div>
         <div>
-            <h4 className="font-bold text-fuchsia-400">2. Slide Design (The "Visuals")</h4>
+            <h4 className="font-bold text-cyan-400">2. Slide Design (The "Visuals")</h4>
             <ul className="list-disc list-inside mt-1 text-sm space-y-1">
                 <li>Keep it simple: One main idea per slide. Avoid clutter.</li>
                 <li>Use high-quality, relevant images and graphics.</li>
@@ -203,7 +203,7 @@ const PresentationChecklistContent = () => (
             </ul>
         </div>
         <div>
-            <h4 className="font-bold text-fuchsia-400">3. Delivery Practice (The "How")</h4>
+            <h4 className="font-bold text-cyan-400">3. Delivery Practice (The "How")</h4>
             <ul className="list-disc list-inside mt-1 text-sm space-y-1">
                 <li>Rehearse out loud multiple times, not just in your head.</li>
                 <li>Time yourself to ensure you respect the time limit.</li>
@@ -213,7 +213,7 @@ const PresentationChecklistContent = () => (
             </ul>
         </div>
         <div>
-            <h4 className="font-bold text-fuchsia-400">4. Final Checks (The "Day Of")</h4>
+            <h4 className="font-bold text-cyan-400">4. Final Checks (The "Day Of")</h4>
             <ul className="list-disc list-inside mt-1 text-sm space-y-1">
                 <li>Test all equipment: projector, laptop, clicker, and microphone.</li>
                 <li>Have a backup of your presentation on a USB drive and in the cloud.</li>
@@ -228,25 +228,25 @@ const LASTGuideContent = () => (
     <div className="space-y-4 text-slate-300">
         <p className="text-sm">The L.A.S.T. method is a simple, effective framework for handling complaints. It provides a clear, four-step process to de-escalate tension and find a resolution.</p>
         <div>
-            <h4 className="text-xl font-bold text-fuchsia-400">L - Listen</h4>
+            <h4 className="text-xl font-bold text-cyan-400">L - Listen</h4>
             <p className="mt-1 pl-4 border-l-2 border-slate-600 text-sm">
                 Give the person your complete, uninterrupted attention. Let them explain their issue fully. Focus on understanding their perspective, not on preparing your defense. Use active listening cues like nodding and confirming you understand.
             </p>
         </div>
         <div>
-            <h4 className="text-xl font-bold text-fuchsia-400">A - Acknowledge & Apologize</h4>
+            <h4 className="text-xl font-bold text-cyan-400">A - Acknowledge & Apologize</h4>
             <p className="mt-1 pl-4 border-l-2 border-slate-600 text-sm">
                 Validate their feelings by acknowledging their frustration or disappointment. A sincere, simple apology can be very powerful. Say "I'm sorry this happened" or "I understand why you're upset." This is not about admitting fault, but about showing empathy for their experience.
             </p>
         </div>
         <div>
-            <h4 className="text-xl font-bold text-fuchsia-400">S - Solve</h4>
+            <h4 className="text-xl font-bold text-cyan-400">S - Solve</h4>
             <p className="mt-1 pl-4 border-l-2 border-slate-600 text-sm">
                 Take ownership of finding a solution. Ask, "What would be an ideal outcome for you?" If you can, offer a concrete solution immediately. If not, clearly explain the next steps you will take to resolve the issue and provide a timeline.
             </p>
         </div>
         <div>
-            <h4 className="text-xl font-bold text-fuchsia-400">T - Thank</h4>
+            <h4 className="text-xl font-bold text-cyan-400">T - Thank</h4>
             <p className="mt-1 pl-4 border-l-2 border-slate-600 text-sm">
                 Thank the person for bringing the issue to your attention. Their feedback is valuable, even if it's hard to hear. This final step helps to rebuild the relationship and shows that you see their complaint as an opportunity to improve.
             </p>
@@ -318,11 +318,11 @@ const PeerReviewModal: React.FC<{
                             <div className="flex justify-around text-center">
                                 <div>
                                     <p className="text-slate-400 text-sm">Score</p>
-                                    <p className="text-2xl font-bold text-fuchsia-400">{feedbackData.overallScore}</p>
+                                    <p className="text-2xl font-bold text-cyan-400">{feedbackData.overallScore}</p>
                                 </div>
                                 <div>
                                     <p className="text-slate-400 text-sm">Pacing</p>
-                                    <p className="text-2xl font-bold text-fuchsia-400">{feedbackData.pacing.wpm} WPM</p>
+                                    <p className="text-2xl font-bold text-cyan-400">{feedbackData.pacing.wpm} WPM</p>
                                 </div>
                             </div>
                          </div>
@@ -388,11 +388,11 @@ const PeerReviewModal: React.FC<{
                                     value={comment}
                                     onChange={e => setComment(e.target.value)}
                                     placeholder="Provide one piece of positive feedback and one suggestion for improvement."
-                                    className="w-full h-32 p-2 bg-slate-900 border border-slate-600 rounded-md focus:ring-2 focus:ring-fuchsia-500"
+                                    className="w-full h-32 p-2 bg-slate-900 border border-slate-600 rounded-md focus:ring-2 focus:ring-cyan-500"
                                     required
                                 />
                              </div>
-                             <button type="submit" disabled={isSubmitting} className="w-full bg-fuchsia-600 text-white font-bold py-2 px-4 rounded-lg hover:bg-fuchsia-700 disabled:opacity-50">
+                             <button type="submit" disabled={isSubmitting} className="w-full bg-cyan-600 text-white font-bold py-2 px-4 rounded-lg hover:bg-cyan-700 disabled:opacity-50">
                                 {isSubmitting ? 'Submitting...' : 'Submit Feedback'}
                             </button>
                          </form>
@@ -473,21 +473,21 @@ const PeerReviewSystem = () => {
                                 <div className="flex justify-around text-center my-3 py-2 border-y border-slate-700">
                                     <div>
                                         <p className="text-xs text-slate-400">Score</p>
-                                        <p className="font-bold text-fuchsia-400">{session.feedbackData.overallScore}</p>
+                                        <p className="font-bold text-cyan-400">{session.feedbackData.overallScore}</p>
                                     </div>
                                     <div>
                                         <p className="text-xs text-slate-400">Pacing</p>
-                                        <p className="font-bold text-fuchsia-400">{session.feedbackData.pacing.wpm} WPM</p>
+                                        <p className="font-bold text-cyan-400">{session.feedbackData.pacing.wpm} WPM</p>
                                     </div>
                                     <div>
                                         <p className="text-xs text-slate-400">Reviews</p>
-                                        <p className="font-bold text-fuchsia-400">{session.peerReviews.length}</p>
+                                        <p className="font-bold text-cyan-400">{session.peerReviews.length}</p>
                                     </div>
                                 </div>
                             </div>
                             <button
                                 onClick={() => setSelectedSession(session)}
-                                className="w-full bg-slate-700 hover:bg-fuchsia-600 text-white font-semibold py-2 px-4 rounded transition-colors text-sm"
+                                className="w-full bg-slate-700 hover:bg-cyan-600 text-white font-semibold py-2 px-4 rounded transition-colors text-sm"
                             >
                                 Review Session
                             </button>
@@ -524,9 +524,9 @@ const ResourceLibrary: React.FC = () => {
                     <Card title="Course References">
                         <div className="p-4">
                             <ul className="list-disc list-inside space-y-2 text-slate-300">
-                                <li><a href="https://polycc.cidos.edu.my/" target="_blank" rel="noopener noreferrer" className="text-fuchsia-400 hover:underline">Politeknik Malaysia CIDOS E-Learning Portal</a></li>
-                                <li><a href="https://www.toastmasters.org/resources/public-speaking-tips" target="_blank" rel="noopener noreferrer" className="text-fuchsia-400 hover:underline">Toastmasters International: Public Speaking Tips</a></li>
-                                <li><a href="https://www.robertsrules.com/" target="_blank" rel="noopener noreferrer" className="text-fuchsia-400 hover:underline">Robert's Rules of Order (Meeting Protocols)</a></li>
+                                <li><a href="https://polycc.cidos.edu.my/" target="_blank" rel="noopener noreferrer" className="text-cyan-400 hover:underline">Politeknik Malaysia CIDOS E-Learning Portal</a></li>
+                                <li><a href="https://www.toastmasters.org/resources/public-speaking-tips" target="_blank" rel="noopener noreferrer" className="text-cyan-400 hover:underline">Toastmasters International: Public Speaking Tips</a></li>
+                                <li><a href="https://www.robertsrules.com/" target="_blank" rel="noopener noreferrer" className="text-cyan-400 hover:underline">Robert's Rules of Order (Meeting Protocols)</a></li>
                             </ul>
                         </div>
                     </Card>
@@ -534,15 +534,15 @@ const ResourceLibrary: React.FC = () => {
                     <Card title="Downloadable Templates">
                         <div className="p-4 space-y-3">
                             <button onClick={() => downloadTextFile(PRESENTATION_TEMPLATE, 'presentation-template.pptx')} className="w-full text-left bg-slate-700 hover:bg-slate-600 text-white font-semibold py-2 px-4 rounded transition-colors flex items-center">
-                                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-3 text-fuchsia-400" viewBox="0 0 20 20" fill="currentColor"><path d="M10 12a2 2 0 100-4 2 2 0 000 4z" /><path fillRule="evenodd" d="M.458 10C1.732 5.943 5.522 3 10 3s8.268 2.943 9.542 7c-1.274 4.057-5.022 7-9.542 7S1.732 14.057.458 10zM14 10a4 4 0 11-8 0 4 4 0 018 0z" clipRule="evenodd" /></svg>
+                                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-3 text-cyan-400" viewBox="0 0 20 20" fill="currentColor"><path d="M10 12a2 2 0 100-4 2 2 0 000 4z" /><path fillRule="evenodd" d="M.458 10C1.732 5.943 5.522 3 10 3s8.268 2.943 9.542 7c-1.274 4.057-5.022 7-9.542 7S1.732 14.057.458 10zM14 10a4 4 0 11-8 0 4 4 0 018 0z" clipRule="evenodd" /></svg>
                                 Presentation Slide Template (.pptx)
                             </button>
                             <button onClick={() => downloadTextFile(MINUTES_TEMPLATE, 'meeting-minutes-template.docx')} className="w-full text-left bg-slate-700 hover:bg-slate-600 text-white font-semibold py-2 px-4 rounded transition-colors flex items-center">
-                                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-3 text-fuchsia-400" viewBox="0 0 20 20" fill="currentColor"><path fillRule="evenodd" d="M4 4a2 2 0 012-2h4.586A2 2 0 0112 2.586L15.414 6A2 2 0 0116 7.414V16a2 2 0 01-2 2H6a2 2 0 01-2-2V4zm2 6a1 1 0 011-1h6a1 1 0 110 2H7a1 1 0 01-1-1zm1 3a1 1 0 100 2h6a1 1 0 100-2H7z" clipRule="evenodd" /></svg>
+                                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-3 text-cyan-400" viewBox="0 0 20 20" fill="currentColor"><path fillRule="evenodd" d="M4 4a2 2 0 012-2h4.586A2 2 0 0112 2.586L15.414 6A2 2 0 0116 7.414V16a2 2 0 01-2 2H6a2 2 0 01-2-2V4zm2 6a1 1 0 011-1h6a1 1 0 110 2H7a1 1 0 01-1-1zm1 3a1 1 0 100 2h6a1 1 0 100-2H7z" clipRule="evenodd" /></svg>
                                 Meeting Minutes Template (.docx)
                             </button>
                              <button onClick={() => downloadTextFile(COMPLAINT_TEMPLATE, 'complaint-response-template.docx')} className="w-full text-left bg-slate-700 hover:bg-slate-600 text-white font-semibold py-2 px-4 rounded transition-colors flex items-center">
-                                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-3 text-fuchsia-400" viewBox="0 0 20 20" fill="currentColor"><path d="M2.003 5.884L10 9.882l7.997-3.998A2 2 0 0016 4H4a2 2 0 00-1.997 1.884z" /><path d="M18 8.118l-8 4-8-4V14a2 2 0 002 2h12a2 2 0 002-2V8.118z" /></svg>
+                                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-3 text-cyan-400" viewBox="0 0 20 20" fill="currentColor"><path d="M2.003 5.884L10 9.882l7.997-3.998A2 2 0 0016 4H4a2 2 0 00-1.997 1.884z" /><path d="M18 8.118l-8 4-8-4V14a2 2 0 002 2h12a2 2 0 002-2V8.118z" /></svg>
                                 Complaint Response Email Template (.docx)
                             </button>
                         </div>
@@ -551,11 +551,11 @@ const ResourceLibrary: React.FC = () => {
                     <Card title="Checklists & Guides">
                          <div className="p-4 space-y-3">
                             <button onClick={() => setActiveModal('checklist')} className="w-full text-left bg-slate-700 hover:bg-slate-600 text-white font-semibold py-2 px-4 rounded transition-colors flex items-center">
-                                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-3 text-fuchsia-400" viewBox="0 0 20 20" fill="currentColor"><path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" /></svg>
+                                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-3 text-cyan-400" viewBox="0 0 20 20" fill="currentColor"><path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" /></svg>
                                Presentation Prep Checklist
                             </button>
                              <button onClick={() => setActiveModal('guide')} className="w-full text-left bg-slate-700 hover:bg-slate-600 text-white font-semibold py-2 px-4 rounded transition-colors flex items-center">
-                                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-3 text-fuchsia-400" viewBox="0 0 20 20" fill="currentColor"><path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" /></svg>
+                                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-3 text-cyan-400" viewBox="0 0 20 20" fill="currentColor"><path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" /></svg>
                                L.A.S.T. Method Quick Guide
                             </button>
                         </div>

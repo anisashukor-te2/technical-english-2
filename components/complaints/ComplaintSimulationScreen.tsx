@@ -102,7 +102,7 @@ const ResponseHelper: React.FC = () => {
                             key={tab}
                             onClick={() => setActiveTab(tab)}
                             className={`px-3 py-1.5 text-xs font-medium rounded-md transition-colors ${
-                                activeTab === tab ? 'bg-fuchsia-600 text-white' : 'text-slate-300 hover:bg-slate-700/50'
+                                activeTab === tab ? 'bg-cyan-600 text-white' : 'text-slate-300 hover:bg-slate-700/50'
                             }`}
                         >
                             {tab}
@@ -322,14 +322,14 @@ const ComplaintSimulationScreen: React.FC<MeetingSimulationScreenProps> = ({ sce
             <MicrophoneHelpModal isOpen={isHelpModalOpen} onClose={() => setIsHelpModalOpen(false)} />
             <div className="lg:col-span-2 flex flex-col h-[calc(100vh-200px)]">
                 <div className="bg-slate-800/50 border border-slate-700 rounded-t-lg p-4">
-                    <h2 className="text-xl font-bold text-fuchsia-400">{scenario.title}</h2>
+                    <h2 className="text-xl font-bold text-cyan-400">{scenario.title}</h2>
                     <p className="text-sm text-slate-400">Your Role: <span className="font-semibold text-slate-300">{scenario.userRole}</span> | AI's Role: <span className="font-semibold text-slate-300">{scenario.aiRole}</span></p>
                 </div>
                 <div ref={chatContainerRef} className="flex-grow bg-slate-900/70 p-4 overflow-y-auto border-x border-b border-slate-700">
                      <div className="space-y-4">
                         {messages.map((item, index) => (
                             <div key={index} className={`flex items-end gap-2 ${item.speaker === 'You' ? 'justify-end' : 'justify-start'}`}>
-                               <div className={`p-3 rounded-lg max-w-lg ${item.speaker === 'You' ? 'bg-fuchsia-800/70 text-white' : 'bg-slate-700/70 text-white'}`}>
+                               <div className={`p-3 rounded-lg max-w-lg ${item.speaker === 'You' ? 'bg-cyan-800/70 text-white' : 'bg-slate-700/70 text-white'}`}>
                                     {item.text}
                                 </div>
                             </div>
@@ -350,13 +350,13 @@ const ComplaintSimulationScreen: React.FC<MeetingSimulationScreenProps> = ({ sce
                  <div className="bg-slate-800/50 border-t border-slate-700 rounded-b-lg p-4">
                     {error && <p className="text-red-400 text-sm text-center mb-2">{error}</p>}
                     <div className="flex items-center space-x-4">
-                        <div className={`flex-grow bg-slate-900 border rounded-lg p-3 h-14 flex items-center overflow-y-auto ${isRecording ? 'border-fuchsia-500' : 'border-slate-600'}`}>
+                        <div className={`flex-grow bg-slate-900 border rounded-lg p-3 h-14 flex items-center overflow-y-auto ${isRecording ? 'border-cyan-500' : 'border-slate-600'}`}>
                            <p className="text-slate-300 w-full">{getPlaceholderText()}</p>
                         </div>
                         <button 
                             onClick={handleMicClick} 
                             disabled={isLoading || isAISpeaking || !isUserTurn}
-                            className={`flex-shrink-0 w-14 h-14 rounded-full flex items-center justify-center text-white ${isRecording ? 'bg-red-600' : isUserTurn ? 'bg-fuchsia-600' : 'bg-slate-600'} disabled:opacity-70`}
+                            className={`flex-shrink-0 w-14 h-14 rounded-full flex items-center justify-center text-white ${isRecording ? 'bg-red-600' : isUserTurn ? 'bg-cyan-600' : 'bg-slate-600'} disabled:opacity-70`}
                         >
                             <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                                 <path strokeLinecap="round" strokeLinejoin="round" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z" />
@@ -368,7 +368,7 @@ const ComplaintSimulationScreen: React.FC<MeetingSimulationScreenProps> = ({ sce
             <div className="space-y-4">
                 <h3 className="text-xl font-bold text-white">Response Helper</h3>
                 <ResponseHelper />
-                <button onClick={handleEndSessionAndSave} className="w-full text-sm text-fuchsia-400 hover:text-fuchsia-300 inline-flex items-center justify-center p-2 bg-slate-800 rounded-lg hover:bg-slate-700">
+                <button onClick={handleEndSessionAndSave} className="w-full text-sm text-cyan-400 hover:text-cyan-300 inline-flex items-center justify-center p-2 bg-slate-800 rounded-lg hover:bg-slate-700">
                     <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                       <path strokeLinecap="round" strokeLinejoin="round" d="M11 17l-5-5m0 0l5-5m-5 5h12" />
                     </svg>

@@ -1,4 +1,5 @@
 
+
 import React, { useState, useEffect, useCallback } from 'react';
 // FIX: Import necessary services and types
 import { getPresentationFeedback, getFreePracticeFeedback } from './services/geminiService';
@@ -9,7 +10,8 @@ import PresentationModeSelection from './components/PresentationModeSelection';
 import PracticeScreen from './components/PracticeScreen';
 import FreePracticeScreen from './components/FreePracticeScreen';
 import FeedbackScreen from './components/FeedbackScreen';
-import PresentationReviewScreen from './components/PresentationReviewScreen';
+// FIX: Changed to a named import to resolve module export issue.
+import { PresentationReviewScreen } from './components/PresentationReviewScreen';
 import MeetingSkillsModule from './components/meeting/MeetingSkillsModule';
 import HandlingComplaintsModule from './components/complaints/HandlingComplaintsModule';
 import ResourceLibrary from './components/ResourceLibrary';
@@ -426,7 +428,7 @@ const App: React.FC = () => {
             <header className="bg-slate-900/80 backdrop-blur-sm border-b border-slate-700 p-4 sticky top-0 z-10">
               <div className="max-w-7xl mx-auto">
                 <div className="flex justify-between items-center">
-                  <h1 className="text-xl font-bold text-fuchsia-400">Technical English 2</h1>
+                  <h1 className="text-xl font-bold text-cyan-400">Technical English 2</h1>
                   <div className="flex items-center gap-4">
                     <span className="text-sm text-slate-400">Welcome, {currentUser.email}</span>
                     {currentUser.role === 'lecturer' && (
@@ -437,7 +439,7 @@ const App: React.FC = () => {
                             <select
                                 value={selectedClass}
                                 onChange={(e) => setSelectedClass(e.target.value)}
-                                className="bg-slate-700 border border-slate-600 text-white text-xs rounded-lg focus:ring-fuchsia-500 focus:border-fuchsia-500 block py-1 px-2"
+                                className="bg-slate-700 border border-slate-600 text-white text-xs rounded-lg focus:ring-cyan-500 focus:border-cyan-500 block py-1 px-2"
                             >
                                 <option value="ALL">All Classes</option>
                                 {(currentUser as Lecturer).classCodes.map(code => (
@@ -529,7 +531,7 @@ const ManageClassesModal: React.FC<{
                             value={code}
                             onChange={(e) => handleClassCodeChange(index, e.target.value)}
                             placeholder={`e.g., DKM5A`}
-                            className="flex-grow bg-slate-900 border border-slate-600 rounded-md p-2 focus:ring-fuchsia-500"
+                            className="flex-grow bg-slate-900 border border-slate-600 rounded-md p-2 focus:ring-cyan-500"
                         />
                         <button
                             type="button"
@@ -545,7 +547,7 @@ const ManageClassesModal: React.FC<{
                 <button
                     type="button"
                     onClick={handleAddClassCode}
-                    className="w-full text-sm text-fuchsia-400 hover:text-fuchsia-300 transition-colors py-1 disabled:opacity-50"
+                    className="w-full text-sm text-cyan-400 hover:text-cyan-300 transition-colors py-1 disabled:opacity-50"
                     disabled={classCodes.length >= 5}
                 >
                     + Add Another Class
@@ -553,7 +555,7 @@ const ManageClassesModal: React.FC<{
             </div>
             <div className="mt-6 flex justify-end gap-3">
                  <button onClick={onClose} className="bg-slate-600 text-white font-bold py-2 px-4 rounded-lg hover:bg-slate-500">Cancel</button>
-                 <button onClick={handleSaveChanges} className="bg-fuchsia-600 text-white font-bold py-2 px-4 rounded-lg hover:bg-fuchsia-700">Save Changes</button>
+                 <button onClick={handleSaveChanges} className="bg-blue-600 text-white font-bold py-2 px-4 rounded-lg hover:bg-blue-700">Save Changes</button>
             </div>
         </Modal>
     );

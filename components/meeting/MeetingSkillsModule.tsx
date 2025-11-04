@@ -22,10 +22,10 @@ interface MeetingSkillsModuleProps {
 const MenuCard = ({ title, description, onClick, icon, comingSoon = false }: { title: string, description: string, onClick: () => void, icon: React.ReactNode, comingSoon?: boolean }) => (
     <div 
         onClick={!comingSoon ? onClick : undefined}
-        className={`relative bg-slate-800/50 border border-slate-700 rounded-lg p-6 text-center transition-all transform ${comingSoon ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer hover:bg-slate-800 hover:border-fuchsia-500 hover:-translate-y-1'}`}
+        className={`relative bg-slate-800/50 border border-slate-700 rounded-lg p-6 text-center transition-all transform ${comingSoon ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer hover:bg-slate-800 hover:border-cyan-500 hover:-translate-y-1'}`}
     >
         {comingSoon && <span className="absolute top-2 right-2 bg-yellow-500 text-slate-900 text-xs font-bold px-2 py-1 rounded">Coming Soon</span>}
-        <div className="flex justify-center items-center mb-4 text-fuchsia-400">
+        <div className="flex justify-center items-center mb-4 text-cyan-400">
             {icon}
         </div>
         <h3 className="text-xl font-bold text-slate-200">{title}</h3>

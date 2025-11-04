@@ -9,9 +9,9 @@ interface PresentationModeSelectionProps {
 const ModeCard = ({ title, description, onClick, icon }: { title: string, description: string, onClick: () => void, icon: React.ReactNode }) => (
     <div 
         onClick={onClick}
-        className="bg-slate-800/50 border border-slate-700 rounded-lg p-6 text-center cursor-pointer hover:bg-slate-800 hover:border-fuchsia-500 transition-all transform hover:-translate-y-1"
+        className="bg-slate-800/50 border border-slate-700 rounded-lg p-6 text-center cursor-pointer hover:bg-slate-800 hover:border-cyan-500 transition-all transform hover:-translate-y-1"
     >
-        <div className="flex justify-center items-center mb-4 text-fuchsia-400">
+        <div className="flex justify-center items-center mb-4 text-cyan-400">
             {icon}
         </div>
         <h3 className="text-xl font-bold text-slate-200">{title}</h3>

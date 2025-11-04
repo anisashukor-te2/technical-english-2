@@ -8,9 +8,9 @@ interface PracticeSelectionScreenProps {
 const ModeCard = ({ title, description, onClick, icon }: { title: string; description: string; onClick: () => void; icon: React.ReactNode; }) => (
     <div
         onClick={onClick}
-        className="bg-slate-800/50 border border-slate-700 rounded-lg p-6 cursor-pointer hover:bg-slate-800 hover:border-fuchsia-500 transition-all transform hover:-translate-y-1"
+        className="bg-slate-800/50 border border-slate-700 rounded-lg p-6 cursor-pointer hover:bg-slate-800 hover:border-cyan-500 transition-all transform hover:-translate-y-1"
     >
-        <div className="flex justify-center items-center mb-4 text-fuchsia-400">{icon}</div>
+        <div className="flex justify-center items-center mb-4 text-cyan-400">{icon}</div>
         <h3 className="text-xl font-bold text-slate-200 text-center">{title}</h3>
         <p className="mt-2 text-slate-400 text-center">{description}</p>
     </div>
@@ -47,7 +47,7 @@ const PracticeSelectionScreen: React.FC<PracticeSelectionScreenProps> = ({ onBac
                 />
             </div>
             <div className="text-center mt-8">
-                <button onClick={onBack} className="text-sm text-fuchsia-400 hover:text-fuchsia-300 flex items-center mx-auto">
+                <button onClick={onBack} className="text-sm text-cyan-400 hover:text-cyan-300 flex items-center mx-auto">
                     <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                         <path strokeLinecap="round" strokeLinejoin="round" d="M11 17l-5-5m0 0l5-5m-5 5h12" />
                     </svg>

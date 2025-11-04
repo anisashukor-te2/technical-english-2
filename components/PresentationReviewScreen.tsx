@@ -15,7 +15,7 @@ interface PresentationReviewScreenProps {
 
 const StatCard: React.FC<{ label: string; value: string | number; icon: React.ReactNode; }> = ({ label, value, icon }) => (
     <div className="bg-slate-900/50 p-4 rounded-lg flex items-center gap-4 border border-slate-700">
-        <div className="flex-shrink-0 w-12 h-12 rounded-full flex items-center justify-center bg-slate-800 text-fuchsia-400">
+        <div className="flex-shrink-0 w-12 h-12 rounded-full flex items-center justify-center bg-slate-800 text-cyan-400">
             {icon}
         </div>
         <div>
@@ -25,7 +25,7 @@ const StatCard: React.FC<{ label: string; value: string | number; icon: React.Re
     </div>
 );
 
-const PresentationReviewScreen: React.FC<PresentationReviewScreenProps> = ({ user, userType, selectedClass }) => {
+export const PresentationReviewScreen: React.FC<PresentationReviewScreenProps> = ({ user, userType, selectedClass }) => {
   const { handleBackToSelection } = usePresentation();
   const [sessions, setSessions] = useState<PracticeSession[]>([]);
   const [selectedSession, setSelectedSession] = useState<PracticeSession | null>(null);
@@ -76,7 +76,7 @@ const PresentationReviewScreen: React.FC<PresentationReviewScreenProps> = ({ use
                     <p className="text-slate-500 mt-1">{selectedClass === 'ALL' ? 'When students submit sessions, they will appear here.' : `No sessions found for class "${selectedClass}".`}</p>
                 </div>
                 <div className="text-center mt-8">
-                    <button onClick={handleBackToSelection} className="text-sm text-fuchsia-400 hover:text-fuchsia-300 flex items-center mx-auto">
+                    <button onClick={handleBackToSelection} className="text-sm text-cyan-400 hover:text-cyan-300 flex items-center mx-auto">
                         <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                             <path strokeLinecap="round" strokeLinejoin="round" d="M11 17l-5-5m0 0l5-5m-5 5h12" />
                         </svg>
@@ -91,29 +91,29 @@ const PresentationReviewScreen: React.FC<PresentationReviewScreenProps> = ({ use
         <div className="max-w-5xl mx-auto animate-fade-in pb-24">
             <div className="text-center mb-8">
                 <h2 className="text-3xl font-bold text-white">Review Student Submissions</h2>
-                <p className="mt-2 text-lg text-slate-400">Viewing submissions for: <span className="font-semibold text-fuchsia-400">{selectedClass === 'ALL' ? 'All Classes' : selectedClass}</span></p>
+                <p className="mt-2 text-lg text-slate-400">Viewing submissions for: <span className="font-semibold text-cyan-400">{selectedClass === 'ALL' ? 'All Classes' : selectedClass}</span></p>
             </div>
             <Card title="Completed Sessions">
                 <div className="p-4 space-y-2 max-h-[70vh] overflow-y-auto">
                    {sessions.map(session => (
-                       <div key={session.id} className={`p-3 bg-slate-900/50 rounded-lg flex items-center justify-between ${session.isSubmitted && !session.grade ? 'animate-highlight-fade border-l-4 border-yellow-500' : 'border-l-4 border-transparent'}`}>
+                       <div key={session.id} className={`p-3 bg-slate-900/50 rounded-lg flex items-center justify-between ${session.isSubmitted && !session.grade ? 'animate-highlight-fade border-l-4 border-blue-500' : 'border-l-4 border-transparent'}`}>
                            <div>
                                <p className="font-semibold text-slate-300">Student: {session.studentEmail}</p>
                                <p className="text-xs text-slate-400">Completed: {new Date(session.timestamp).toLocaleString()}</p>
                                <div className="flex items-center gap-4 mt-1">
                                 <p className="text-xs text-slate-400">Score: {session.feedbackData.overallScore}%</p>
-                                {session.isSubmitted && !session.grade && <span className="text-xs font-semibold bg-yellow-500/20 text-yellow-400 px-2 py-0.5 rounded-full">Submitted for Grading</span>}
+                                {session.isSubmitted && !session.grade && <span className="text-xs font-semibold bg-blue-500/20 text-blue-400 px-2 py-0.5 rounded-full">Submitted for Grading</span>}
                                 {session.grade !== undefined && <span className="text-xs font-semibold bg-green-500/20 text-green-400 px-2 py-0.5 rounded-full">Graded: {session.grade}%</span>}
                                </div>
 
                            </div>
-                           <button onClick={() => setSelectedSession(session)} className="text-sm bg-slate-700 hover:bg-fuchsia-600 px-3 py-1 rounded">View Details</button>
+                           <button onClick={() => setSelectedSession(session)} className="text-sm bg-slate-700 hover:bg-cyan-600 px-3 py-1 rounded">View Details</button>
                        </div>
                    ))}
                 </div>
             </Card>
             <div className="text-center mt-8">
-                <button onClick={handleBackToSelection} className="text-sm text-fuchsia-400 hover:text-fuchsia-300 flex items-center mx-auto">
+                <button onClick={handleBackToSelection} className="text-sm text-cyan-400 hover:text-cyan-300 flex items-center mx-auto">
                     <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                         <path strokeLinecap="round" strokeLinejoin="round" d="M11 17l-5-5m0 0l5-5m-5 5h12" />
                     </svg>
@@ -183,7 +183,7 @@ const PresentationReviewScreen: React.FC<PresentationReviewScreenProps> = ({ use
                 <p className="text-slate-500 mt-1">Complete a practice session to see your performance analytics here.</p>
             </div>
              <div className="text-center mt-8">
-                <button onClick={handleBackToSelection} className="text-sm text-fuchsia-400 hover:text-fuchsia-300 flex items-center mx-auto">
+                <button onClick={handleBackToSelection} className="text-sm text-cyan-400 hover:text-cyan-300 flex items-center mx-auto">
                     Back to Menu Selection
                 </button>
             </div>
@@ -206,7 +206,7 @@ const PresentationReviewScreen: React.FC<PresentationReviewScreenProps> = ({ use
         <div className="grid md:grid-cols-2 gap-6 mt-6">
              <Card title="Performance Over Time">
                 <div className="p-4 space-y-4">
-                    <LineChart data={chartData.scoreData} labels={chartData.labels} title="Overall Score" color="#A855F7" yAxisLabel="Score %" />
+                    <LineChart data={chartData.scoreData} labels={chartData.labels} title="Overall Score" color="#22d3ee" yAxisLabel="Score %" />
                     <LineChart data={chartData.wpmData} labels={chartData.labels} title="Words Per Minute (WPM)" color="#EC4899" yAxisLabel="WPM" />
                 </div>
             </Card>
@@ -229,7 +229,7 @@ const PresentationReviewScreen: React.FC<PresentationReviewScreenProps> = ({ use
                                     )}
                                 </div>
                            </div>
-                           <button onClick={() => setSelectedSession(session)} className="text-sm bg-slate-700 hover:bg-fuchsia-600 px-3 py-1 rounded">View Details</button>
+                           <button onClick={() => setSelectedSession(session)} className="text-sm bg-slate-700 hover:bg-cyan-600 px-3 py-1 rounded">View Details</button>
                        </div>
                    ))}
                 </div>
@@ -253,7 +253,7 @@ const PresentationReviewScreen: React.FC<PresentationReviewScreenProps> = ({ use
             </button>
         </div>
         {selectedSession && (
-            <Modal isOpen={!!selectedSession} onClose={handleCloseModal} title="Session Review">
+            <Modal isOpen={!!selectedSession} onClose={handleCloseModal} title={`Reviewing Session from ${selectedSession.studentEmail}`}>
                 <FeedbackScreen
                     feedback={selectedSession.feedbackData}
                     onPracticeAgain={() => {}}
@@ -261,7 +261,7 @@ const PresentationReviewScreen: React.FC<PresentationReviewScreenProps> = ({ use
                     recordingUrl=""
                     slides={selectedSession.slides}
                     sessionId={selectedSession.id}
-                    studentEmail={user.email}
+                    studentEmail={selectedSession.studentEmail}
                     isStudent={true}
                     sessionData={selectedSession}
                 />
@@ -270,4 +270,3 @@ const PresentationReviewScreen: React.FC<PresentationReviewScreenProps> = ({ use
     </div>
   );
 };
-export default PresentationReviewScreen;

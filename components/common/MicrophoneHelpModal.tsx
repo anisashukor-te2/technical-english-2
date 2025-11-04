@@ -8,7 +8,7 @@ interface MicrophoneHelpModalProps {
 
 const InstructionStep: React.FC<{ step: number; children: React.ReactNode }> = ({ step, children }) => (
     <li className="flex items-start gap-3">
-        <div className="flex-shrink-0 w-6 h-6 rounded-full bg-fuchsia-600 text-white flex items-center justify-center font-bold text-sm">{step}</div>
+        <div className="flex-shrink-0 w-6 h-6 rounded-full bg-cyan-600 text-white flex items-center justify-center font-bold text-sm">{step}</div>
         <div className="flex-grow pt-0.5 text-slate-300">{children}</div>
     </li>
 );

@@ -282,7 +282,7 @@ const FreePracticeScreen: React.FC = () => {
         }
 
         if (currentSlide) {
-            ctx.fillStyle = '#f0abfc';
+            ctx.fillStyle = '#22d3ee';
             ctx.font = 'bold 48px sans-serif';
             ctx.textAlign = 'center';
             ctx.fillText(currentSlide.title, canvas.width / 2, 120, canvas.width * 0.9);
@@ -493,7 +493,7 @@ const FreePracticeScreen: React.FC = () => {
                 if (mediaUploadState.status === 'processing') {
                     return (
                         <div className="text-center p-4">
-                            <svg className="animate-spin h-12 w-12 mx-auto text-fuchsia-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                            <svg className="animate-spin h-12 w-12 mx-auto text-cyan-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
                                 <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
                                 <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                             </svg>
@@ -525,7 +525,7 @@ const FreePracticeScreen: React.FC = () => {
                         ) : (
                             <p className="text-slate-500 mt-2 text-sm">Add a background image or video to this slide.</p>
                         )}
-                        <button onClick={triggerMediaUpload} className="mt-4 bg-fuchsia-600 hover:bg-fuchsia-700 text-white font-bold py-2 px-4 rounded text-sm">
+                        <button onClick={triggerMediaUpload} className="mt-4 bg-cyan-600 hover:bg-cyan-700 text-white font-bold py-2 px-4 rounded text-sm">
                             {mediaUploadState.status === 'error' ? 'Try Again' : 'Upload Media'}
                         </button>
                     </div>
@@ -538,7 +538,7 @@ const FreePracticeScreen: React.FC = () => {
     const renderEditingView = () => (
          <>
             <div className="bg-slate-800 p-6 rounded-lg border border-slate-700 mb-6">
-                <h2 className="text-xl font-bold text-fuchsia-400 mb-3">Practice</h2>
+                <h2 className="text-xl font-bold text-cyan-400 mb-3">Practice</h2>
                 <p className="text-slate-400">
                     Build your presentation below. Upload background media and add speaker notes for each slide. Your work is saved automatically. When ready, press "Start Presenting" to practice.
                 </p>
@@ -551,19 +551,19 @@ const FreePracticeScreen: React.FC = () => {
                             type="text"
                             value={currentSlide?.title || ''}
                             onChange={(e) => updateSlide(safeCurrentSlideIndex, 'title', e.target.value)}
-                            className="w-full bg-slate-900 text-xl font-bold p-2 rounded border border-slate-600 focus:ring-fuchsia-500 focus:border-fuchsia-500"
+                            className="w-full bg-slate-900 text-xl font-bold p-2 rounded border border-slate-600 focus:ring-cyan-500 focus:border-cyan-500"
                         />
                         <textarea
                             value={currentSlide?.script || ''}
                             onChange={(e) => updateSlide(safeCurrentSlideIndex, 'script', e.target.value)}
                             placeholder="Enter speaker notes for this slide..."
-                            className="w-full flex-grow p-3 bg-slate-900 border border-slate-600 rounded-md focus:ring-2 focus:ring-fuchsia-500 focus:border-fuchsia-500 transition"
+                            className="w-full flex-grow p-3 bg-slate-900 border border-slate-600 rounded-md focus:ring-2 focus:ring-cyan-500 focus:border-cyan-500 transition"
                         ></textarea>
                     </div>
                 </div>
                 <div className="space-y-4">
                      <div className="bg-slate-800 p-4 rounded-lg border border-slate-700">
-                        <h3 className="text-lg font-bold text-fuchsia-400 mb-3">Presentation Overview</h3>
+                        <h3 className="text-lg font-bold text-cyan-400 mb-3">Presentation Overview</h3>
                         <ul onDrop={handleDrop} onDragOver={(e) => e.preventDefault()} className="space-y-2 h-64 overflow-y-auto pr-2">
                             {slides.map((slide, index) => (
                                 <li 
@@ -573,15 +573,15 @@ const FreePracticeScreen: React.FC = () => {
                                     onDragStart={(e) => handleDragStart(e, index)}
                                     onDragEnter={(e) => handleDragEnter(e, index)}
                                     onDragEnd={() => dragOverItemIndex.current = null}
-                                    className={`flex items-center p-2 rounded-lg cursor-pointer border-2 transition-colors ${safeCurrentSlideIndex === index ? 'border-fuchsia-500 bg-slate-700/50' : 'border-transparent hover:bg-slate-700'} ${dragOverItemIndex.current === index ? 'bg-slate-600/50' : ''}`}
+                                    className={`flex items-center p-2 rounded-lg cursor-pointer border-2 transition-colors ${safeCurrentSlideIndex === index ? 'border-cyan-500 bg-slate-700/50' : 'border-transparent hover:bg-slate-700'} ${dragOverItemIndex.current === index ? 'bg-slate-600/50' : ''}`}
                                 >
                                     <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-slate-500 mr-2 flex-shrink-0 cursor-move" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" /></svg>
                                     <div className="w-16 h-10 bg-slate-900 rounded-md flex items-center justify-center overflow-hidden mr-3 flex-shrink-0 border border-slate-600">
                                         {slide.media ? (
                                             slide.media.type === 'video' ? (
-                                                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-fuchsia-500" viewBox="0 0 20 20" fill="currentColor"><path d="M2 6a2 2 0 012-2h6a2 2 0 012 2v8a2 2 0 01-2-2H4a2 2 0 01-2-2V6zM14.553 7.106A1 1 0 0014 8v4a1 1 0 001.553.832l3-2a1 1 0 000-1.664l-3-2z" /></svg>
+                                                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-cyan-500" viewBox="0 0 20 20" fill="currentColor"><path d="M2 6a2 2 0 012-2h6a2 2 0 012 2v8a2 2 0 01-2-2H4a2 2 0 01-2-2V6zM14.553 7.106A1 1 0 0014 8v4a1 1 0 001.553.832l3-2a1 1 0 000-1.664l-3-2z" /></svg>
                                             ) : (
-                                                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-fuchsia-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" /></svg>
+                                                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-cyan-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" /></svg>
                                             )
                                         ) : (
                                             <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-slate-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" /></svg>
@@ -603,14 +603,14 @@ const FreePracticeScreen: React.FC = () => {
                         </div>
                     </div>
                     <div className="bg-slate-800/70 p-4 rounded-lg border border-slate-700">
-                        <h4 className="text-md font-semibold text-fuchsia-400 mb-2">Slide Settings</h4>
+                        <h4 className="text-md font-semibold text-cyan-400 mb-2">Slide Settings</h4>
                         <label className="text-sm text-slate-400">Transition Effect</label>
                         <div className="flex gap-2 mt-1">
                             {(['none', 'fade', 'slide'] as const).map(t => (
                                 <button
                                     key={t}
                                     onClick={() => updateSlide(safeCurrentSlideIndex, 'transition', t)}
-                                    className={`flex-1 text-sm py-1 rounded-md transition-colors ${currentSlide?.transition === t || (!currentSlide?.transition && t === 'none') ? 'bg-fuchsia-600 text-white' : 'bg-slate-700 hover:bg-slate-600'}`}
+                                    className={`flex-1 text-sm py-1 rounded-md transition-colors ${currentSlide?.transition === t || (!currentSlide?.transition && t === 'none') ? 'bg-cyan-600 text-white' : 'bg-slate-700 hover:bg-slate-600'}`}
                                 >
                                     {t.charAt(0).toUpperCase() + t.slice(1)}
                                 </button>
@@ -618,12 +618,12 @@ const FreePracticeScreen: React.FC = () => {
                         </div>
                     </div>
                     <div className="flex flex-col items-center justify-center bg-slate-800 p-6 rounded-lg border border-slate-700 text-center">
-                        <h3 className="text-lg font-bold text-fuchsia-400 mb-3">Ready to Practice?</h3>
+                        <h3 className="text-lg font-bold text-cyan-400 mb-3">Ready to Practice?</h3>
                          <p className="text-slate-400 mb-4 text-sm">Enter presentation mode to see your slides and access recording controls.</p>
-                         <button onClick={() => setMode('PRESENTING')} className="w-full bg-fuchsia-600 hover:bg-fuchsia-700 text-white font-bold py-3 px-4 rounded">
+                         <button onClick={() => setMode('PRESENTING')} className="w-full bg-cyan-600 hover:bg-cyan-700 text-white font-bold py-3 px-4 rounded">
                              Start Presenting
                          </button>
-                         <button onClick={handleBackToSelection} className="text-sm text-fuchsia-400 hover:text-fuchsia-300 flex items-center mx-auto mt-4">
+                         <button onClick={handleBackToSelection} className="text-sm text-cyan-400 hover:text-cyan-300 flex items-center mx-auto mt-4">
                             <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                                 <path strokeLinecap="round" strokeLinejoin="round" d="M11 17l-5-5m0 0l5-5m-5 5h12" />
                             </svg>
@@ -648,7 +648,7 @@ const FreePracticeScreen: React.FC = () => {
         <div className="animate-fade-in">
             <div className="flex justify-between items-center mb-4">
                 <div>
-                    <h2 className="text-xl font-bold text-fuchsia-400">Presentation Mode</h2>
+                    <h2 className="text-xl font-bold text-cyan-400">Presentation Mode</h2>
                     <p className="text-sm text-slate-400">{recordingData ? 'Review your recording before submitting.' : 'Your voice will be recorded. The visuals are for practice only.'}</p>
                 </div>
                 <button onClick={() => setMode('EDITING')} className="flex items-center gap-2 text-sm bg-slate-700 hover:bg-slate-600 py-2 px-4 rounded-lg transition-colors">
@@ -680,7 +680,7 @@ const FreePracticeScreen: React.FC = () => {
                         {micError && (
                             <div className="bg-red-800/80 p-3 rounded-lg text-sm text-center">
                                 <p>{micError}</p>
-                                <button onClick={() => setIsHelpModalOpen(true)} className="mt-2 text-fuchsia-300 underline">Show Help</button>
+                                <button onClick={() => setIsHelpModalOpen(true)} className="mt-2 text-cyan-300 underline">Show Help</button>
                             </div>
                         )}
                     </div>
@@ -689,7 +689,7 @@ const FreePracticeScreen: React.FC = () => {
     
                 {/* Right side: Speaker Notes */}
                 <div className="bg-slate-800 p-4 rounded-lg border border-slate-700 flex flex-col h-full">
-                    <h3 className="text-lg font-bold text-fuchsia-400 mb-3 border-b border-slate-700 pb-2 flex-shrink-0">
+                    <h3 className="text-lg font-bold text-cyan-400 mb-3 border-b border-slate-700 pb-2 flex-shrink-0">
                         Slide {safeCurrentSlideIndex + 1}: {currentSlide?.title}
                     </h3>
                     <div className="flex-grow overflow-y-auto text-slate-300 text-sm leading-relaxed pr-2">
@@ -703,9 +703,9 @@ const FreePracticeScreen: React.FC = () => {
                 <>
                     <div className="mt-6 bg-slate-800 rounded-lg border border-slate-700 p-4">
                          <div className="max-w-2xl mx-auto flex items-center justify-center gap-4">
-                            <span className="font-mono font-bold text-fuchsia-400">{formatTime(recordingData.duration)}</span>
+                            <span className="font-mono font-bold text-cyan-400">{formatTime(recordingData.duration)}</span>
                             <button onClick={handleRecordAgain} disabled={isSubmitting} className="bg-slate-600 hover:bg-slate-500 text-white font-bold py-2 px-4 rounded-lg text-sm disabled:opacity-50">Record Again</button>
-                            <button onClick={handleReview} disabled={isSubmitting} className="bg-fuchsia-600 hover:bg-fuchsia-700 text-white font-bold py-2 px-4 rounded-lg text-sm disabled:opacity-50">Review & Save</button>
+                            <button onClick={handleReview} disabled={isSubmitting} className="bg-cyan-600 hover:bg-cyan-700 text-white font-bold py-2 px-4 rounded-lg text-sm disabled:opacity-50">Review & Save</button>
                          </div>
                     </div>
                     <div className="text-center mt-4 flex justify-center items-center gap-4">
@@ -732,7 +732,7 @@ const FreePracticeScreen: React.FC = () => {
                         </button>
                         
                         <div className="flex items-center gap-4">
-                            <span className={`text-xl font-mono font-bold ${isRecording ? 'text-red-500' : 'text-fuchsia-400'}`}>{formatTime(timer)}</span>
+                            <span className={`text-xl font-mono font-bold ${isRecording ? 'text-red-500' : 'text-cyan-400'}`}>{formatTime(timer)}</span>
                             
                             <button
                                 onClick={isRecording ? stopRecording : startRecording}

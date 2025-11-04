@@ -1,4 +1,5 @@
 
+
 import React, { useState } from 'react';
 import { Student } from '../types';
 
@@ -77,7 +78,7 @@ const StudentLoginScreen: React.FC<StudentLoginScreenProps> = ({ onLogin, onRegi
         <main className="flex-grow flex items-center justify-center p-4">
             <div className="w-full max-w-md">
                 <div className="text-center mb-8">
-                    <h1 className="text-3xl font-bold text-fuchsia-400">Technical English 2</h1>
+                    <h1 className="text-3xl font-bold text-cyan-400">Technical English 2</h1>
                     <p className="text-slate-400">Student Portal</p>
                 </div>
                 <div className="bg-slate-800/70 backdrop-blur-sm border border-slate-700 rounded-lg shadow-lg p-8">
@@ -96,7 +97,7 @@ const StudentLoginScreen: React.FC<StudentLoginScreenProps> = ({ onLogin, onRegi
                                 value={email}
                                 onChange={(e) => setEmail(e.target.value)}
                                 placeholder="e.g., student@example.com"
-                                className="mt-1 block w-full bg-slate-900 border border-slate-600 rounded-md shadow-sm p-3 focus:ring-fuchsia-500 focus:border-fuchsia-500"
+                                className="mt-1 block w-full bg-slate-900 border border-slate-600 rounded-md shadow-sm p-3 focus:ring-cyan-500 focus:border-cyan-500"
                                 />
                             </div>
                             <div>
@@ -108,16 +109,16 @@ const StudentLoginScreen: React.FC<StudentLoginScreenProps> = ({ onLogin, onRegi
                                 value={password}
                                 onChange={(e) => setPassword(e.target.value)}
                                 placeholder="••••••••"
-                                className="mt-1 block w-full bg-slate-900 border border-slate-600 rounded-md shadow-sm p-3 focus:ring-fuchsia-500 focus:border-fuchsia-500"
+                                className="mt-1 block w-full bg-slate-900 border border-slate-600 rounded-md shadow-sm p-3 focus:ring-cyan-500 focus:border-cyan-500"
                                 />
                             </div>
-                            <button type="submit" className="w-full bg-fuchsia-600 text-white font-bold py-3 px-4 rounded-lg hover:bg-fuchsia-700 transition-colors">
+                            <button type="submit" className="w-full bg-cyan-600 text-white font-bold py-3 px-4 rounded-lg hover:bg-cyan-700 transition-colors">
                                 Login
                             </button>
                         </form>
                         <p className="text-center text-sm text-slate-400 mt-6">
                             Don't have an account?{' '}
-                            <button type="button" onClick={() => switchView('REGISTER')} className="font-semibold text-fuchsia-400 hover:underline focus:outline-none">
+                            <button type="button" onClick={() => switchView('REGISTER')} className="font-semibold text-cyan-400 hover:underline focus:outline-none">
                                 Register here
                             </button>
                         </p>
@@ -135,7 +136,7 @@ const StudentLoginScreen: React.FC<StudentLoginScreenProps> = ({ onLogin, onRegi
                                 value={email}
                                 onChange={(e) => setEmail(e.target.value)}
                                 placeholder="Enter your email address"
-                                className="mt-1 block w-full bg-slate-900 border border-slate-600 rounded-md shadow-sm p-3 focus:ring-fuchsia-500 focus:border-fuchsia-500"
+                                className="mt-1 block w-full bg-slate-900 border border-slate-600 rounded-md shadow-sm p-3 focus:ring-cyan-500 focus:border-cyan-500"
                                 />
                             </div>
                             <div>
@@ -146,7 +147,7 @@ const StudentLoginScreen: React.FC<StudentLoginScreenProps> = ({ onLogin, onRegi
                                 value={courseId}
                                 onChange={(e) => setCourseId(e.target.value)}
                                 placeholder="e.g., DUE30072"
-                                className="mt-1 block w-full bg-slate-900 border border-slate-600 rounded-md shadow-sm p-3 focus:ring-fuchsia-500 focus:border-fuchsia-500"
+                                className="mt-1 block w-full bg-slate-900 border border-slate-600 rounded-md shadow-sm p-3 focus:ring-cyan-500 focus:border-cyan-500"
                                 />
                             </div>
                              <div>
@@ -157,7 +158,7 @@ const StudentLoginScreen: React.FC<StudentLoginScreenProps> = ({ onLogin, onRegi
                                 value={lecturerClassCode}
                                 onChange={(e) => setLecturerClassCode(e.target.value)}
                                 placeholder="e.g., DKM5A (Case-sensitive)"
-                                className="mt-1 block w-full bg-slate-900 border border-slate-600 rounded-md shadow-sm p-3 focus:ring-fuchsia-500 focus:border-fuchsia-500"
+                                className="mt-1 block w-full bg-slate-900 border border-slate-600 rounded-md shadow-sm p-3 focus:ring-cyan-500 focus:border-cyan-500"
                                 />
                             </div>
                             <div>
@@ -169,7 +170,7 @@ const StudentLoginScreen: React.FC<StudentLoginScreenProps> = ({ onLogin, onRegi
                                 value={password}
                                 onChange={(e) => setPassword(e.target.value)}
                                 placeholder="At least 6 characters"
-                                className="mt-1 block w-full bg-slate-900 border border-slate-600 rounded-md shadow-sm p-3 focus:ring-fuchsia-500 focus:border-fuchsia-500"
+                                className="mt-1 block w-full bg-slate-900 border border-slate-600 rounded-md shadow-sm p-3 focus:ring-cyan-500 focus:border-cyan-500"
                                 />
                             </div>
                             <div>
@@ -181,16 +182,16 @@ const StudentLoginScreen: React.FC<StudentLoginScreenProps> = ({ onLogin, onRegi
                                 value={confirmPassword}
                                 onChange={(e) => setConfirmPassword(e.target.value)}
                                 placeholder="••••••••"
-                                className="mt-1 block w-full bg-slate-900 border border-slate-600 rounded-md shadow-sm p-3 focus:ring-fuchsia-500 focus:border-fuchsia-500"
+                                className="mt-1 block w-full bg-slate-900 border border-slate-600 rounded-md shadow-sm p-3 focus:ring-cyan-500 focus:border-cyan-500"
                                 />
                             </div>
-                            <button type="submit" className="w-full bg-fuchsia-600 text-white font-bold py-3 px-4 rounded-lg hover:bg-fuchsia-700 transition-colors">
+                            <button type="submit" className="w-full bg-cyan-600 text-white font-bold py-3 px-4 rounded-lg hover:bg-cyan-700 transition-colors">
                                 Register
                             </button>
                         </form>
                         <p className="text-center text-sm text-slate-400 mt-6">
                             Already have an account?{' '}
-                            <button type="button" onClick={() => switchView('LOGIN')} className="font-semibold text-fuchsia-400 hover:underline focus:outline-none">
+                            <button type="button" onClick={() => switchView('LOGIN')} className="font-semibold text-cyan-400 hover:underline focus:outline-none">
                                 Login here
                             </button>
                         </p>
@@ -201,7 +202,7 @@ const StudentLoginScreen: React.FC<StudentLoginScreenProps> = ({ onLogin, onRegi
                     <button
                         type="button"
                         onClick={onBack}
-                        className="text-sm text-slate-400 hover:text-fuchsia-400 transition-colors"
+                        className="text-sm text-slate-400 hover:text-cyan-400 transition-colors"
                     >
                         Not a student? Go back to main page.
                     </button>
