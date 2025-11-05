@@ -1,9 +1,3 @@
-
-
-
-
-
-
 import React, { useState, useEffect, useCallback } from 'react';
 // FIX: Add getFreePracticeFeedback import
 import { getPresentationFeedback, getFreePracticeFeedback } from './services/geminiService';
@@ -387,24 +381,24 @@ const App: React.FC = () => {
   return (
     <PresentationProvider value={presentationContextValue}>
         <div className="flex flex-col h-full">
-            <header className="bg-slate-900/80 backdrop-blur-sm border-b border-slate-700 p-4 sticky top-0 z-10">
+            <header className="bg-white/50 backdrop-blur-lg border-b border-white/30 p-4 sticky top-0 z-10">
               <div className="max-w-7xl mx-auto">
                 <div className="flex justify-between items-center">
-                  <h1 className="text-xl font-bold text-cyan-400">Technical English 2</h1>
+                  <h1 className="text-xl font-bold text-blue-700">Technical English 2</h1>
                   <div className="flex items-center gap-4">
-                    <span className="text-sm text-slate-400">Welcome, {currentUser.email}</span>
+                    <span className="text-sm text-slate-600">Welcome, {currentUser.email}</span>
                     {currentUser.role === 'lecturer' && (
                         <>
-                            <button onClick={() => setIsManageClassesModalOpen(true)} className="bg-slate-700 hover:bg-slate-600 text-white font-semibold text-xs py-1 px-3 rounded">
+                            <button onClick={() => setIsManageClassesModalOpen(true)} className="bg-white/70 hover:bg-white text-slate-700 font-semibold text-xs py-1 px-3 rounded-md shadow-sm">
                                 Manage Class IDs
                             </button>
-                            <button onClick={handleOpenViewUsersModal} className="bg-slate-700 hover:bg-slate-600 text-white font-semibold text-xs py-1 px-3 rounded">
+                            <button onClick={handleOpenViewUsersModal} className="bg-white/70 hover:bg-white text-slate-700 font-semibold text-xs py-1 px-3 rounded-md shadow-sm">
                                 View Users
                             </button>
                             <select
                                 value={selectedClass}
                                 onChange={(e) => setSelectedClass(e.target.value)}
-                                className="bg-slate-700 border border-slate-600 text-white text-xs rounded-lg focus:ring-cyan-500 focus:border-cyan-500 block py-1 px-2"
+                                className="bg-white/70 border border-slate-300 text-slate-700 text-xs rounded-lg focus:ring-blue-500 focus:border-blue-500 block py-1 px-2"
                             >
                                 <option value="ALL">All Classes</option>
                                 {(currentUser as Lecturer).classCodes.map(code => (
@@ -413,7 +407,7 @@ const App: React.FC = () => {
                             </select>
                         </>
                     )}
-                    <button onClick={handleLogout} className="bg-slate-600 hover:bg-slate-500 text-white font-semibold text-sm py-1 px-3 rounded">
+                    <button onClick={handleLogout} className="bg-slate-200 hover:bg-slate-300 text-slate-700 font-semibold text-sm py-1 px-3 rounded-md shadow-sm">
                       Logout
                     </button>
                   </div>
@@ -496,7 +490,7 @@ const ManageClassesModal: React.FC<{
     return (
         <Modal isOpen={isOpen} onClose={onClose} title="Manage Your Class IDs">
             <div className="space-y-4">
-                <p className="text-sm text-slate-400">Add, edit, or remove the class IDs associated with your account. Students will use these to register under you.</p>
+                <p className="text-sm text-slate-500">Add, edit, or remove the class IDs associated with your account. Students will use these to register under you.</p>
                 {classCodes.map((code, index) => (
                     <div key={index} className="flex items-center gap-2">
                         <input
@@ -504,12 +498,12 @@ const ManageClassesModal: React.FC<{
                             value={code}
                             onChange={(e) => handleClassCodeChange(index, e.target.value)}
                             placeholder={`e.g., DKM5A`}
-                            className="flex-grow bg-slate-900 border border-slate-600 rounded-md p-2 focus:ring-cyan-500"
+                            className="flex-grow bg-slate-100 border border-slate-300 rounded-md p-2 focus:ring-blue-500 text-slate-800"
                         />
                         <button
                             type="button"
                             onClick={() => handleRemoveClassCode(index)}
-                            className="p-2 bg-red-800 text-white rounded-md hover:bg-red-700"
+                            className="p-2 bg-red-600 text-white rounded-md hover:bg-red-700"
                         >
                              <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
                                 <path fillRule="evenodd" d="M5 10a1 1 0 011-1h8a1 1 0 110 2H6a1 1 0 01-1-1z" clipRule="evenodd" />
@@ -520,15 +514,15 @@ const ManageClassesModal: React.FC<{
                 <button
                     type="button"
                     onClick={handleAddClassCode}
-                    className="w-full text-sm text-cyan-400 hover:text-cyan-300 transition-colors py-1 disabled:opacity-50"
+                    className="w-full text-sm text-blue-600 hover:text-blue-700 transition-colors py-1 disabled:opacity-50"
                     disabled={classCodes.length >= 5}
                 >
                     + Add Another Class
                 </button>
             </div>
             <div className="mt-6 flex justify-end gap-3">
-                 <button onClick={onClose} className="bg-slate-600 text-white font-bold py-2 px-4 rounded-lg hover:bg-slate-500">Cancel</button>
-                 <button onClick={handleSaveChanges} className="bg-cyan-600 text-white font-bold py-2 px-4 rounded-lg hover:bg-cyan-700">Save Changes</button>
+                 <button onClick={onClose} className="bg-slate-200 text-slate-800 font-bold py-2 px-4 rounded-lg hover:bg-slate-300">Cancel</button>
+                 <button onClick={handleSaveChanges} className="bg-blue-600 text-white font-bold py-2 px-4 rounded-lg hover:bg-blue-700">Save Changes</button>
             </div>
         </Modal>
     );
@@ -547,20 +541,20 @@ const ViewUsersModal: React.FC<{
             ) : (
                 <div className="space-y-3 max-h-[60vh] overflow-y-auto pr-2">
                     {users.length === 0 ? (
-                        <p className="text-slate-400 text-center">No registered users found for your account.</p>
+                        <p className="text-slate-500 text-center">No registered users found for your account.</p>
                     ) : (
                         users.map(user => (
-                            <div key={user.uid} className="bg-slate-900/50 p-3 rounded-lg border border-slate-700">
-                                <p className="font-semibold text-slate-200">{user.email}</p>
-                                <div className="text-xs text-slate-400 flex items-center gap-4 mt-1">
-                                    <span className={`capitalize px-2 py-0.5 rounded-full text-white ${user.role === 'lecturer' ? 'bg-cyan-600' : 'bg-fuchsia-600'}`}>
+                            <div key={user.uid} className="bg-white/70 p-3 rounded-lg border border-slate-200">
+                                <p className="font-semibold text-slate-800">{user.email}</p>
+                                <div className="text-xs text-slate-600 flex items-center gap-4 mt-1">
+                                    <span className={`capitalize px-2 py-0.5 rounded-full text-white ${user.role === 'lecturer' ? 'bg-blue-600' : 'bg-violet-600'}`}>
                                         {user.role}
                                     </span>
                                     {user.role === 'student' && (
-                                        <span>Class ID: <span className="font-semibold text-slate-300">{(user as Student).classCode}</span></span>
+                                        <span>Class ID: <span className="font-semibold text-slate-700">{(user as Student).classCode}</span></span>
                                     )}
                                     {user.role === 'lecturer' && (
-                                        <span>Course ID: <span className="font-semibold text-slate-300">{(user as Lecturer).courseCode}</span></span>
+                                        <span>Course ID: <span className="font-semibold text-slate-700">{(user as Lecturer).courseCode}</span></span>
                                     )}
                                 </div>
                             </div>
@@ -569,7 +563,7 @@ const ViewUsersModal: React.FC<{
                 </div>
             )}
              <div className="mt-6 flex justify-end">
-                 <button onClick={onClose} className="bg-slate-600 text-white font-bold py-2 px-4 rounded-lg hover:bg-slate-500">Close</button>
+                 <button onClick={onClose} className="bg-slate-200 text-slate-800 font-bold py-2 px-4 rounded-lg hover:bg-slate-300">Close</button>
             </div>
         </Modal>
     );

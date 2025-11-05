@@ -1,57 +1,60 @@
 import React, { useState, useRef, useEffect, useCallback } from 'react';
 import { usePresentation } from '../contexts/PresentationContext';
 import MicrophoneHelpModal from './common/MicrophoneHelpModal';
+import Card from './Card';
 
 const Scenario: React.FC = () => (
-    <div className="bg-slate-800 p-6 rounded-lg border border-slate-700 mb-6">
-        <h2 className="text-xl font-bold text-cyan-400 mb-3">Module 1: Guided Practice</h2>
-        <p className="text-slate-400 mb-4">
-            <span className="font-semibold text-slate-300">Scenario:</span> You are presenting the step-by-step process of designing a robust bolted joint for a structural application to a team of junior engineers. Focus on clarity, logical flow, and using appropriate technical language.
-        </p>
-        <p className="text-sm text-slate-500">
-            Read through the script below, then press "Start Recording" when you are ready to begin your practice presentation.
-        </p>
-    </div>
+    <Card title="Module 1: Guided Practice">
+        <div className="p-4">
+            <p className="text-slate-600 mb-4">
+                <span className="font-semibold text-slate-700">Scenario:</span> You are presenting the step-by-step process of designing a robust bolted joint for a structural application to a team of junior engineers. Focus on clarity, logical flow, and using appropriate technical language.
+            </p>
+            <p className="text-sm text-slate-500">
+                Read through the script below, then press "Start Recording" when you are ready to begin your practice presentation.
+            </p>
+        </div>
+    </Card>
 );
 
 const Script: React.FC = () => (
-    <div className="bg-slate-800 p-6 rounded-lg border border-slate-700 h-96 overflow-y-auto">
-        <h3 className="text-lg font-bold text-cyan-400 mb-4">Starter Script</h3>
-        <div className="prose prose-invert text-slate-300 space-y-4">
-            <details className="cursor-pointer">
-                <summary className="font-semibold">Slide 1: Title Slide & Opening</summary>
-                <p className="mt-2 pl-4 border-l-2 border-slate-600">"Good morning, everyone. Today, I'll be walking you through the critical steps involved in designing a robust bolted joint assembly..."</p>
-            </details>
-            <details className="cursor-pointer">
-                <summary className="font-semibold">Slide 2: Introduction</summary>
-                <p className="mt-2 pl-4 border-l-2 border-slate-600">"Firstly, let's understand why bolted joints are so prevalent. They offer versatility, ease of assembly and disassembly, and adjustability..."</p>
-            </details>
-            <details className="cursor-pointer">
-                <summary className="font-semibold">Slide 3: Step 1 - Define Requirements</summary>
-                <p className="mt-2 pl-4 border-l-2 border-slate-600">"The initial phase involves thoroughly defining the design requirements. We must identify the magnitude and type of applied loads..."</p>
-            </details>
-            <details className="cursor-pointer">
-                <summary className="font-semibold">Slide 4: Step 2 - Select Bolt</summary>
-                <p className="mt-2 pl-4 border-l-2 border-slate-600">"Following the requirements, the next step is to select the appropriate bolt material and size. High-strength steel bolts are commonly used..."</p>
-            </details>
-             <details className="cursor-pointer">
-                <summary className="font-semibold">Slide 5: Step 3 - Determine Geometry</summary>
-                <p className="mt-2 pl-4 border-l-2 border-slate-600">"With the bolt chosen, we proceed to determine the optimal joint geometry and configuration. This includes specifying the pitch..."</p>
-            </details>
-             <details className="cursor-pointer">
-                <summary className="font-semibold">Slide 6: Step 4 - Stress Analysis</summary>
-                <p className="mt-2 pl-4 border-l-2 border-slate-600">"The fourth step involves a comprehensive stress analysis. Bearing stress is calculated at the bolt holes, and tensile stress is checked..."</p>
-            </details>
-             <details className="cursor-pointer">
-                <summary className="font-semibold">Slide 7: Step 5 - Preload and Torque</summary>
-                <p className="mt-2 pl-4 border-l-2 border-slate-600">"Crucially, for many applications, the bolts must be preloaded to a specific tension. This preload enhances the joint's resistance to slipping..."</p>
-            </details>
-             <details className="cursor-pointer">
-                <summary className="font-semibold">Slide 8: Conclusion</summary>
-                <p className="mt-2 pl-4 border-l-2 border-slate-600">"In summary, designing a bolted joint is a systematic process... Are there any questions?"</p>
-            </details>
+    <Card title="Starter Script">
+        <div className="p-4 h-96 overflow-y-auto">
+            <div className="space-y-4 text-slate-700">
+                <details className="cursor-pointer">
+                    <summary className="font-semibold text-blue-600">Slide 1: Title Slide & Opening</summary>
+                    <p className="mt-2 pl-4 border-l-2 border-slate-200 text-sm">"Good morning, everyone. Today, I'll be walking you through the critical steps involved in designing a robust bolted joint assembly..."</p>
+                </details>
+                <details className="cursor-pointer">
+                    <summary className="font-semibold text-blue-600">Slide 2: Introduction</summary>
+                    <p className="mt-2 pl-4 border-l-2 border-slate-200 text-sm">"Firstly, let's understand why bolted joints are so prevalent. They offer versatility, ease of assembly and disassembly, and adjustability..."</p>
+                </details>
+                <details className="cursor-pointer">
+                    <summary className="font-semibold text-blue-600">Slide 3: Step 1 - Define Requirements</summary>
+                    <p className="mt-2 pl-4 border-l-2 border-slate-200 text-sm">"The initial phase involves thoroughly defining the design requirements. We must identify the magnitude and type of applied loads..."</p>
+                </details>
+                <details className="cursor-pointer">
+                    <summary className="font-semibold text-blue-600">Slide 4: Step 2 - Select Bolt</summary>
+                    <p className="mt-2 pl-4 border-l-2 border-slate-200 text-sm">"Following the requirements, the next step is to select the appropriate bolt material and size. High-strength steel bolts are commonly used..."</p>
+                </details>
+                 <details className="cursor-pointer">
+                    <summary className="font-semibold text-blue-600">Slide 5: Step 3 - Determine Geometry</summary>
+                    <p className="mt-2 pl-4 border-l-2 border-slate-200 text-sm">"With the bolt chosen, we proceed to determine the optimal joint geometry and configuration. This includes specifying the pitch..."</p>
+                </details>
+                 <details className="cursor-pointer">
+                    <summary className="font-semibold text-blue-600">Slide 6: Step 4 - Stress Analysis</summary>
+                    <p className="mt-2 pl-4 border-l-2 border-slate-200 text-sm">"The fourth step involves a comprehensive stress analysis. Bearing stress is calculated at the bolt holes, and tensile stress is checked..."</p>
+                </details>
+                 <details className="cursor-pointer">
+                    <summary className="font-semibold text-blue-600">Slide 7: Step 5 - Preload and Torque</summary>
+                    <p className="mt-2 pl-4 border-l-2 border-slate-200 text-sm">"Crucially, for many applications, the bolts must be preloaded to a specific tension. This preload enhances the joint's resistance to slipping..."</p>
+                </details>
+                 <details className="cursor-pointer">
+                    <summary className="font-semibold text-blue-600">Slide 8: Conclusion</summary>
+                    <p className="mt-2 pl-4 border-l-2 border-slate-200 text-sm">"In summary, designing a bolted joint is a systematic process... Are there any questions?"</p>
+                </details>
+            </div>
         </div>
-    </div>
+    </Card>
 );
 
 
@@ -148,14 +151,14 @@ const PracticeScreen: React.FC = () => {
         if (recordingStatus === 'finished') {
             return (
                 <div className="flex flex-col items-center justify-center w-full h-full text-center animate-fade-in">
-                    <p className="text-lg text-slate-300">Recording Complete!</p>
-                    <p className="text-5xl font-mono font-bold text-cyan-400 my-4">
+                    <p className="text-lg text-slate-600">Recording Complete!</p>
+                    <p className="text-5xl font-mono font-bold text-blue-600 my-4">
                         {formatTime(audioData?.duration || 0)}
                     </p>
                     <div className="flex w-full max-w-xs gap-4 mt-4">
                         <button
                             onClick={handleRecordAgain}
-                            className="flex-1 bg-slate-600 text-white font-bold py-3 px-4 rounded-lg hover:bg-slate-500 transition-colors flex items-center justify-center gap-2"
+                            className="flex-1 bg-slate-200 text-slate-800 font-bold py-3 px-4 rounded-lg hover:bg-slate-300 transition-colors flex items-center justify-center gap-2"
                         >
                             <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
                                 <path fillRule="evenodd" d="M4 2a1 1 0 011 1v2.101a7.002 7.002 0 0111.601 2.566 1 1 0 11-1.885.666A5.002 5.002 0 005.999 7H9a1 1 0 010 2H4a1 1 0 01-1-1V3a1 1 0 011-1zm.008 9.057a1 1 0 011.276.61A5.002 5.002 0 0014.001 13H11a1 1 0 110-2h5a1 1 0 011 1v5a1 1 0 11-2 0v-2.101a7.002 7.002 0 01-11.601-2.566 1 1 0 01.61-1.276z" clipRule="evenodd" />
@@ -164,7 +167,7 @@ const PracticeScreen: React.FC = () => {
                         </button>
                         <button
                             onClick={handleCheckScore}
-                            className="flex-1 bg-cyan-600 text-white font-bold py-3 px-4 rounded-lg hover:bg-cyan-700 transition-colors focus:outline-none focus:ring-4 focus:ring-cyan-500/50 flex items-center justify-center gap-2"
+                            className="flex-1 bg-blue-600 text-white font-bold py-3 px-4 rounded-lg hover:bg-blue-700 transition-colors focus:outline-none focus:ring-4 focus:ring-blue-500/50 flex items-center justify-center gap-2"
                         >
                             Analyze
                             <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
@@ -177,7 +180,7 @@ const PracticeScreen: React.FC = () => {
         }
 
         const isRecording = recordingStatus === 'recording';
-        const timerColor = isRecording ? 'text-red-500 animate-pulse' : 'text-cyan-400';
+        const timerColor = isRecording ? 'text-red-500 animate-pulse' : 'text-blue-600';
 
         return (
             <div className="flex flex-col items-center justify-center w-full h-full text-center">
@@ -203,7 +206,7 @@ const PracticeScreen: React.FC = () => {
                         </svg>
                     )}
                 </button>
-                <p className="mt-4 text-sm text-slate-400">{isRecording ? 'Recording...' : 'Tap to start'}</p>
+                <p className="mt-4 text-sm text-slate-500">{isRecording ? 'Recording...' : 'Tap to start'}</p>
             </div>
         );
     };
@@ -211,36 +214,38 @@ const PracticeScreen: React.FC = () => {
     return (
         <div className="max-w-4xl mx-auto">
             <Scenario />
-            <div className="grid md:grid-cols-2 gap-6">
+            <div className="grid md:grid-cols-2 gap-6 mt-6">
                 <Script />
-                <div className="flex flex-col items-center justify-center bg-slate-800 p-6 rounded-lg border border-slate-700">
-                    {micError ? (
-                        <>
-                            <div className="text-center p-4">
-                                <svg xmlns="http://www.w3.org/2000/svg" className="mx-auto h-12 w-12 text-red-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
-                                    <path strokeLinecap="round" strokeLinejoin="round" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3zM3 3l18 18" />
-                                </svg>
-                                <h3 className="mt-2 text-lg font-semibold text-red-300">Microphone Error</h3>
-                                <p className="mt-2 text-sm text-slate-400">{micError}</p>
-                                <div className="mt-4 flex flex-col sm:flex-row gap-2">
-                                    <button onClick={() => setIsHelpModalOpen(true)} className="w-full bg-slate-600 text-white font-bold py-2 px-5 rounded-lg hover:bg-slate-500 transition-colors">
-                                        Show Help
-                                    </button>
-                                    <button onClick={() => setMicError(null)} className="w-full bg-cyan-600 text-white font-bold py-2 px-5 rounded-lg hover:bg-cyan-700 transition-colors">
-                                        Retry
-                                    </button>
+                <Card title="Recording Controls">
+                    <div className="p-6 h-96 flex flex-col items-center justify-center">
+                        {micError ? (
+                            <>
+                                <div className="text-center p-4">
+                                    <svg xmlns="http://www.w3.org/2000/svg" className="mx-auto h-12 w-12 text-red-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+                                        <path strokeLinecap="round" strokeLinejoin="round" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3zM3 3l18 18" />
+                                    </svg>
+                                    <h3 className="mt-2 text-lg font-semibold text-red-600">Microphone Error</h3>
+                                    <p className="mt-2 text-sm text-slate-500">{micError}</p>
+                                    <div className="mt-4 flex flex-col sm:flex-row gap-2">
+                                        <button onClick={() => setIsHelpModalOpen(true)} className="w-full bg-slate-200 text-slate-800 font-bold py-2 px-5 rounded-lg hover:bg-slate-300 transition-colors">
+                                            Show Help
+                                        </button>
+                                        <button onClick={() => setMicError(null)} className="w-full bg-blue-600 text-white font-bold py-2 px-5 rounded-lg hover:bg-blue-700 transition-colors">
+                                            Retry
+                                        </button>
+                                    </div>
                                 </div>
-                            </div>
-                            <MicrophoneHelpModal isOpen={isHelpModalOpen} onClose={() => setIsHelpModalOpen(false)} />
-                        </>
-                    ) : (
-                        renderControls()
-                    )}
-                </div>
+                                <MicrophoneHelpModal isOpen={isHelpModalOpen} onClose={() => setIsHelpModalOpen(false)} />
+                            </>
+                        ) : (
+                            renderControls()
+                        )}
+                    </div>
+                </Card>
             </div>
-            {error && <p className="text-red-400 text-center mt-4">{error}</p>}
+            {error && <p className="text-red-500 text-center mt-4">{error}</p>}
             <div className="text-center mt-8">
-                <button onClick={handleBackToSelection} className="text-sm text-cyan-400 hover:text-cyan-300 flex items-center mx-auto">
+                <button onClick={handleBackToSelection} className="text-sm text-blue-600 hover:text-blue-700 flex items-center mx-auto">
                     <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                         <path strokeLinecap="round" strokeLinejoin="round" d="M11 17l-5-5m0 0l5-5m-5 5h12" />
                     </svg>

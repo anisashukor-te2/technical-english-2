@@ -8,14 +8,14 @@ interface MicrophoneHelpModalProps {
 
 const InstructionStep: React.FC<{ step: number; children: React.ReactNode }> = ({ step, children }) => (
     <li className="flex items-start gap-3">
-        <div className="flex-shrink-0 w-6 h-6 rounded-full bg-cyan-600 text-white flex items-center justify-center font-bold text-sm">{step}</div>
-        <div className="flex-grow pt-0.5 text-slate-300">{children}</div>
+        <div className="flex-shrink-0 w-6 h-6 rounded-full bg-blue-600 text-white flex items-center justify-center font-bold text-sm">{step}</div>
+        <div className="flex-grow pt-0.5 text-slate-700">{children}</div>
     </li>
 );
 
 const BrowserInstructions: React.FC<{ browserName: string; children: React.ReactNode }> = ({ browserName, children }) => (
     <div>
-        <h4 className="text-lg font-semibold text-slate-200 mb-2">{browserName}</h4>
+        <h4 className="text-lg font-semibold text-slate-800 mb-2">{browserName}</h4>
         <ol className="space-y-3 text-sm">
             {children}
         </ol>
@@ -33,7 +33,7 @@ const MicrophoneHelpModal: React.FC<MicrophoneHelpModalProps> = ({ isOpen, onClo
   return (
     <Modal isOpen={isOpen} onClose={onClose} title="How to Enable Your Microphone">
         <div className="space-y-6">
-            <p className="text-slate-400">
+            <p className="text-slate-600">
                 To use the recording features, your browser needs permission to access your microphone. Follow the steps for your browser below.
             </p>
             
@@ -64,7 +64,7 @@ const MicrophoneHelpModal: React.FC<MicrophoneHelpModalProps> = ({ isOpen, onClo
                 </InstructionStep>
             </BrowserInstructions>
 
-            <p className="text-xs text-slate-500 text-center pt-4 border-t border-slate-700">
+            <p className="text-xs text-slate-500 text-center pt-4 border-t border-slate-200">
                 If you are still having trouble, check your computer's system settings to ensure your microphone is enabled and not being used by another application.
             </p>
         </div>

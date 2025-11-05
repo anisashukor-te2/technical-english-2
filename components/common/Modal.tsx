@@ -34,20 +34,20 @@ const Modal: React.FC<ModalProps> = ({ isOpen, onClose, title, children, footer 
 
   return (
     <div
-      className="fixed inset-0 bg-black bg-opacity-75 flex justify-center items-center z-50 animate-fade-in p-4"
+      className="fixed inset-0 bg-slate-900/50 backdrop-blur-sm flex justify-center items-center z-50 animate-fade-in p-4"
       onClick={onClose}
       aria-modal="true"
       role="dialog"
     >
       <div
-        className="bg-slate-800 rounded-lg shadow-xl w-full max-w-3xl max-h-[90vh] flex flex-col border border-slate-700"
+        className="bg-slate-50/80 backdrop-blur-xl rounded-lg shadow-2xl w-full max-w-3xl max-h-[90vh] flex flex-col border border-white/50"
         onClick={(e) => e.stopPropagation()}
       >
-        <header className="flex justify-between items-center p-4 border-b border-slate-700 flex-shrink-0">
-          <h2 className="text-xl font-bold text-cyan-400">{title}</h2>
+        <header className="flex justify-between items-center p-4 border-b border-slate-200 flex-shrink-0">
+          <h2 className="text-xl font-bold text-blue-700">{title}</h2>
           <button
             onClick={onClose}
-            className="text-slate-400 hover:text-white"
+            className="text-slate-500 hover:text-slate-800"
             aria-label="Close modal"
           >
             <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -55,11 +55,11 @@ const Modal: React.FC<ModalProps> = ({ isOpen, onClose, title, children, footer 
             </svg>
           </button>
         </header>
-        <main className="p-6 overflow-y-auto">
+        <main className="p-6 overflow-y-auto text-slate-700">
           {children}
         </main>
         {footer && (
-          <footer className="p-4 border-t border-slate-700 bg-slate-800/50 rounded-b-lg flex-shrink-0">
+          <footer className="p-4 border-t border-slate-200 bg-slate-50/50 rounded-b-lg flex-shrink-0">
             {footer}
           </footer>
         )}

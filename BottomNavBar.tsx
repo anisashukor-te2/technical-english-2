@@ -34,17 +34,21 @@ const ResourcesIcon = () => (
   </svg>
 );
 
-const NavItem: React.FC<{
+interface NavItemProps {
   label: string;
   module: ActiveModule;
   isActive: boolean;
   onClick: (module: ActiveModule) => void;
   children: React.ReactNode;
-}> = ({ label, module, isActive, onClick, children }) => (
+  activeColor: string;
+  focusRingColor: string;
+}
+
+const NavItem: React.FC<NavItemProps> = ({ label, module, isActive, onClick, children, activeColor, focusRingColor }) => (
   <button
     onClick={() => onClick(module)}
-    className={`flex-1 flex flex-col items-center justify-center p-2 rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-fuchsia-500/50 ${
-      isActive ? 'text-fuchsia-400' : 'text-slate-400 hover:bg-slate-700/50'
+    className={`flex-1 flex flex-col items-center justify-center p-2 rounded-lg transition-colors focus:outline-none focus:ring-2 ${focusRingColor} ${
+      isActive ? activeColor : 'text-slate-500 hover:bg-white/50'
     }`}
     aria-current={isActive ? 'page' : undefined}
   >
@@ -60,18 +64,46 @@ const BottomNavBar: React.FC<BottomNavBarProps> = ({ activeModule, setActiveModu
   };
 
   return (
-    <footer className="fixed bottom-0 left-0 right-0 bg-slate-900/80 backdrop-blur-sm border-t border-slate-700 z-20">
+    <footer className="fixed bottom-0 left-0 right-0 bg-white/50 backdrop-blur-lg border-t border-white/30 z-20">
       <nav className="max-w-md mx-auto flex items-center justify-around p-1">
-        <NavItem label="Presentation" module="PRESENTATION" isActive={activeModule === 'PRESENTATION'} onClick={handleNavClick}>
+        <NavItem
+          label="Presentation"
+          module="PRESENTATION"
+          isActive={activeModule === 'PRESENTATION'}
+          onClick={handleNavClick}
+          activeColor="bg-blue-200/50 text-blue-700 font-bold"
+          focusRingColor="focus:ring-blue-500/50"
+        >
           <PresentationIcon />
         </NavItem>
-        <NavItem label="Meeting" module="MEETING" isActive={activeModule === 'MEETING'} onClick={handleNavClick}>
+        <NavItem
+          label="Meeting"
+          module="MEETING"
+          isActive={activeModule === 'MEETING'}
+          onClick={handleNavClick}
+          activeColor="bg-violet-200/50 text-violet-700 font-bold"
+          focusRingColor="focus:ring-violet-500/50"
+        >
           <MeetingIcon />
         </NavItem>
-        <NavItem label="Complaints" module="COMPLAINTS" isActive={activeModule === 'COMPLAINTS'} onClick={handleNavClick}>
+        <NavItem
+          label="Complaints"
+          module="COMPLAINTS"
+          isActive={activeModule === 'COMPLAINTS'}
+          onClick={handleNavClick}
+          activeColor="bg-amber-200/50 text-amber-700 font-bold"
+          focusRingColor="focus:ring-amber-500/50"
+        >
           <ComplaintsIcon />
         </NavItem>
-        <NavItem label="Resources" module="RESOURCES" isActive={activeModule === 'RESOURCES'} onClick={handleNavClick}>
+        <NavItem
+          label="Resources"
+          module="RESOURCES"
+          isActive={activeModule === 'RESOURCES'}
+          onClick={handleNavClick}
+          activeColor="bg-green-200/50 text-green-700 font-bold"
+          focusRingColor="focus:ring-green-500/50"
+        >
           <ResourcesIcon />
         </NavItem>
       </nav>

@@ -1,6 +1,3 @@
-
-
-
 import React, { useState } from 'react';
 import { Lecturer } from '../types';
 import Modal from './common/Modal';
@@ -50,11 +47,11 @@ const PasswordResetModal: React.FC<{
     return (
         <Modal isOpen={isOpen} onClose={handleClose} title="Reset Your Password">
             <form onSubmit={handleSendResetLink} className="space-y-4">
-                <p className="text-sm text-slate-400">
+                <p className="text-sm text-slate-500">
                     Enter the email address associated with your account, and we'll send you a link to reset your password.
                 </p>
                 <div>
-                    <label htmlFor="reset-email" className="block text-sm font-medium text-slate-300">Email Address</label>
+                    <label htmlFor="reset-email" className="block text-sm font-medium text-slate-700">Email Address</label>
                     <input
                         id="reset-email"
                         type="email"
@@ -62,14 +59,14 @@ const PasswordResetModal: React.FC<{
                         value={resetEmail}
                         onChange={(e) => setResetEmail(e.target.value)}
                         placeholder="your.email@example.com"
-                        className="mt-1 block w-full bg-slate-900 border border-slate-600 rounded-md shadow-sm p-3 focus:ring-cyan-500 focus:border-cyan-500"
+                        className="mt-1 block w-full bg-slate-50 border border-slate-300 rounded-md shadow-sm p-3 focus:ring-blue-500 focus:border-blue-500"
                         required
                     />
                 </div>
-                {message && <p className="text-green-400 text-sm text-center">{message}</p>}
+                {message && <p className="text-green-600 text-sm text-center">{message}</p>}
                 <div className="flex justify-end gap-3 pt-4">
-                    <button type="button" onClick={handleClose} className="bg-slate-600 text-white font-bold py-2 px-4 rounded-lg hover:bg-slate-500">Cancel</button>
-                    <button type="submit" disabled={isSending || !!message} className="bg-cyan-600 text-white font-bold py-2 px-4 rounded-lg hover:bg-cyan-700 disabled:opacity-50 disabled:cursor-not-allowed">
+                    <button type="button" onClick={handleClose} className="bg-slate-200 text-slate-800 font-bold py-2 px-4 rounded-lg hover:bg-slate-300">Cancel</button>
+                    <button type="submit" disabled={isSending || !!message} className="bg-blue-600 text-white font-bold py-2 px-4 rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed">
                         {isSending ? 'Sending...' : 'Send Reset Link'}
                     </button>
                 </div>
@@ -163,10 +160,10 @@ const LecturerLoginScreen: React.FC<LecturerLoginScreenProps> = ({ onLogin, onRe
 
   const renderLoginForm = () => (
     <div className="animate-fade-in">
-        <h2 className="text-xl font-bold text-center text-slate-200 mb-4">Lecturer Login</h2>
+        <h2 className="text-xl font-bold text-center text-slate-800 mb-4">Lecturer Login</h2>
         <form onSubmit={handleLoginSubmit} className="space-y-4">
           <div>
-            <label htmlFor="email" className="block text-sm font-medium text-slate-300">Email Address</label>
+            <label htmlFor="email" className="block text-sm font-medium text-slate-700">Email Address</label>
             <input
               id="email"
               type="email"
@@ -174,13 +171,13 @@ const LecturerLoginScreen: React.FC<LecturerLoginScreenProps> = ({ onLogin, onRe
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               placeholder="e.g., lecturer@example.com"
-              className="mt-1 block w-full bg-slate-900 border border-slate-600 rounded-md shadow-sm p-3 focus:ring-cyan-500 focus:border-cyan-500"
+              className="mt-1 block w-full bg-white/80 border border-slate-300 rounded-md shadow-sm p-3 focus:ring-blue-500 focus:border-blue-500"
             />
           </div>
            <div>
                 <div className="flex justify-between items-baseline">
-                    <label htmlFor="password" className="block text-sm font-medium text-slate-300">Password</label>
-                    <button type="button" onClick={() => setIsResetModalOpen(true)} className="text-sm font-semibold text-cyan-400 hover:underline focus:outline-none">
+                    <label htmlFor="password" className="block text-sm font-medium text-slate-700">Password</label>
+                    <button type="button" onClick={() => setIsResetModalOpen(true)} className="text-sm font-semibold text-blue-600 hover:underline focus:outline-none">
                         Forgot Password?
                     </button>
                 </div>
@@ -191,16 +188,16 @@ const LecturerLoginScreen: React.FC<LecturerLoginScreenProps> = ({ onLogin, onRe
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   placeholder="••••••••"
-                  className="mt-1 block w-full bg-slate-900 border border-slate-600 rounded-md shadow-sm p-3 focus:ring-cyan-500 focus:border-cyan-500"
+                  className="mt-1 block w-full bg-white/80 border border-slate-300 rounded-md shadow-sm p-3 focus:ring-blue-500 focus:border-blue-500"
                 />
             </div>
-          <button type="submit" className="w-full bg-cyan-600 text-white font-bold py-3 px-4 rounded-lg hover:bg-cyan-700 transition-colors">
+          <button type="submit" className="w-full bg-blue-600 text-white font-bold py-3 px-4 rounded-lg hover:bg-blue-700 transition-colors">
             Login
           </button>
         </form>
-         <p className="text-center text-sm text-slate-400 mt-6">
+         <p className="text-center text-sm text-slate-600 mt-6">
             Don't have an account?{' '}
-            <button type="button" onClick={() => switchView('REGISTER')} className="font-semibold text-cyan-400 hover:underline focus:outline-none">
+            <button type="button" onClick={() => switchView('REGISTER')} className="font-semibold text-blue-600 hover:underline focus:outline-none">
                 Register here
             </button>
         </p>
@@ -209,10 +206,10 @@ const LecturerLoginScreen: React.FC<LecturerLoginScreenProps> = ({ onLogin, onRe
 
   const renderRegisterForm = () => (
     <div className="animate-fade-in">
-        <h2 className="text-xl font-bold text-center text-slate-200 mb-4">Lecturer Registration</h2>
+        <h2 className="text-xl font-bold text-center text-slate-800 mb-4">Lecturer Registration</h2>
         <form onSubmit={handleRegisterSubmit} className="space-y-4">
           <div>
-            <label htmlFor="registerEmail" className="block text-sm font-medium text-slate-300">Email Address</label>
+            <label htmlFor="registerEmail" className="block text-sm font-medium text-slate-700">Email Address</label>
             <input
               id="registerEmail"
               type="email"
@@ -220,25 +217,25 @@ const LecturerLoginScreen: React.FC<LecturerLoginScreenProps> = ({ onLogin, onRe
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               placeholder="Enter your email address"
-              className="mt-1 block w-full bg-slate-900 border border-slate-600 rounded-md shadow-sm p-3 focus:ring-cyan-500 focus:border-cyan-500"
+              className="mt-1 block w-full bg-white/80 border border-slate-300 rounded-md shadow-sm p-3 focus:ring-blue-500 focus:border-blue-500"
             />
           </div>
           <div>
-            <label htmlFor="courseCode" className="block text-sm font-medium text-slate-300">Course ID</label>
+            <label htmlFor="courseCode" className="block text-sm font-medium text-slate-700">Course ID</label>
             <input
               id="courseCode"
               type="text"
               value={courseCode}
               onChange={(e) => setCourseCode(e.target.value)}
               placeholder="e.g., DUE30072"
-              className="mt-1 block w-full bg-slate-900 border border-slate-600 rounded-md shadow-sm p-3 focus:ring-cyan-500 focus:border-cyan-500"
+              className="mt-1 block w-full bg-white/80 border border-slate-300 rounded-md shadow-sm p-3 focus:ring-blue-500 focus:border-blue-500"
             />
           </div>
           <div>
             {classCodes.map((code, index) => (
                 <div key={index} className="flex items-end gap-2 mb-2">
                     <div className="flex-grow">
-                        <label htmlFor={`classCode-${index}`} className="block text-sm font-medium text-slate-300">
+                        <label htmlFor={`classCode-${index}`} className="block text-sm font-medium text-slate-700">
                             {index === 0 ? 'Class ID' : `Class ID #${index + 1}`}
                         </label>
                         <input
@@ -247,14 +244,14 @@ const LecturerLoginScreen: React.FC<LecturerLoginScreenProps> = ({ onLogin, onRe
                             value={code}
                             onChange={(e) => handleClassCodeChange(index, e.target.value)}
                             placeholder="e.g., DKM5A"
-                            className="mt-1 block w-full bg-slate-900 border border-slate-600 rounded-md shadow-sm p-3 focus:ring-cyan-500 focus:border-cyan-500"
+                            className="mt-1 block w-full bg-white/80 border border-slate-300 rounded-md shadow-sm p-3 focus:ring-blue-500 focus:border-blue-500"
                         />
                     </div>
                     {classCodes.length > 1 && (
                         <button
                             type="button"
                             onClick={() => handleRemoveClassCode(index)}
-                            className="p-3 bg-red-800 text-white rounded-md hover:bg-red-700"
+                            className="p-3 bg-red-600 text-white rounded-md hover:bg-red-700"
                             aria-label="Remove class ID"
                         >
                             <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
@@ -267,14 +264,14 @@ const LecturerLoginScreen: React.FC<LecturerLoginScreenProps> = ({ onLogin, onRe
             <button
                 type="button"
                 onClick={handleAddClassCode}
-                className="w-full text-sm text-cyan-400 hover:text-cyan-300 transition-colors py-1 disabled:opacity-50"
+                className="w-full text-sm text-blue-600 hover:text-blue-700 transition-colors py-1 disabled:opacity-50"
                 disabled={classCodes.length >= 5}
             >
                 + Add Another Class
             </button>
           </div>
           <div>
-            <label htmlFor="registerPassword" className="block text-sm font-medium text-slate-300">Password</label>
+            <label htmlFor="registerPassword" className="block text-sm font-medium text-slate-700">Password</label>
             <input
               id="registerPassword"
               type="password"
@@ -282,11 +279,11 @@ const LecturerLoginScreen: React.FC<LecturerLoginScreenProps> = ({ onLogin, onRe
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               placeholder="At least 6 characters"
-              className="mt-1 block w-full bg-slate-900 border border-slate-600 rounded-md shadow-sm p-3 focus:ring-cyan-500 focus:border-cyan-500"
+              className="mt-1 block w-full bg-white/80 border border-slate-300 rounded-md shadow-sm p-3 focus:ring-blue-500 focus:border-blue-500"
             />
           </div>
            <div>
-            <label htmlFor="confirmPassword" className="block text-sm font-medium text-slate-300">Confirm Password</label>
+            <label htmlFor="confirmPassword" className="block text-sm font-medium text-slate-700">Confirm Password</label>
             <input
               id="confirmPassword"
               type="password"
@@ -294,16 +291,16 @@ const LecturerLoginScreen: React.FC<LecturerLoginScreenProps> = ({ onLogin, onRe
               value={confirmPassword}
               onChange={(e) => setConfirmPassword(e.target.value)}
               placeholder="••••••••"
-              className="mt-1 block w-full bg-slate-900 border border-slate-600 rounded-md shadow-sm p-3 focus:ring-cyan-500 focus:border-cyan-500"
+              className="mt-1 block w-full bg-white/80 border border-slate-300 rounded-md shadow-sm p-3 focus:ring-blue-500 focus:border-blue-500"
             />
           </div>
-          <button type="submit" className="w-full bg-cyan-600 text-white font-bold py-3 px-4 rounded-lg hover:bg-cyan-700 transition-colors">
+          <button type="submit" className="w-full bg-blue-600 text-white font-bold py-3 px-4 rounded-lg hover:bg-blue-700 transition-colors">
             Register
           </button>
         </form>
-        <p className="text-center text-sm text-slate-400 mt-6">
+        <p className="text-center text-sm text-slate-600 mt-6">
             Already have an account?{' '}
-            <button type="button" onClick={() => switchView('LOGIN')} className="font-semibold text-cyan-400 hover:underline focus:outline-none">
+            <button type="button" onClick={() => switchView('LOGIN')} className="font-semibold text-blue-600 hover:underline focus:outline-none">
                 Login here
             </button>
         </p>
@@ -317,17 +314,17 @@ const LecturerLoginScreen: React.FC<LecturerLoginScreenProps> = ({ onLogin, onRe
         <main className="flex-grow flex items-center justify-center p-4">
             <div className="w-full max-w-md">
                 <div className="text-center mb-8">
-                    <h1 className="text-3xl font-bold text-cyan-400">Technical English 2</h1>
-                    <p className="text-slate-400">Lecturer Access</p>
+                    <h1 className="text-3xl font-bold text-blue-700">Technical English 2</h1>
+                    <p className="text-slate-600">Lecturer Access</p>
                 </div>
-                <div className="bg-slate-800/70 backdrop-blur-sm border border-slate-700 rounded-lg shadow-lg p-8">
-                {displayError && <p className="text-red-400 text-center text-sm mb-4">{displayError}</p>}
+                <div className="bg-white/60 backdrop-blur-lg border border-white/30 rounded-lg shadow-xl p-8">
+                {displayError && <p className="text-red-500 text-center text-sm mb-4">{displayError}</p>}
                 {view === 'LOGIN' ? renderLoginForm() : renderRegisterForm()}
-                <div className="text-center mt-6 border-t border-slate-700 pt-4">
+                <div className="text-center mt-6 border-t border-slate-200 pt-4">
                     <button
                         type="button"
                         onClick={onBack}
-                        className="text-sm text-slate-400 hover:text-cyan-400 transition-colors"
+                        className="text-sm text-slate-500 hover:text-blue-600 transition-colors"
                     >
                         Not a lecturer? Go back to main page.
                     </button>
