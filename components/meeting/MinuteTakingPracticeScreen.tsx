@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import Card from '../Card';
 import Loader from '../Loader';
+// FIX: Add missing imports from geminiService
 import { MINUTE_TAKING_TRANSCRIPT, getMinuteTakingFeedback } from '../../services/geminiService';
 import { MinuteFeedbackData, MinuteTakingSession, Student, Lecturer } from '../../types';
 // FIX: Switched to a named import for MinuteFeedbackDisplay to resolve module resolution error.

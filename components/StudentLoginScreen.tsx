@@ -1,7 +1,10 @@
 
 
+
 import React, { useState } from 'react';
 import { Student } from '../types';
+import Modal from './common/Modal';
+import * as firebaseService from '../services/firebaseService';
 
 interface StudentLoginScreenProps {
   onLogin: (email: string, password: string) => void;
@@ -11,6 +14,70 @@ interface StudentLoginScreenProps {
   clearError: () => void;
 }
 
+const PasswordResetModal: React.FC<{
+    isOpen: boolean;
+    onClose: () => void;
+}> = ({ isOpen, onClose }) => {
+    const [resetEmail, setResetEmail] = useState('');
+    const [message, setMessage] = useState<string | null>(null);
+    const [isSending, setIsSending] = useState(false);
+
+    const handleClose = () => {
+        onClose();
+        setTimeout(() => {
+            setResetEmail('');
+            setMessage(null);
+            setIsSending(false);
+        }, 300);
+    };
+
+    const handleSendResetLink = async (e: React.FormEvent) => {
+        e.preventDefault();
+        if (!resetEmail) return;
+        
+        setIsSending(true);
+        try {
+            await firebaseService.sendPasswordReset(resetEmail);
+        } catch (error) {
+            console.error("Password reset error:", error);
+        } finally {
+            setMessage('If an account exists for this email, a password reset link has been sent. Please check your inbox and spam folder.');
+            setIsSending(false);
+        }
+    };
+
+    return (
+        <Modal isOpen={isOpen} onClose={handleClose} title="Reset Your Password">
+            <form onSubmit={handleSendResetLink} className="space-y-4">
+                <p className="text-sm text-slate-400">
+                    Enter the email address associated with your account, and we'll send you a link to reset your password.
+                </p>
+                <div>
+                    <label htmlFor="reset-email" className="block text-sm font-medium text-slate-300">Email Address</label>
+                    <input
+                        id="reset-email"
+                        type="email"
+                        autoComplete="email"
+                        value={resetEmail}
+                        onChange={(e) => setResetEmail(e.target.value)}
+                        placeholder="your.email@example.com"
+                        className="mt-1 block w-full bg-slate-900 border border-slate-600 rounded-md shadow-sm p-3 focus:ring-cyan-500 focus:border-cyan-500"
+                        required
+                    />
+                </div>
+                {message && <p className="text-green-400 text-sm text-center">{message}</p>}
+                <div className="flex justify-end gap-3 pt-4">
+                    <button type="button" onClick={handleClose} className="bg-slate-600 text-white font-bold py-2 px-4 rounded-lg hover:bg-slate-500">Cancel</button>
+                    <button type="submit" disabled={isSending || !!message} className="bg-cyan-600 text-white font-bold py-2 px-4 rounded-lg hover:bg-cyan-700 disabled:opacity-50 disabled:cursor-not-allowed">
+                        {isSending ? 'Sending...' : 'Send Reset Link'}
+                    </button>
+                </div>
+            </form>
+        </Modal>
+    );
+};
+
+
 const StudentLoginScreen: React.FC<StudentLoginScreenProps> = ({ onLogin, onRegister, onBack, error: authError, clearError }) => {
   const [view, setView] = useState<'LOGIN' | 'REGISTER'>('LOGIN');
   const [email, setEmail] = useState('');
@@ -19,6 +86,7 @@ const StudentLoginScreen: React.FC<StudentLoginScreenProps> = ({ onLogin, onRegi
   const [courseId, setCourseId] = useState('');
   const [lecturerClassCode, setLecturerClassCode] = useState('');
   const [formError, setFormError] = useState<string | null>(null);
+  const [isResetModalOpen, setIsResetModalOpen] = useState(false);
   
   const switchView = (newView: 'LOGIN' | 'REGISTER') => {
     setView(newView);
@@ -79,7 +147,7 @@ const StudentLoginScreen: React.FC<StudentLoginScreenProps> = ({ onLogin, onRegi
             <div className="w-full max-w-md">
                 <div className="text-center mb-8">
                     <h1 className="text-3xl font-bold text-cyan-400">Technical English 2</h1>
-                    <p className="text-slate-400">Student Portal</p>
+                    <p className="text-slate-400">Student Access</p>
                 </div>
                 <div className="bg-slate-800/70 backdrop-blur-sm border border-slate-700 rounded-lg shadow-lg p-8">
                 {displayError && <p className="text-red-400 text-center text-sm mb-4">{displayError}</p>}
@@ -101,7 +169,12 @@ const StudentLoginScreen: React.FC<StudentLoginScreenProps> = ({ onLogin, onRegi
                                 />
                             </div>
                             <div>
-                                <label htmlFor="password" className="block text-sm font-medium text-slate-300">Password</label>
+                               <div className="flex justify-between items-baseline">
+                                    <label htmlFor="password" className="block text-sm font-medium text-slate-300">Password</label>
+                                    <button type="button" onClick={() => setIsResetModalOpen(true)} className="text-sm font-semibold text-cyan-400 hover:underline focus:outline-none">
+                                        Forgot Password?
+                                    </button>
+                                </div>
                                 <input
                                 id="password"
                                 type="password"
@@ -208,6 +281,7 @@ const StudentLoginScreen: React.FC<StudentLoginScreenProps> = ({ onLogin, onRegi
                     </button>
                 </div>
                 </div>
+                 <PasswordResetModal isOpen={isResetModalOpen} onClose={() => setIsResetModalOpen(false)} />
             </div>
         </main>
         <footer className="w-full text-left p-4 text-xs text-slate-500">

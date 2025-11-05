@@ -27,7 +27,7 @@ const PresentationModeSelection: React.FC<PresentationModeSelectionProps> = ({ u
         <div className="max-w-4xl mx-auto animate-fade-in">
             <div className="text-center mb-8">
                 <h2 className="text-3xl font-bold text-white">Presentation Skills Practice</h2>
-                <p className="mt-2 text-lg text-slate-400">Choose an option to get started.</p>
+                <p className="mt-2 text-lg text-slate-400">Select a practice mode to begin.</p>
             </div>
             <div className="grid md:grid-cols-3 gap-8">
                 <ModeCard 
@@ -41,7 +41,7 @@ const PresentationModeSelection: React.FC<PresentationModeSelectionProps> = ({ u
                     }
                 />
                 <ModeCard 
-                    title="Practice"
+                    title="Free Practice"
                     description="Bring your own presentation and script to get personalized feedback."
                     onClick={() => handleSelectPresentationMode('FREE')}
                     icon={
@@ -51,8 +51,8 @@ const PresentationModeSelection: React.FC<PresentationModeSelectionProps> = ({ u
                     }
                 />
                  <ModeCard 
-                    title={isLecturer ? "Review Submission" : "Review"}
-                    description={isLecturer ? "Evaluate student submissions and grade assessments." : "View your progress, track analytics over time, and see your unlocked achievements."}
+                    title={isLecturer ? "Review Submissions" : "Review Performance"}
+                    description={isLecturer ? "Evaluate student submissions and provide grades and feedback." : "View your past performance, track progress, and see feedback."}
                     onClick={() => handleSelectPresentationMode('REVIEW')}
                     icon={
                          <svg xmlns="http://www.w3.org/2000/svg" className="h-12 w-12" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>

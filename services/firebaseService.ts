@@ -2,6 +2,7 @@ import {
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
   signOut,
+  sendPasswordResetEmail,
 } from 'firebase/auth';
 import {
   doc,
@@ -94,6 +95,11 @@ export const signInUser = (email: string, password: string) => {
 export const signOutUser = () => {
   return signOut(auth);
 };
+
+export const sendPasswordReset = (email: string) => {
+  return sendPasswordResetEmail(auth, email);
+};
+
 
 // FIX: Changed AuthError to any to handle inconsistencies in error object shapes across different environments or library versions.
 export const formatAuthError = (error: any): string => {

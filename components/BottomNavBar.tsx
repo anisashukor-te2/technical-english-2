@@ -1,4 +1,5 @@
 
+
 import React from 'react';
 import { ActiveModule } from '../types';
 
@@ -43,8 +44,8 @@ const NavItem: React.FC<{
 }> = ({ label, module, isActive, onClick, children }) => (
   <button
     onClick={() => onClick(module)}
-    className={`flex-1 flex flex-col items-center justify-center p-2 rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-fuchsia-500/50 ${
-      isActive ? 'text-fuchsia-400' : 'text-slate-400 hover:bg-slate-700/50'
+    className={`flex-1 flex flex-col items-center justify-center p-2 rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-cyan-500/50 ${
+      isActive ? 'text-cyan-400' : 'text-slate-400 hover:bg-slate-700/50'
     }`}
     aria-current={isActive ? 'page' : undefined}
   >

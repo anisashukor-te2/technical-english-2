@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { ComplaintScenario } from '../../types';
+// FIX: Add missing import from geminiService
 import { generateComplaintStarterScript } from '../../services/geminiService';
 
 interface PracticeScenarioSelectionProps {

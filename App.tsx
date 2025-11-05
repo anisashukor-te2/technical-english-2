@@ -2,7 +2,10 @@
 
 
 
+
+
 import React, { useState, useEffect, useCallback } from 'react';
+// FIX: Add getFreePracticeFeedback import
 import { getPresentationFeedback, getFreePracticeFeedback } from './services/geminiService';
 import { auth } from './firebase';
 import { onAuthStateChanged } from 'firebase/auth';
@@ -17,7 +20,8 @@ import FeedbackScreen from './components/FeedbackScreen';
 import { PresentationReviewScreen } from './components/PresentationReviewScreen';
 import MeetingSkillsModule from './components/meeting/MeetingSkillsModule';
 import HandlingComplaintsModule from './components/complaints/HandlingComplaintsModule';
-import ResourceLibrary from './components/ResourceLibrary';
+// FIX: Change to named import for ResourceLibrary
+import { ResourceLibrary } from './components/ResourceLibrary';
 import UserTypeSelectionScreen from './components/UserTypeSelectionScreen';
 import StudentLoginScreen from './components/StudentLoginScreen';
 import LecturerLoginScreen from './components/LecturerLoginScreen';
@@ -318,7 +322,7 @@ const App: React.FC = () => {
               items.push({ label: 'Presentation Skills', onClick: presentationMode !== 'SELECTION' ? handleBackToSelection : undefined });
               
               if (presentationMode === 'GUIDED' || presentationMode === 'FREE') {
-                  const modeLabel = presentationMode === 'GUIDED' ? 'Guided Practice' : 'Practice';
+                  const modeLabel = presentationMode === 'GUIDED' ? 'Guided Practice' : 'Free Practice';
                   if (practiceView === 'FEEDBACK') {
                       items.push({ label: modeLabel, onClick: handlePracticeAgain });
                       items.push({ label: 'Feedback Report' });
@@ -392,7 +396,7 @@ const App: React.FC = () => {
                     {currentUser.role === 'lecturer' && (
                         <>
                             <button onClick={() => setIsManageClassesModalOpen(true)} className="bg-slate-700 hover:bg-slate-600 text-white font-semibold text-xs py-1 px-3 rounded">
-                                Manage Classes
+                                Manage Class IDs
                             </button>
                             <button onClick={handleOpenViewUsersModal} className="bg-slate-700 hover:bg-slate-600 text-white font-semibold text-xs py-1 px-3 rounded">
                                 View Users
@@ -490,7 +494,7 @@ const ManageClassesModal: React.FC<{
     };
 
     return (
-        <Modal isOpen={isOpen} onClose={onClose} title="Manage Your Classes">
+        <Modal isOpen={isOpen} onClose={onClose} title="Manage Your Class IDs">
             <div className="space-y-4">
                 <p className="text-sm text-slate-400">Add, edit, or remove the class IDs associated with your account. Students will use these to register under you.</p>
                 {classCodes.map((code, index) => (
@@ -524,7 +528,7 @@ const ManageClassesModal: React.FC<{
             </div>
             <div className="mt-6 flex justify-end gap-3">
                  <button onClick={onClose} className="bg-slate-600 text-white font-bold py-2 px-4 rounded-lg hover:bg-slate-500">Cancel</button>
-                 <button onClick={handleSaveChanges} className="bg-blue-600 text-white font-bold py-2 px-4 rounded-lg hover:bg-blue-700">Save Changes</button>
+                 <button onClick={handleSaveChanges} className="bg-cyan-600 text-white font-bold py-2 px-4 rounded-lg hover:bg-cyan-700">Save Changes</button>
             </div>
         </Modal>
     );

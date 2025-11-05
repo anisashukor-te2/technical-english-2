@@ -538,7 +538,7 @@ const FreePracticeScreen: React.FC = () => {
     const renderEditingView = () => (
          <>
             <div className="bg-slate-800 p-6 rounded-lg border border-slate-700 mb-6">
-                <h2 className="text-xl font-bold text-cyan-400 mb-3">Practice</h2>
+                <h2 className="text-xl font-bold text-cyan-400 mb-3">Free Practice</h2>
                 <p className="text-slate-400">
                     Build your presentation below. Upload background media and add speaker notes for each slide. Your work is saved automatically. When ready, press "Start Presenting" to practice.
                 </p>

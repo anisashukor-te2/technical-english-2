@@ -1,11 +1,12 @@
 
 
 
+
 import React from 'react';
 import { useState, useEffect } from 'react';
 import { FeedbackData, PracticeSession, Slide, PeerFeedback } from '../types';
+import * as firebaseService from '../services/firebaseService';
 import Card from './Card';
-import { blobToBase64 } from '../services/firebaseService';
 
 interface FeedbackScreenProps {
   feedback: FeedbackData;
@@ -129,7 +130,7 @@ const SlidesViewer: React.FC<{ slides: Slide[] }> = ({ slides }) => {
 
 const FeedbackScreen: React.FC<FeedbackScreenProps> = ({ feedback, onPracticeAgain, onBackToMenu, recordingUrl, slides, sessionId, studentEmail, isLecturerView = false, isStudent = true, sessionData }) => {
     const [selfReflection, setSelfReflection] = useState('');
-    const [isShared, setIsShared] = useState(false);
+    const [isShared, setIsShared] = useState(sessionData?.isSharedForPeerReview || false);
     const [saveStatusMessage, setSaveStatusMessage] = useState<string | null>(isLecturerView ? null : 'Session auto-saved! Add your reflections below.');
     const [messageIsVisible, setMessageIsVisible] = useState(false);
     const [statusMessageType, setStatusMessageType] = useState<'success' | 'error'>('success');
@@ -142,27 +143,10 @@ const FeedbackScreen: React.FC<FeedbackScreenProps> = ({ feedback, onPracticeAga
     const [lecturerFeedback, setLecturerFeedback] = useState<string>(sessionData?.lecturerFeedback ?? '');
     const [feedbackSaveStatus, setFeedbackSaveStatus] = useState<'idle' | 'saving' | 'saved' | 'error'>('idle');
 
-    // FIX: Property 'recordingData' does not exist. Replaced with logic to fetch from recordingUrl for past sessions.
     useEffect(() => {
-        // If this is a review of a past session, fetch the recording from its URL
-        if (sessionData?.recordingUrl) {
-            const loadRecording = async () => {
-                try {
-                    const response = await fetch(sessionData.recordingUrl);
-                    if (!response.ok) throw new Error('Failed to fetch recording');
-                    const blob = await response.blob();
-                    const base64 = await blobToBase64(blob);
-                    setMediaSrc(`data:${sessionData.recordingMimeType};base64,${base64}`);
-                } catch (e) {
-                    console.error("Failed to load recording from URL:", e);
-                    setMediaSrc('');
-                }
-            };
-            loadRecording();
-        } else if (sessionData) {
-             setMediaSrc(''); // A reviewed session with no URL
-        }
-        else {
+        if (sessionData?.recordingUrl && sessionData.recordingMimeType) {
+             setMediaSrc(sessionData.recordingUrl);
+        } else if (recordingUrl) {
             setMediaSrc(recordingUrl); // For new sessions, use the blob URL passed in props
         }
     }, [sessionData, recordingUrl]);
@@ -171,18 +155,7 @@ const FeedbackScreen: React.FC<FeedbackScreenProps> = ({ feedback, onPracticeAga
         if (sessionData) {
             setSelfReflection(sessionData.selfReflection || '');
             setIsSubmitted(sessionData.isSubmitted || false);
-        } else if (sessionId) {
-            // Fetch initial state if sessionData is not provided from local storage
-            try {
-                const allSessions: PracticeSession[] = JSON.parse(localStorage.getItem('practiceSessions') || '[]');
-                const currentSession = allSessions.find(s => s.id === sessionId);
-                if (currentSession) {
-                    setSelfReflection(currentSession.selfReflection || '');
-                    setIsSubmitted(currentSession.isSubmitted || false);
-                }
-            } catch (error) {
-                console.error("Failed to load session from local storage", error);
-            }
+            setIsShared(sessionData.isSharedForPeerReview || false);
         }
     }, [sessionId, sessionData]);
 
@@ -197,36 +170,11 @@ const FeedbackScreen: React.FC<FeedbackScreenProps> = ({ feedback, onPracticeAga
     }, [saveStatusMessage]);
     
     const handleShareForReview = async () => {
-        if (!sessionId) {
-            setSaveStatusMessage("Cannot share: session data not found.");
-            setStatusMessageType('error');
-            return;
-        }
-
-        try {
-            const allPracticeSessions: PracticeSession[] = JSON.parse(localStorage.getItem('practiceSessions') || '[]');
-            const sessionToShare = allPracticeSessions.find(s => s.id === sessionId);
-
-            if (!sessionToShare) {
-                throw new Error("Original session not found in local storage.");
-            }
-            
-            const peerReviewSessions: PracticeSession[] = JSON.parse(localStorage.getItem('peerReviewSessions') || '[]');
-            peerReviewSessions.push({
-                ...sessionToShare,
-                id: `peer_${sessionId}`, // Make a unique ID for the peer copy
-                // originalSessionId: sessionId, // Not in type, but good for tracking
-                // sharedTimestamp: Date.now(), // Not in type
-            });
-            localStorage.setItem('peerReviewSessions', JSON.stringify(peerReviewSessions));
-
+        const success = await updateSessionField('isSharedForPeerReview', true);
+        if (success) {
             setIsShared(true);
             setSaveStatusMessage("Session shared for peer review!");
             setStatusMessageType('success');
-        } catch (error) {
-            console.error("Failed to share session for peer review:", error);
-            setSaveStatusMessage("Sorry, there was an error sharing your session.");
-            setStatusMessageType('error');
         }
     };
 
@@ -237,19 +185,7 @@ const FeedbackScreen: React.FC<FeedbackScreenProps> = ({ feedback, onPracticeAga
             return false;
         }
         try {
-            const sessions: PracticeSession[] = JSON.parse(localStorage.getItem('practiceSessions') || '[]');
-            const sessionIndex = sessions.findIndex(s => s.id === sessionId);
-            if (sessionIndex === -1) {
-                setSaveStatusMessage("Error: Session not found.");
-                setStatusMessageType('error');
-                return false;
-            }
-            
-            // Create a new object for the updated session to ensure state updates properly
-            const updatedSession = { ...sessions[sessionIndex], [field]: value };
-            sessions[sessionIndex] = updatedSession;
-            
-            localStorage.setItem('practiceSessions', JSON.stringify(sessions));
+            await firebaseService.updateSession('practiceSessions', sessionId, { [field]: value });
             return true;
         } catch (error) {
             console.error("Failed to update session:", error);
@@ -288,21 +224,10 @@ const FeedbackScreen: React.FC<FeedbackScreenProps> = ({ feedback, onPracticeAga
 
         setFeedbackSaveStatus('saving');
         try {
-            const sessions: PracticeSession[] = JSON.parse(localStorage.getItem('practiceSessions') || '[]');
-            const sessionIndex = sessions.findIndex(s => s.id === sessionId);
-            if (sessionIndex === -1) {
-                throw new Error("Session not found");
-            }
-
-            const updatedSession = {
-                ...sessions[sessionIndex],
+            await firebaseService.updateSession('practiceSessions', sessionId, {
                 grade: Number(grade),
                 lecturerFeedback: lecturerFeedback.trim()
-            };
-            sessions[sessionIndex] = updatedSession;
-
-            localStorage.setItem('practiceSessions', JSON.stringify(sessions));
-            
+            });
             setFeedbackSaveStatus('saved');
             setTimeout(() => setFeedbackSaveStatus('idle'), 2000);
         } catch (error) {
@@ -474,7 +399,7 @@ const FeedbackScreen: React.FC<FeedbackScreenProps> = ({ feedback, onPracticeAga
                                         onClick={onPracticeAgain}
                                         className="bg-cyan-600 text-white font-bold py-2 px-4 rounded-lg hover:bg-cyan-700 transition-colors focus:outline-none focus:ring-4 focus:ring-cyan-500/50 text-sm"
                                     >
-                                        Practice Again
+                                        Try Again
                                     </button>
                                     {isStudent && (
                                         <>
@@ -502,7 +427,7 @@ const FeedbackScreen: React.FC<FeedbackScreenProps> = ({ feedback, onPracticeAga
                                         <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                                             <path strokeLinecap="round" strokeLinejoin="round" d="M11 17l-5-5m0 0l5-5m-5 5h12" />
                                         </svg>
-                                        Back to Menu Selection
+                                        Back to Menu
                                     </button>
                                 </div>
                             </div>

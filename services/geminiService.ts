@@ -1,5 +1,7 @@
 
 
+
+
 import { GoogleGenAI, Type } from "@google/genai";
 import { FeedbackData, MinuteFeedbackData, ComplaintFeedbackData, PracticeSession } from '../types';
 
@@ -91,10 +93,12 @@ Sarah: "Will do."
 
 Tuan Ihsan: "Excellent. That's all for today. Thanks, everyone."
 `;
+// FIX: Export transcript for minute taking practice
+export const MINUTE_TAKING_TRANSCRIPT = MEETING_TRANSCRIPT_FOR_MINUTES;
+
 
 // This Base64 audio was generated using the Gemini TTS API with the transcript above.
 // Speakers were mapped as follows: Tuan Ihsan (Kore), Iman (Puck), Sarah (Zephyr).
-const MEETING_AUDIO_BASE_64_PLACEHOLDER = `SUQzBAAAAAAAI1RTU0UAAAAPAAADTGF2ZjU4LjI5LjEwMAAAAAAAAAAAAAAA//tAwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEluZm8AAAAPAAAAAwAAAbAAqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq-AwhL/s0Pl+XPAAAAFVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVV-AwhL/tAwl/0LAmrwAABVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVV-AwhL/s0Pl+XPAAAAFVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVV-AwhL+O+Wc8AAAAVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVV-AwhL/LgB6RWFqdzQAAAVRVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVV-AQAAAAAAAAYAAAOmAQADdAOAAAAEAAAA//8A/y4AekViYXN6NAAABVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVV-AQAAAAAAAAYAAAOmAQADdAOAAAAEAAAA//8A/y4AekViYXN6NAAABVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVV-AQAAAAAAAAYAAAOmAQADdAOAAAAEAAAA//8A/y4AekViYXN6NAAABVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVV`;
 
 
 // FIX: Add schema for FeedbackData to ensure structured JSON output from Gemini
@@ -169,7 +173,8 @@ const callGeminiWithFeedbackSchema = async (prompt: string, mediaPart: {inlineDa
         const jsonText = response.text.trim();
         return JSON.parse(jsonText) as FeedbackData;
     } catch (error) {
-        handleGeminiError(error, 'presentation feedback');
+        // FIX: The function must return a value on all code paths. Re-throwing the error ensures the promise is rejected.
+        return handleGeminiError(error, 'presentation feedback');
     }
 };
 
@@ -182,310 +187,261 @@ export const getPresentationFeedback = async (audioBase64: string, mimeType: str
 
     const prompt = `
     You are an expert AI coach for technical presentations. A student is practicing a presentation for their "Technical English 2" course.
-    Their goal is to practice effective oral presentation skills in the context of process, procedure, and instruction in workplace situations.
+    Their script is provided below. I have also provided an audio file of their practice session. The audio is ${durationInSeconds} seconds long.
 
-    Here is the reference script they were supposed to follow:
+    Your task is to:
+    1.  Transcribe the audio VERBATIM.
+    2.  Compare the transcription to the official script to analyze keyword usage. The key technical terms are provided below.
+    3.  Calculate their pacing (Words Per Minute). A good pace is between 140-160 WPM.
+    4.  Count the usage of common filler words (e.g., um, uh, ah, like, you know, right, so).
+    5.  Provide constructive feedback on their language use (grammar, clarity, formality) based on the transcription.
+    6.  Analyze their voice modulation (vocal variety, tone, confidence) based on the audio.
+    7.  Provide a concise session summary highlighting the 2-3 most important feedback points.
+    8.  Calculate an overall score out of 100, aggregating all factors (pacing, keyword usage, clarity, filler words, etc.).
+
+    Return the analysis in a structured JSON format that strictly adheres to the provided schema. Do not include any text outside of the JSON object.
+
     --- SCRIPT START ---
     ${SCRIPT}
     --- SCRIPT END ---
 
-    Here is a list of key technical terms to listen for: ${KEY_TECHNICAL_TERMS.join(', ')}.
-    
-    The provided audio recording is ${durationInSeconds.toFixed(1)} seconds long.
-
-    Please analyze the user's audio recording and provide feedback. Your analysis must include the following, formatted according to the provided JSON schema:
-    1.  **Transcription**: Transcribe the user's speech verbatim.
-    2.  **Filler Words**: Identify common filler words (like "um", "uh", "ah", "like", "you know", "so", "basically") and count their occurrences.
-    3.  **Pacing**: Calculate the words per minute (WPM) based on your transcription and the audio duration (${durationInSeconds.toFixed(1)} seconds). Provide brief feedback on the pace (e.g., "Your pace is great," "You might be speaking a bit too quickly," etc.). A good pace is typically between 140-160 WPM.
-    4.  **Keyword Analysis**: Compare the transcribed text to the list of key technical terms. List which keywords were successfully used and which were missed. Provide brief feedback.
-    5.  **Language Appropriateness**: Provide constructive feedback on the user's language. Focus on formality, technical accuracy, and clarity. Suggest more precise terms or better phrasing if applicable. Be encouraging. Also, incorporate feedback on filler words here. Based on the total count from your 'fillerWords' analysis: if the total count is 5 or more, add a direct suggestion like 'You used filler words like 'um' and 'ah' frequently. Try pausing silently instead to gather your thoughts.' If the total count is less than 5, acknowledge the low count with positive feedback like 'Great job keeping filler words to a minimum!'
-    6.  **Overall Score**: Provide a single, aggregated score from 0 to 100. This score should be a holistic evaluation based on all the factors you've analyzed: pacing (ideal is 140-160 WPM), minimal filler words, effective use of keywords (high found, low missed), and appropriate, clear language. A high score represents a well-delivered, technically sound presentation.
-    7.  **Voice Modulation**: Analyze the user's vocal variety from the audio. Was the delivery monotone or engaging? Identify areas where varying pitch and tone could have made key points more impactful. Provide specific, constructive suggestions for improvement.
-    8.  **Session Summary**: Based on all your analysis, create a concise summary of the 2-3 most important feedback points. Format this as a single string with bullet points starting with a hyphen. Highlight one key strength and one main area for improvement.
+    --- KEY TECHNICAL TERMS ---
+    ${KEY_TECHNICAL_TERMS.join(", ")}
+    --- END KEY TECHNICAL TERMS ---
     `;
-    
-    return callGeminiWithFeedbackSchema(prompt, audioPart);
+
+    return await callGeminiWithFeedbackSchema(prompt, audioPart);
 };
 
-
-export const getFreePracticeFeedback = async (recordingBase64: string, mimeType: string, durationInSeconds: number, userScript: string): Promise<FeedbackData> => {
-     const mediaPart = {
-        inlineData: { data: recordingBase64, mimeType: mimeType },
+// FIX: Add and export getFreePracticeFeedback function
+export const getFreePracticeFeedback = async (audioBase64: string, mimeType: string, durationInSeconds: number, userScript: string): Promise<FeedbackData> => {
+    const audioPart = {
+        inlineData: { data: audioBase64, mimeType: mimeType },
     };
 
     const prompt = `
-    You are an expert AI coach for technical presentations. A student is practicing their own custom presentation for their "Technical English 2" course.
-    Their goal is to practice effective oral presentation skills. The provided media is an audio recording of their presentation. You must analyze this audio recording.
-
-    Here is the custom script the user prepared for their presentation:
+    You are an expert AI coach for technical presentations. A student is practicing a presentation for their "Technical English 2" course using their own custom script.
+    Their provided script is:
     --- SCRIPT START ---
     ${userScript}
     --- SCRIPT END ---
-    
-    The provided audio recording is ${durationInSeconds.toFixed(1)} seconds long.
 
-    Please analyze the user's audio recording and provide feedback. Your analysis must include the following, formatted according to the provided JSON schema:
-    1.  **Transcription**: Transcribe the user's speech verbatim from the audio track.
-    2.  **Filler Words**: Identify common filler words (like "um", "uh", "ah", "like", "you know", "so", "basically") and count their occurrences.
-    3.  **Pacing**: Calculate the words per minute (WPM) based on your transcription and the recording duration (${durationInSeconds.toFixed(1)} seconds). Provide brief feedback on the pace (e.g., "Your pace is great," "You might be speaking a bit too quickly," etc.). A good pace is typically between 140-160 WPM.
-    4.  **Keyword Analysis**: First, identify the most important technical keywords and concepts from the user's provided script. Then, compare the transcribed text to the list of keywords you identified. List which keywords were successfully used and which were missed. Provide brief feedback on how well they covered their own key points.
-    5.  **Language Appropriateness**: Provide constructive feedback on the user's language. Focus on formality, technical accuracy, and clarity based on their provided script. Suggest more precise terms or better phrasing if applicable. Be encouraging.
-    6.  **Overall Score**: Provide a single, aggregated score from 0 to 100. This score should be a holistic evaluation based on all the factors you've analyzed: pacing (ideal is 140-160 WPM), minimal filler words, effective use of keywords from their script, and appropriate, clear language. A high score represents a well-delivered, technically sound presentation.
-    7.  **Voice Modulation**: Analyze the user's vocal variety from the audio track. Was the delivery monotone or engaging? Identify areas where varying pitch and tone could have made their key points more impactful. Provide specific, constructive suggestions for improvement.
-    8.  **Session Summary**: Based on all your analysis, create a concise summary of the 2-3 most important feedback points. Format this as a single string with bullet points starting with a hyphen. Highlight one key strength and one main area for improvement.
+    I have provided an audio file of their practice session. The audio is ${durationInSeconds} seconds long.
+
+    Please analyze the student's performance based ONLY on the provided audio and their script.
+
+    Your task is to:
+    1.  Transcribe the audio VERBATIM.
+    2.  Compare the transcription to their provided script to analyze keyword usage. Identify key technical terms from their script and check if they were spoken.
+    3.  Calculate their pacing (Words Per Minute). A good pace is between 140-160 WPM.
+    4.  Count the usage of common filler words (e.g., um, uh, ah, like, you know, right, so).
+    5.  Provide constructive feedback on their language use, clarity, and grammar.
+    6.  Analyze their voice modulation (vocal variety, tone, confidence).
+    7.  Provide a concise session summary highlighting the 2-3 most important feedback points.
+    8.  Calculate an overall score out of 100, aggregating all factors.
+
+    Return the analysis in a structured JSON format that strictly adheres to the provided schema. Do not include any text outside of the JSON object.
     `;
 
-    return callGeminiWithFeedbackSchema(prompt, mediaPart);
+    return await callGeminiWithFeedbackSchema(prompt, audioPart);
 };
 
-// FIX: Define a model answer for the minute-taking practice.
-const MODEL_MINUTES = `
-Meeting Title: Q3 Software Release 'Odyssey' - Roadblock Discussion
-Date: [Today's Date]
 
-Attendees:
+// FIX: Add schema, model answer, and function for minute taking feedback
+const minuteFeedbackDataSchema = {
+    type: Type.OBJECT,
+    properties: {
+        accuracyScore: { type: Type.NUMBER, description: "Score from 0-100 based on how well the user's minutes captured the key points from the model answer." },
+        capturedCorrectly: { type: Type.ARRAY, items: { type: Type.STRING }, description: "A list of key decisions or action items the user correctly identified." },
+        missedItems: { type: Type.ARRAY, items: { type: Type.STRING }, description: "A list of key decisions or action items the user missed." },
+        suggestions: { type: Type.ARRAY, items: { type: Type.STRING }, description: "Specific suggestions for improving the minutes (e.g., clarity, formatting, conciseness)." },
+        summary: { type: Type.STRING, description: "A one or two-sentence summary of the feedback." }
+    },
+    required: ["accuracyScore", "capturedCorrectly", "missedItems", "suggestions", "summary"]
+};
+
+export const MINUTE_TAKING_MODEL_ANSWER = `**Meeting Minutes**
+
+**Date:** [Current Date]
+**Topic:** Q3 Software Release 'Odyssey' - Performance Issue
+
+**Attendees:**
 - Tuan Ihsan (Project Manager)
 - Iman (Lead Engineer)
 - Sarah (Product Manager)
 
-Decisions:
-1.  The team will proceed with Option A: a 3-day memory optimization patch for the data processing module, despite it not being a permanent fix. This decision was made to avoid delaying the Q3 launch, which has a marketing campaign commitment.
+**Key Discussion Points:**
+1.  A significant performance issue was found in the new data processing module during integration testing.
+2.  The module is using 50% more memory than projected, risking crashes on client machines.
+3.  Two options were proposed by Iman:
+    - **Option A:** A 3-day quick patch to optimize memory, reducing usage by ~20%. Not a permanent fix.
+    - **Option B:** A 2-week refactor of the module to permanently solve the issue.
 
-Action Items:
-| Action Item                                                                   | Owner | Due Date           |
-|-------------------------------------------------------------------------------|-------|--------------------|
-| 1. Implement the memory optimization patch to reduce memory usage by ~20%.    | Iman  | End of Day, Wednesday |
-| 2. Draft internal communication for support/sales on updated system requirements. | Sarah | Tomorrow           |
+**Decisions Made:**
+- The team has decided to proceed with **Option A (3-day patch)**.
+- This decision was made to avoid delaying the Q3 launch, which has a marketing campaign already scheduled.
+- The team accepts the risk of higher memory usage for the initial launch.
+
+**Action Items:**
+| Action                                                                   | Owner | Due Date           |
+|--------------------------------------------------------------------------|-------|--------------------|
+| Begin work on the memory optimization patch.                             | Iman  | End of day Wednesday |
+| Draft internal communication for support/sales on system requirements.   | Sarah | Tomorrow           |
 `;
 
 export const getMinuteTakingFeedback = async (userMinutes: string): Promise<MinuteFeedbackData> => {
-    const minuteFeedbackSchema = {
-        type: Type.OBJECT,
-        properties: {
-            accuracyScore: { type: Type.NUMBER, description: "A score from 0 to 100 on how well the user captured the key points compared to the model answer." },
-            capturedCorrectly: {
-                type: Type.ARRAY,
-                description: "A list of key decisions or action items the user correctly identified.",
-                items: { type: Type.STRING }
-            },
-            missedItems: {
-                type: Type.ARRAY,
-                description: "A list of crucial decisions or action items from the model answer that the user missed.",
-                items: { type: Type.STRING }
-            },
-            suggestions: {
-                type: Type.ARRAY,
-                description: "A list of actionable suggestions for improvement, focusing on clarity, conciseness, and formatting.",
-                items: { type: Type.STRING }
-            },
-            summary: {
-                type: Type.STRING,
-                description: "A concise summary of the feedback in 2-3 bullet points, starting each with a hyphen '-'. Highlight the user's accuracy and the most important suggestion. For example: '- Good job capturing the main decision. - Remember to use a table for action items to improve clarity.'"
-            }
-        },
-        required: ["accuracyScore", "capturedCorrectly", "missedItems", "suggestions", "summary"]
-    };
-
+    const modelAnswer = MINUTE_TAKING_MODEL_ANSWER;
     const prompt = `
-    You are an expert professional communication coach. A user is practicing taking meeting minutes.
-    You will be provided with the full meeting transcript, the user's attempt at writing the minutes, and an ideal 'model answer'.
+    You are an AI assistant evaluating a student's ability to take meeting minutes.
+    I will provide you with the student's minutes and a model answer based on a meeting transcript.
 
-    Your task is to compare the user's minutes to the model answer, using the full transcript for context. Analyze how well they captured the critical information.
+    Your task is to compare the student's minutes to the model answer and provide feedback.
+    - Analyze if the student captured the key decisions.
+    - Analyze if the student captured the main action items, who is responsible, and the deadlines.
+    - Evaluate the clarity, conciseness, and professionalism of their writing.
+    - Provide an overall accuracy score from 0-100.
+    - List what they captured correctly and what they missed.
+    - Provide specific suggestions for improvement.
 
-    **Full Meeting Transcript:**
-    ---
-    ${MEETING_TRANSCRIPT_FOR_MINUTES}
-    ---
-
-    **Model Answer (Ideal Minutes):**
-    ---
-    ${MODEL_MINUTES}
-    ---
-
-    **User's Attempt:**
-    ---
+    Here is the student's submission:
+    --- STUDENT MINUTES ---
     ${userMinutes}
-    ---
+    --- END STUDENT MINUTES ---
 
-    Please provide your feedback in the specified JSON format.
-    - **accuracyScore**: Score from 0-100 based on how well they identified the decisions and action items from the model answer.
-    - **capturedCorrectly**: List the specific decisions or action items they got right.
-    - **missedItems**: List the key decisions or action items from the model answer that are missing from the user's attempt.
-    - **suggestions**: Provide 2-3 constructive tips for improvement (e.g., "Consider using a table for action items to clearly assign owners and due dates," or "Try to summarize discussion points more concisely.").
-    - **summary**: Create a 2-bullet point summary of the feedback. One bullet for what they did well, and one for the most important area of improvement.
+    Here is the model answer for comparison:
+    --- MODEL ANSWER ---
+    ${modelAnswer}
+    --- END MODEL ANSWER ---
+
+    Return your analysis in a structured JSON format that strictly adheres to the provided schema. Do not include any text outside of the JSON object.
     `;
 
     try {
         const response = await ai.models.generateContent({
-            model: "gemini-2.5-flash",
-            contents: prompt,
+            model: "gemini-2.5-pro",
+            contents: { parts: [{text: prompt}] },
             config: {
                 responseMimeType: "application/json",
-                responseSchema: minuteFeedbackSchema,
+                responseSchema: minuteFeedbackDataSchema,
             },
         });
 
         const jsonText = response.text.trim();
         return JSON.parse(jsonText) as MinuteFeedbackData;
     } catch (error) {
-        handleGeminiError(error, 'minute-taking feedback');
+        return handleGeminiError(error, 'minute-taking feedback');
     }
 };
 
-// FIX: Define the scenario as a const string.
-const COMPLAINT_SCENARIO_FOR_EMAIL_PRACTICE = `A client is upset because a project deliverable was a day late and didn't meet one of the key specifications. They are threatening to cancel the contract.`;
+// FIX: Add schema, scenario, and function for complaint handling email feedback
+export const COMPLAINT_EMAIL_SCENARIO = `You are a Project Engineer at a tech firm. A client, Mr. Ahmad, has sent an email complaining about a prototype your team delivered.
+
+Client's Complaint:
+"Hi, we received prototype #P-78B yesterday. I'm concerned. The performance is not meeting the specs we agreed upon in the contract (specifically, the processing speed is about 20% slower than the 500ms target). Furthermore, the casing feels fragile and less durable than expected. We have an important stakeholder demo next week, and I'm worried this reflects poorly on the project's progress. Please advise on how you plan to rectify this immediately."
+
+Your Task:
+Write a professional email response to Mr. Ahmad. Use the L.A.S.T. method (Listen, Acknowledge/Apologize, Solve, Thank) to structure your reply. Address both of his concerns (performance and build quality) and propose a clear path forward.
+`;
+
+const complaintFeedbackDataSchema = {
+    type: Type.OBJECT,
+    properties: {
+        toneScore: { type: Type.NUMBER, description: "Score from 0-100 on the professionalism and empathy of the email's tone." },
+        clarityScore: { type: Type.NUMBER, description: "Score from 0-100 on how clear and actionable the proposed solution is." },
+        lastMethodAdherence: { type: Type.ARRAY, items: { type: Type.STRING }, description: "A list of points analyzing how well the email adheres to the L.A.S.T. method (Listen, Acknowledge, Solve, Thank)." },
+        suggestions: { type: Type.ARRAY, items: { type: Type.STRING }, description: "Specific suggestions for improving the email." },
+        summary: { type: Type.STRING, description: "A one or two-sentence summary of the feedback." }
+    },
+    required: ["toneScore", "clarityScore", "lastMethodAdherence", "suggestions", "summary"]
+};
 
 export const getComplaintEmailFeedback = async (userEmail: string): Promise<ComplaintFeedbackData> => {
-    const complaintFeedbackSchema = {
-        type: Type.OBJECT,
-        properties: {
-            toneScore: { type: Type.NUMBER, description: "A score from 0-100 on how professional and empathetic the email's tone is." },
-            clarityScore: { type: Type.NUMBER, description: "A score from 0-100 on how clear and actionable the proposed solution is." },
-            lastMethodAdherence: {
-                type: Type.ARRAY,
-                description: "A list of strings analyzing how well the email follows each step of the L.A.S.T. method (Listen, Acknowledge/Apologize, Solve, Thank). For each step, state whether it was met and provide a brief justification.",
-                items: { type: Type.STRING }
-            },
-            suggestions: {
-                type: Type.ARRAY,
-                description: "A list of 2-3 specific, actionable suggestions for improving the email.",
-                items: { type: Type.STRING }
-            },
-            summary: {
-                type: Type.STRING,
-                description: "A concise summary of the feedback in 2-3 bullet points, starting each with a hyphen '-'. Highlight the email's tone and the most important suggestion for improvement based on the L.A.S.T. method. For example: '- Great empathetic tone. - Ensure your 'Solve' step proposes a more concrete action.'"
-            }
-        },
-        required: ["toneScore", "clarityScore", "lastMethodAdherence", "suggestions", "summary"]
-    };
-
     const prompt = `
-    You are an expert communication coach. A user is practicing writing a professional email to handle a complaint.
+    You are an AI assistant evaluating a student's professional email writing skills.
+    The student was asked to respond to a client complaint based on a specific scenario.
 
-    **The Scenario:**
-    ---
-    ${COMPLAINT_SCENARIO_FOR_EMAIL_PRACTICE}
-    ---
+    Scenario: A client is unhappy with a prototype's slow performance and fragile build quality.
+    The student should use the L.A.S.T. (Listen, Acknowledge/Apologize, Solve, Thank) method.
 
-    **The User's Email Draft:**
-    ---
+    Here is the student's email:
+    --- STUDENT EMAIL ---
     ${userEmail}
-    ---
+    --- END STUDENT EMAIL ---
 
-    Your task is to analyze the user's email based on the L.A.S.T. method (Listen, Acknowledge/Apologize, Solve, Thank) and provide feedback in the specified JSON format.
+    Your task is to analyze the email and provide feedback.
+    1.  **Tone Score (0-100):** How professional, empathetic, and reassuring is the tone?
+    2.  **Clarity Score (0-100):** How clear, specific, and actionable is the proposed solution?
+    3.  **L.A.S.T. Method Adherence:** Provide a list of bullet points analyzing if the student successfully applied each step of the L.A.S.T. method.
+    4.  **Suggestions:** Provide a list of specific, actionable suggestions for improvement.
+    5.  **Summary:** A 1-2 sentence summary of the main feedback points.
 
-    - **toneScore**: How well does the email balance professionalism and empathy? Is it defensive or reassuring?
-    - **clarityScore**: How clear and easy to understand is the proposed solution? Is it a concrete step or vague promise?
-    - **lastMethodAdherence**: For each of the 4 steps of L.A.S.T., state if the user's email successfully implemented it and briefly explain why. For example: "Listen: Success - The email correctly identifies that the deliverable was late and incorrect." or "Apologize: Partial - An apology was given, but it sounded a bit generic."
-    - **suggestions**: Provide 2-3 constructive tips. For example, "Try to state the apology earlier in the email for greater impact." or "The proposed solution could be more specific about the timeline for the fix."
-    - **summary**: Create a 2-bullet point summary of the feedback. One bullet point on the email's tone/clarity, and one on the most important area for improvement related to the L.A.S.T. method.
+    Return your analysis in a structured JSON format that strictly adheres to the provided schema. Do not include any text outside of the JSON object.
     `;
 
     try {
         const response = await ai.models.generateContent({
-            model: "gemini-2.5-flash",
-            contents: prompt,
+            model: "gemini-2.5-pro",
+            contents: { parts: [{text: prompt}] },
             config: {
                 responseMimeType: "application/json",
-                responseSchema: complaintFeedbackSchema,
+                responseSchema: complaintFeedbackDataSchema,
             },
         });
 
         const jsonText = response.text.trim();
         return JSON.parse(jsonText) as ComplaintFeedbackData;
     } catch (error) {
-        handleGeminiError(error, 'complaint email feedback');
+        return handleGeminiError(error, 'complaint email feedback');
     }
 };
 
 
-export const generateComplaintStarterScript = async (userScenario: string): Promise<{ aiRole: string; aiPersona: string; starterScript: string; }> => {
-    const scriptGenerationSchema = {
+// FIX: Add and export function to generate custom complaint starter script
+export const generateComplaintStarterScript = async (customScenario: string): Promise<{ starterScript: string; aiRole: string; aiPersona: string; }> => {
+    const prompt = `
+    A user wants to practice handling a complaint. They have provided a custom scenario.
+    Based on their scenario, generate a starter script for an AI to begin the conversation.
+    The AI will be playing the role of the complainer.
+
+    User's Scenario: "${customScenario}"
+
+    Your task is to:
+    1.  Determine the most logical role for the AI to play (e.g., "Angry Customer", "Disappointed Client", "Frustrated Colleague").
+    2.  Create a brief, one-sentence persona for the AI that captures their emotional state and goal.
+    3.  Write a single, direct sentence that the AI will use to start the conversation, clearly stating their complaint.
+
+    Return the response as a JSON object with three keys: "starterScript", "aiRole", and "aiPersona".
+    Example:
+    {
+      "starterScript": "I was told this part would be delivered on Monday, and it's already Wednesday. This is completely unacceptable.",
+      "aiRole": "Angry Customer",
+      "aiPersona": "You are angry about a late delivery and want an immediate explanation."
+    }
+    `;
+
+    const schema = {
         type: Type.OBJECT,
         properties: {
-            aiRole: { type: Type.STRING, description: "A concise, professional role title for the AI who is making the complaint (e.g., 'Concerned Client', 'Frustrated Team Member')." },
-            aiPersona: { type: Type.STRING, description: "A brief persona for this role describing their emotional state, main concern, and what they want." },
-            starterScript: { type: Type.STRING, description: "A single, powerful opening sentence the AI would use to state their complaint and start the simulation." }
+            starterScript: { type: Type.STRING },
+            aiRole: { type: Type.STRING },
+            aiPersona: { type: Type.STRING },
         },
-        required: ["aiRole", "aiPersona", "starterScript"]
+        required: ["starterScript", "aiRole", "aiPersona"]
     };
     
-    const prompt = `
-        You are an AI assistant for a professional communication training app. A mechanical engineering student has described a complaint scenario they want to practice.
-        
-        **User's Scenario:** "${userScenario}"
-
-        Your tasks are:
-        1.  **Infer AI Role**: Based on the scenario, what is a concise, professional role for the person MAKING the complaint? (e.g., "Upset Client", "Concerned Team Member", "Disappointed Project Stakeholder").
-        2.  **Create AI Persona**: Write a brief persona for this role. It should describe their emotional state, their main concern, and what they hope to achieve.
-        3.  **Write Starter Script**: Write a single, powerful opening sentence that this person would use to start the conversation and state their complaint. This will be the first thing the AI says in the simulation.
-
-        Provide your response in the specified JSON format.
-    `;
-    
-     try {
+    try {
         const response = await ai.models.generateContent({
             model: "gemini-2.5-flash",
-            contents: prompt,
+            contents: { parts: [{text: prompt}] },
             config: {
                 responseMimeType: "application/json",
-                responseSchema: scriptGenerationSchema,
+                responseSchema: schema,
             },
         });
 
         const jsonText = response.text.trim();
         return JSON.parse(jsonText);
     } catch (error) {
-        handleGeminiError(error, 'complaint script generation');
-    }
-}
-
-export const getSubmissionTrends = async (sessions: PracticeSession[]): Promise<string> => {
-    if (sessions.length === 0) {
-        return "No submission data available to analyze.";
-    }
-
-    // Extract relevant data points for analysis
-    const analysisData = sessions.map(s => ({
-        score: s.feedbackData.overallScore,
-        wpm: s.feedbackData.pacing.wpm,
-        fillerWords: s.feedbackData.fillerWords.map(fw => fw.word).join(', '),
-        missedKeywords: s.feedbackData.keywordAnalysis.keywordsMissed.join(', '),
-        summary: s.feedbackData.sessionSummary,
-    }));
-
-    const prompt = `
-    You are an expert educational analyst for a technical presentation coaching app.
-    I will provide you with a summary of the last ${analysisData.length} student submissions.
-    Your task is to identify 2-3 of the most common, actionable trends or areas where students are struggling.
-    Provide your output as a single string containing a bulleted list. Each bullet point should start with a hyphen '-'.
-    Be concise and focus on insights that a lecturer can use to help their class.
-
-    Example Output:
-    - Many students are speaking too quickly, with average pacing well above the ideal 160 WPM.
-    - The filler words 'um' and 'ah' are very common across most submissions, indicating a need to practice pausing.
-    - Several students are forgetting to cover key technical terms like 'preload' and 'torque' in the final stages of the presentation.
-
-    Here is the submission data:
-    ---
-    ${JSON.stringify(analysisData, null, 2)}
-    ---
-    `;
-
-    try {
-        const response = await ai.models.generateContent({
-            model: "gemini-2.5-flash",
-            contents: prompt,
-        });
-        return response.text;
-    } catch (error) {
-        handleGeminiError(error, 'submission trend analysis');
+        return handleGeminiError(error, 'generating custom complaint script');
     }
 };
-
-
-// Expose constants for use in the UI
-export const MINUTE_TAKING_TRANSCRIPT = MEETING_TRANSCRIPT_FOR_MINUTES;
-export const MINUTE_TAKING_MODEL_ANSWER = MODEL_MINUTES;
-export const COMPLAINT_EMAIL_SCENARIO = COMPLAINT_SCENARIO_FOR_EMAIL_PRACTICE;
-export const MEETING_AUDIO_BASE64 = MEETING_AUDIO_BASE_64_PLACEHOLDER;

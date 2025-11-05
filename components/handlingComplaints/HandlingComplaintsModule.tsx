@@ -1,13 +1,14 @@
 import React, { useState } from 'react';
-import LearnScreen from './LearnScreen';
-import PracticeScenarioSelectionScreen from './PracticeScenarioSelectionScreen';
-import ReviewScreen from './ReviewScreen';
-import ComplaintSimulationScreen from './ComplaintSimulationScreen';
-import { Lecturer, Student, ComplaintScenario, ComplaintFeedbackData } from '../../types';
+import LearnScreen from '../complaints/LearnScreen';
+import PracticeScenarioSelectionScreen from '../complaints/PracticeScenarioSelectionScreen';
+import ReviewScreen from '../complaints/ReviewScreen';
+import ComplaintSimulationScreen from '../complaints/ComplaintSimulationScreen';
+import { Lecturer, Student, ComplaintScenario, ComplaintFeedbackData, ComplaintEmailSession } from '../../types';
 import Loader from '../Loader';
 import Card from '../Card';
-import ComplaintFeedbackDisplay from './ComplaintFeedbackDisplay';
+import ComplaintFeedbackDisplay from '../complaints/ComplaintFeedbackDisplay';
 import { getComplaintEmailFeedback, COMPLAINT_EMAIL_SCENARIO } from '../../services/geminiService';
+import * as firebaseService from '../../services/firebaseService';
 
 
 type ComplaintView = 'MENU' | 'LEARN' | 'PRACTICE' | 'REVIEW';
@@ -15,6 +16,8 @@ type ComplaintView = 'MENU' | 'LEARN' | 'PRACTICE' | 'REVIEW';
 interface HandlingComplaintsModuleProps {
   user: Student | Lecturer | null;
   userType: 'student' | 'lecturer' | null;
+  // FIX: Add selectedClass to props to be passed to ReviewScreen.
+  selectedClass: string;
 }
 
 const MenuCard = ({ title, description, onClick, icon, comingSoon = false }: { title: string, description: string, onClick: () => void, icon: React.ReactNode, comingSoon?: boolean }) => (
@@ -31,7 +34,7 @@ const MenuCard = ({ title, description, onClick, icon, comingSoon = false }: { t
     </div>
 );
 
-const HandlingComplaintsModule: React.FC<HandlingComplaintsModuleProps> = ({ user, userType }) => {
+const HandlingComplaintsModule: React.FC<HandlingComplaintsModuleProps> = ({ user, userType, selectedClass }) => {
     const [view, setView] = useState<ComplaintView>('MENU');
     const [selectedScenario, setSelectedScenario] = useState<ComplaintScenario | null>(null);
     const [isEmailPractice, setIsEmailPractice] = useState(false);
@@ -41,6 +44,8 @@ const HandlingComplaintsModule: React.FC<HandlingComplaintsModuleProps> = ({ use
     const [emailFeedback, setEmailFeedback] = useState<ComplaintFeedbackData | null>(null);
     const [isLoadingEmail, setIsLoadingEmail] = useState(false);
     const [emailError, setEmailError] = useState<string | null>(null);
+    // FIX: Add state to hold the session ID for the email practice.
+    const [emailSessionId, setEmailSessionId] = useState<string | null>(null);
 
 
     const handleBackToMenu = () => {
@@ -64,10 +69,11 @@ const HandlingComplaintsModule: React.FC<HandlingComplaintsModuleProps> = ({ use
     const handleBackToPracticeSelection = () => {
         setIsEmailPractice(false);
         setSelectedScenario(null);
+        handlePracticeEmailAgain();
     };
 
     const handleSubmitEmail = async () => {
-        if (!userEmail.trim()) {
+        if (!userEmail.trim() || !user || user.role !== 'student') {
             setEmailError("Please write an email before submitting.");
             return;
         }
@@ -75,9 +81,27 @@ const HandlingComplaintsModule: React.FC<HandlingComplaintsModuleProps> = ({ use
         setEmailError(null);
         try {
           const feedbackData = await getComplaintEmailFeedback(userEmail);
+
+          // FIX: Add logic to save the session to get a session ID.
+          const studentUser = user as Student;
+          const newSession: Omit<ComplaintEmailSession, 'id'> = {
+              timestamp: Date.now(),
+              studentUid: studentUser.uid,
+              studentEmail: studentUser.email,
+              lecturerEmail: studentUser.lecturerEmail,
+              classCode: studentUser.classCode,
+              scenario: COMPLAINT_EMAIL_SCENARIO,
+              userEmail: userEmail,
+              feedbackData: feedbackData,
+              isSubmitted: false,
+          };
+          
+          const savedId = await firebaseService.addSession('complaintEmailSessions', newSession);
+
+          setEmailSessionId(savedId);
           setEmailFeedback(feedbackData);
-        } catch (e) {
-          setEmailError('Failed to get feedback from the AI. Please try again.');
+        } catch (e: any) {
+          setEmailError(e.message || 'Failed to get feedback from the AI. Please try again.');
           console.error(e);
         } finally {
           setIsLoadingEmail(false);
@@ -88,6 +112,8 @@ const HandlingComplaintsModule: React.FC<HandlingComplaintsModuleProps> = ({ use
         setUserEmail('');
         setEmailFeedback(null);
         setEmailError(null);
+        // FIX: Reset session ID on practice again.
+        setEmailSessionId(null);
     };
 
 
@@ -104,19 +130,15 @@ const HandlingComplaintsModule: React.FC<HandlingComplaintsModuleProps> = ({ use
                     if (emailFeedback) {
                         return (
                             <div className="max-w-4xl mx-auto">
+                                {/* FIX: Add missing sessionId and isStudent props. Also pass onBack to handle navigation from within the component. */}
                                 <ComplaintFeedbackDisplay
                                     feedback={emailFeedback}
                                     userEmail={userEmail}
                                     onPracticeAgain={handlePracticeEmailAgain}
+                                    sessionId={emailSessionId}
+                                    isStudent={user?.role === 'student'}
+                                    onBack={handleBackToPracticeSelection}
                                 />
-                                 <div className="text-center mt-8">
-                                    <button onClick={handleBackToPracticeSelection} className="text-sm text-fuchsia-400 hover:text-fuchsia-300 flex items-center mx-auto">
-                                        <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                                            <path strokeLinecap="round" strokeLinejoin="round" d="M11 17l-5-5m0 0l5-5m-5 5h12" />
-                                        </svg>
-                                        Back to Practice Selection
-                                    </button>
-                                </div>
                             </div>
                         );
                     }
@@ -185,7 +207,8 @@ const HandlingComplaintsModule: React.FC<HandlingComplaintsModuleProps> = ({ use
                     onSelectEmailPractice={handleSelectEmailPractice}
                  />;
             case 'REVIEW':
-                return <ReviewScreen onBack={handleBackToMenu} user={user} userType={userType} />;
+                // FIX: Add missing selectedClass prop required by ReviewScreen.
+                return <ReviewScreen onBack={handleBackToMenu} user={user} userType={userType} selectedClass={selectedClass} />;
             case 'MENU':
             default:
                 const menuTitle = userType === 'student' ? "Module 3: Handling Complaints" : "Handling Complaints - Lecturer View";

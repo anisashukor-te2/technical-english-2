@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import Card from '../Card';
 import { MinuteFeedbackData, MinuteTakingSession } from '../../types';
+// FIX: Add missing import from geminiService
 import { MINUTE_TAKING_MODEL_ANSWER } from '../../services/geminiService';
 
 interface MinuteFeedbackDisplayProps {

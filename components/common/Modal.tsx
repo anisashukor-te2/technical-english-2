@@ -44,7 +44,7 @@ const Modal: React.FC<ModalProps> = ({ isOpen, onClose, title, children, footer 
         onClick={(e) => e.stopPropagation()}
       >
         <header className="flex justify-between items-center p-4 border-b border-slate-700 flex-shrink-0">
-          <h2 className="text-xl font-bold text-fuchsia-400">{title}</h2>
+          <h2 className="text-xl font-bold text-cyan-400">{title}</h2>
           <button
             onClick={onClose}
             className="text-slate-400 hover:text-white"

@@ -1,11 +1,9 @@
-
-
-
 import React, { useState, useEffect } from 'react';
 import Card from './Card';
 import Modal from './common/Modal';
 import { PracticeSession, PeerFeedback } from '../types';
-import { blobToBase64 } from '../services/firebaseService';
+import * as firebaseService from '../services/firebaseService';
+import Loader from './Loader';
 
 const PRESENTATION_TEMPLATE = `
 PRESENTATION SLIDE TEMPLATE (.pptx)
@@ -294,27 +292,9 @@ const PeerReviewModal: React.FC<{
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [mediaSrc, setMediaSrc] = useState<string>('');
 
-    // FIX: Property 'recordingData' does not exist. Replaced with logic to fetch from recordingUrl.
     useEffect(() => {
-        const loadMedia = async () => {
-            if (session?.recordingUrl) {
-                try {
-                    const response = await fetch(session.recordingUrl);
-                    if (!response.ok) throw new Error('Failed to fetch recording');
-                    const blob = await response.blob();
-                    const base64 = await blobToBase64(blob);
-                    setMediaSrc(`data:${session.recordingMimeType};base64,${base64}`);
-                } catch (e) {
-                    console.error("Failed to load recording for peer review:", e);
-                    setMediaSrc('');
-                }
-            }
-        };
-
-        if (session) {
-            loadMedia();
-        } else {
-            setMediaSrc('');
+        if (session?.recordingUrl) {
+            setMediaSrc(session.recordingUrl);
         }
     }, [session]);
 
@@ -429,16 +409,20 @@ const PeerReviewSystem = () => {
     const [selectedSession, setSelectedSession] = useState<PracticeSession | null>(null);
     const [isLoading, setIsLoading] = useState(true);
 
-    useEffect(() => {
+    const fetchSessions = async () => {
         setIsLoading(true);
         try {
-            const fetchedSessions: PracticeSession[] = JSON.parse(localStorage.getItem("peerReviewSessions") || "[]");
-            setSessions(fetchedSessions.sort((a,b) => b.timestamp - a.timestamp));
+            const fetchedSessions = await firebaseService.getPeerReviewSessions();
+            setSessions(fetchedSessions);
         } catch (error) {
             console.error("Error fetching peer review sessions:", error);
         } finally {
             setIsLoading(false);
         }
+    };
+
+    useEffect(() => {
+        fetchSessions();
     }, []);
 
     const handleAddFeedback = async (sessionId: string, newFeedback: Omit<PeerFeedback, 'id' | 'timestamp'>) => {
@@ -449,25 +433,19 @@ const PeerReviewSystem = () => {
         };
 
         try {
-            const allPeerSessions: PracticeSession[] = JSON.parse(localStorage.getItem("peerReviewSessions") || "[]");
-            const sessionIndex = allPeerSessions.findIndex(s => s.id === sessionId);
-
-            if (sessionIndex > -1) {
-                const updatedSession = { ...allPeerSessions[sessionIndex] };
-                updatedSession.peerReviews = [...updatedSession.peerReviews, feedbackToAdd];
-                allPeerSessions[sessionIndex] = updatedSession;
-                
-                localStorage.setItem("peerReviewSessions", JSON.stringify(allPeerSessions));
-                
-                // Update local state to reflect change immediately
-                setSessions(allPeerSessions.sort((a,b) => b.timestamp - a.timestamp));
-                
-                setTimeout(() => {
-                    setSelectedSession(null);
-                }, 2000);
-            } else {
-                throw new Error("Session not found");
-            }
+            await firebaseService.addPeerReviewFeedback(sessionId, feedbackToAdd);
+            // Optimistically update the UI or refetch
+            const updatedSessions = sessions.map(s => {
+                if (s.id === sessionId) {
+                    return { ...s, peerReviews: [...s.peerReviews, feedbackToAdd] };
+                }
+                return s;
+            });
+            setSessions(updatedSessions);
+            
+            setTimeout(() => {
+                setSelectedSession(null);
+            }, 1500); // Close modal after a short delay
         } catch (error) {
             console.error("Error adding feedback:", error);
             alert("Failed to submit feedback.");
@@ -477,7 +455,7 @@ const PeerReviewSystem = () => {
     return (
         <div className="p-4">
             <p className="text-sm text-slate-400 mb-4">Review anonymous practice sessions from your peers to help them improve. Remember to provide constructive and encouraging feedback.</p>
-            {isLoading ? <p>Loading sessions...</p> : sessions.length === 0 ? (
+            {isLoading ? <Loader message="Loading sessions..." /> : sessions.length === 0 ? (
                 <div className="text-center py-10 bg-slate-900/50 rounded-lg">
                     <svg xmlns="http://www.w3.org/2000/svg" className="mx-auto h-12 w-12 text-slate-600" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.375 3.375 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" /></svg>
                     <h3 className="mt-2 text-sm font-semibold text-slate-300">No Sessions Available for Review</h3>
@@ -529,7 +507,7 @@ const PeerReviewSystem = () => {
 
 
 
-const ResourceLibrary: React.FC = () => {
+export const ResourceLibrary: React.FC = () => {
     const [activeModal, setActiveModal] = useState<'checklist' | 'guide' | null>(null);
 
     return (
@@ -554,51 +532,42 @@ const ResourceLibrary: React.FC = () => {
                     <Card title="Downloadable Templates">
                         <div className="p-4 space-y-3">
                             <button onClick={() => downloadTextFile(PRESENTATION_TEMPLATE, 'presentation-template.pptx')} className="w-full text-left bg-slate-700 hover:bg-slate-600 text-white font-semibold py-2 px-4 rounded transition-colors flex items-center">
-                                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-3 text-cyan-400" viewBox="0 0 20 20" fill="currentColor"><path d="M10 12a2 2 0 100-4 2 2 0 000 4z" /><path fillRule="evenodd" d="M.458 10C1.732 5.943 5.522 3 10 3s8.268 2.943 9.542 7c-1.274 4.057-5.022 7-9.542 7S1.732 14.057.458 10zM14 10a4 4 0 11-8 0 4 4 0 018 0z" clipRule="evenodd" /></svg>
+                                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-3 text-cyan-400" viewBox="0 0 20 20" fill="currentColor"><path fillRule="evenodd" d="M3 17a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm3.293-7.707a1 1 0 011.414 0L9 10.586V3a1 1 0 112 0v7.586l1.293-1.293a1 1 0 111.414 1.414l-3 3a1 1 0 01-1.414 0l-3-3a1 1 0 010-1.414z" clipRule="evenodd" /></svg>
                                 Presentation Slide Template (.pptx)
                             </button>
                             <button onClick={() => downloadTextFile(MINUTES_TEMPLATE, 'meeting-minutes-template.docx')} className="w-full text-left bg-slate-700 hover:bg-slate-600 text-white font-semibold py-2 px-4 rounded transition-colors flex items-center">
-                                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-3 text-cyan-400" viewBox="0 0 20 20" fill="currentColor"><path fillRule="evenodd" d="M4 4a2 2 0 012-2h4.586A2 2 0 0112 2.586L15.414 6A2 2 0 0116 7.414V16a2 2 0 01-2 2H6a2 2 0 01-2-2V4zm2 6a1 1 0 011-1h6a1 1 0 110 2H7a1 1 0 01-1-1zm1 3a1 1 0 100 2h6a1 1 0 100-2H7z" clipRule="evenodd" /></svg>
+                               <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-3 text-cyan-400" viewBox="0 0 20 20" fill="currentColor"><path fillRule="evenodd" d="M3 17a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm3.293-7.707a1 1 0 011.414 0L9 10.586V3a1 1 0 112 0v7.586l1.293-1.293a1 1 0 111.414 1.414l-3 3a1 1 0 01-1.414 0l-3-3a1 1 0 010-1.414z" clipRule="evenodd" /></svg>
                                 Meeting Minutes Template (.docx)
                             </button>
-                             <button onClick={() => downloadTextFile(COMPLAINT_TEMPLATE, 'complaint-response-template.docx')} className="w-full text-left bg-slate-700 hover:bg-slate-600 text-white font-semibold py-2 px-4 rounded transition-colors flex items-center">
-                                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-3 text-cyan-400" viewBox="0 0 20 20" fill="currentColor"><path d="M2.003 5.884L10 9.882l7.997-3.998A2 2 0 0016 4H4a2 2 0 00-1.997 1.884z" /><path d="M18 8.118l-8 4-8-4V14a2 2 0 002 2h12a2 2 0 002-2V8.118z" /></svg>
+                            <button onClick={() => downloadTextFile(COMPLAINT_TEMPLATE, 'complaint-response-template.docx')} className="w-full text-left bg-slate-700 hover:bg-slate-600 text-white font-semibold py-2 px-4 rounded transition-colors flex items-center">
+                               <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-3 text-cyan-400" viewBox="0 0 20 20" fill="currentColor"><path fillRule="evenodd" d="M3 17a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm3.293-7.707a1 1 0 011.414 0L9 10.586V3a1 1 0 112 0v7.586l1.293-1.293a1 1 0 111.414 1.414l-3 3a1 1 0 01-1.414 0l-3-3a1 1 0 010-1.414z" clipRule="evenodd" /></svg>
                                 Complaint Response Email Template (.docx)
                             </button>
                         </div>
                     </Card>
-
-                    <Card title="Checklists & Guides">
-                         <div className="p-4 space-y-3">
-                            <button onClick={() => setActiveModal('checklist')} className="w-full text-left bg-slate-700 hover:bg-slate-600 text-white font-semibold py-2 px-4 rounded transition-colors flex items-center">
-                                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-3 text-cyan-400" viewBox="0 0 20 20" fill="currentColor"><path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" /></svg>
-                               Presentation Prep Checklist
-                            </button>
-                             <button onClick={() => setActiveModal('guide')} className="w-full text-left bg-slate-700 hover:bg-slate-600 text-white font-semibold py-2 px-4 rounded transition-colors flex items-center">
-                                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-3 text-cyan-400" viewBox="0 0 20 20" fill="currentColor"><path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" /></svg>
-                               L.A.S.T. Method Quick Guide
-                            </button>
-                        </div>
-                    </Card>
-                </div>
-                
-                <div className="col-span-1 md:col-span-2">
-                     <Card title="Peer Review System">
-                         <PeerReviewSystem />
-                     </Card>
                 </div>
 
+                <Card title="Peer Review System">
+                    <PeerReviewSystem />
+                </Card>
+
+                <Card title="Quick Guides">
+                    <div className="p-4 flex flex-col md:flex-row gap-4">
+                        <button onClick={() => setActiveModal('checklist')} className="flex-1 text-left bg-slate-700 hover:bg-slate-600 text-white font-semibold py-3 px-5 rounded-lg transition-colors text-lg">
+                            Presentation Checklist
+                        </button>
+                        <button onClick={() => setActiveModal('guide')} className="flex-1 text-left bg-slate-700 hover:bg-slate-600 text-white font-semibold py-3 px-5 rounded-lg transition-colors text-lg">
+                            L.A.S.T. Method Guide
+                        </button>
+                    </div>
+                </Card>
             </div>
-
-            <Modal isOpen={activeModal === 'checklist'} onClose={() => setActiveModal(null)} title="Presentation Prep Checklist">
+            <Modal isOpen={activeModal === 'checklist'} onClose={() => setActiveModal(null)} title="Presentation Preparation Checklist">
                 <PresentationChecklistContent />
             </Modal>
-            
-            <Modal isOpen={activeModal === 'guide'} onClose={() => setActiveModal(null)} title="L.A.S.T. Method Quick Guide">
+            <Modal isOpen={activeModal === 'guide'} onClose={() => setActiveModal(null)} title="Guide: The L.A.S.T. Method for Handling Complaints">
                 <LASTGuideContent />
             </Modal>
         </>
     );
 };
-
-export default ResourceLibrary;

@@ -1,4 +1,7 @@
 
+
+
+
 import React, { useState } from 'react';
 import LearnScreen from './LearnScreen';
 import PracticeScenarioSelectionScreen from './PracticeScenarioSelectionScreen';
@@ -8,7 +11,10 @@ import { Lecturer, Student, ComplaintScenario, ComplaintFeedbackData, ComplaintE
 import Loader from '../Loader';
 import Card from '../Card';
 import ComplaintFeedbackDisplay from './ComplaintFeedbackDisplay';
+// FIX: Add missing imports from geminiService
 import { getComplaintEmailFeedback, COMPLAINT_EMAIL_SCENARIO } from '../../services/geminiService';
+// FIX: Add missing import for firebaseService
+import * as firebaseService from '../../services/firebaseService';
 
 
 type ComplaintView = 'MENU' | 'LEARN' | 'PRACTICE' | 'REVIEW';
@@ -87,8 +93,7 @@ const HandlingComplaintsModule: React.FC<HandlingComplaintsModuleProps> = ({ use
 
             const studentUser = user as Student;
             const newSessionId = `complaint_email_${Date.now()}`;
-            const newSession: ComplaintEmailSession = {
-                id: newSessionId,
+            const newSession: Omit<ComplaintEmailSession, 'id'> = {
                 timestamp: Date.now(),
                 studentUid: studentUser.uid,
                 studentEmail: studentUser.email,
@@ -100,11 +105,9 @@ const HandlingComplaintsModule: React.FC<HandlingComplaintsModuleProps> = ({ use
                 isSubmitted: false, // Initial save is not a submission
             };
             
-            const allSessions: ComplaintEmailSession[] = JSON.parse(localStorage.getItem('complaintEmailSessions') || '[]');
-            allSessions.push(newSession);
-            localStorage.setItem('complaintEmailSessions', JSON.stringify(allSessions));
+            const savedId = await firebaseService.addSession('complaintEmailSessions', newSession);
             
-            setEmailSessionId(newSessionId);
+            setEmailSessionId(savedId);
             setEmailFeedback(feedbackData);
         } catch (e: any) {
             setEmailError(e.message || 'Failed to get feedback from the AI. Please try again.');

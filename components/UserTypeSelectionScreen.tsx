@@ -1,4 +1,5 @@
 
+
 import React from 'react';
 
 interface UserTypeSelectionScreenProps {
@@ -25,12 +26,12 @@ const UserTypeSelectionScreen: React.FC<UserTypeSelectionScreenProps> = ({ onSel
             <div className="max-w-4xl mx-auto text-center">
                 <div className="mb-10">
                     <h1 className="text-5xl font-extrabold text-cyan-400">Technical English 2</h1>
-                    <p className="mt-4 text-lg text-slate-400">Your AI-powered partner for mastering professional communication.</p>
+                    <p className="mt-4 text-lg text-slate-400">AI-Powered Training for Professional Communication</p>
                 </div>
                 <div className="grid md:grid-cols-2 gap-8">
                     <UserTypeCard
-                        title="Lecturer Portal"
-                        description="Access the lecturer portal to manage classes and review student progress."
+                        title="Lecturer Access"
+                        description="Manage classes, view student progress, and evaluate submissions."
                         onClick={() => onSelectType('lecturer')}
                         icon={
                             <svg xmlns="http://www.w3.org/2000/svg" className="h-16 w-16" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
@@ -39,8 +40,8 @@ const UserTypeSelectionScreen: React.FC<UserTypeSelectionScreenProps> = ({ onSel
                         }
                     />
                      <UserTypeCard
-                        title="Student Portal"
-                        description="Log in to access practice modules, get instant feedback, and improve your skills."
+                        title="Student Access"
+                        description="Enter the portal to access practice modules and get instant AI feedback."
                         onClick={() => onSelectType('student')}
                         icon={
                             <svg xmlns="http://www.w3.org/2000/svg" className="h-16 w-16" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>

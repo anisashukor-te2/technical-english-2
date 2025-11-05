@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import Card from '../Card';
 import { ComplaintFeedbackData, ComplaintEmailSession } from '../../types';
+// FIX: Add missing import from geminiService
 import { COMPLAINT_EMAIL_SCENARIO } from '../../services/geminiService';
 
 interface ComplaintFeedbackDisplayProps {

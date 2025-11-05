@@ -1,11 +1,13 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { PracticeSession, Student, Lecturer } from '../types';
+import * as firebaseService from '../services/firebaseService';
 import Card from './Card';
 import LineChart from './common/LineChart';
 import Badge from './common/Badge';
 import Modal from './common/Modal';
 import FeedbackScreen from './FeedbackScreen';
 import { usePresentation } from '../contexts/PresentationContext';
+import Loader from './Loader';
 
 interface PresentationReviewScreenProps {
   user: Student | Lecturer;
@@ -32,29 +34,19 @@ export const PresentationReviewScreen: React.FC<PresentationReviewScreenProps> =
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    setIsLoading(true);
-    try {
-        const allSessions: PracticeSession[] = JSON.parse(localStorage.getItem('practiceSessions') || '[]');
-        let userSessions: PracticeSession[];
-
-        if (userType === 'student') {
-            userSessions = allSessions.filter(s => s.studentUid === user.uid);
-        } else { // lecturer
-            let lecturerSessions = allSessions.filter(s => s.lecturerEmail === user.email);
-            if (selectedClass !== 'ALL') {
-                lecturerSessions = lecturerSessions.filter(s => s.classCode === selectedClass);
-            }
-            userSessions = lecturerSessions;
+    const fetchSessions = async () => {
+        setIsLoading(true);
+        try {
+            const userSessions = await firebaseService.getSessions<PracticeSession>('practiceSessions', user, selectedClass);
+            setSessions(userSessions);
+        } catch (error) {
+            console.error("Error fetching sessions from Firestore:", error);
+        } finally {
+            setIsLoading(false);
         }
-
-        userSessions.sort((a, b) => b.timestamp - a.timestamp);
-        setSessions(userSessions);
-    } catch (error) {
-        console.error("Error fetching sessions from local storage:", error);
-    } finally {
-        setIsLoading(false);
-    }
-  }, [user.uid, user.email, userType, selectedClass]);
+    };
+    fetchSessions();
+  }, [user, userType, selectedClass]);
 
 
   const handleCloseModal = () => {
@@ -62,7 +54,7 @@ export const PresentationReviewScreen: React.FC<PresentationReviewScreenProps> =
   };
 
   if (isLoading) {
-    return <div className="text-center p-8">Loading sessions...</div>;
+    return <Loader message="Loading sessions..." />;
   }
 
   // LECTURER VIEW
