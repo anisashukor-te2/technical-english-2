@@ -129,6 +129,27 @@ export const updateUser = async (uid: string, data: Partial<UserProfile>) => {
     return updateDoc(userDocRef, data);
 }
 
+export const getUsersForLecturer = async (lecturerEmail: string): Promise<UserProfile[]> => {
+    const usersRef = collection(db, 'users');
+    
+    // Query for students associated with the lecturer
+    const studentQuery = query(usersRef, where('role', '==', 'student'), where('lecturerEmail', '==', lecturerEmail));
+    
+    // Query for the lecturer themselves
+    const lecturerQuery = query(usersRef, where('role', '==', 'lecturer'), where('email', '==', lecturerEmail));
+
+    const [studentSnapshot, lecturerSnapshot] = await Promise.all([
+        getDocs(studentQuery),
+        getDocs(lecturerQuery)
+    ]);
+
+    const students = studentSnapshot.docs.map(doc => doc.data() as Student);
+    const lecturers = lecturerSnapshot.docs.map(doc => doc.data() as Lecturer);
+
+    return [...lecturers, ...students].sort((a, b) => a.email.localeCompare(b.email));
+};
+
+
 // --- STORAGE ---
 
 export const uploadRecording = async (blob: Blob, userId: string, sessionId: string): Promise<string> => {

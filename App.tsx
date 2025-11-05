@@ -1,6 +1,7 @@
 
 
 
+
 import React, { useState, useEffect, useCallback } from 'react';
 import { getPresentationFeedback, getFreePracticeFeedback } from './services/geminiService';
 import { auth } from './firebase';
@@ -51,6 +52,9 @@ const App: React.FC = () => {
 
   // --- LECTURER-SPECIFIC STATE ---
   const [isManageClassesModalOpen, setIsManageClassesModalOpen] = useState(false);
+  const [isViewUsersModalOpen, setIsViewUsersModalOpen] = useState(false);
+  const [allUsers, setAllUsers] = useState<UserProfile[]>([]);
+  const [isUsersLoading, setIsUsersLoading] = useState(false);
   const [selectedClass, setSelectedClass] = useState('ALL');
 
 
@@ -131,6 +135,21 @@ const App: React.FC = () => {
     } catch (error) {
       console.error("Could not update classes:", error);
       alert("Failed to update classes. Please try again.");
+    }
+  };
+  
+  const handleOpenViewUsersModal = async () => {
+    if (currentUser?.role !== 'lecturer') return;
+    setIsUsersLoading(true);
+    setIsViewUsersModalOpen(true);
+    try {
+      const users = await firebaseService.getUsersForLecturer(currentUser.email);
+      setAllUsers(users);
+    } catch (error) {
+      console.error("Failed to fetch users:", error);
+      // Optionally set an error state to display in the modal
+    } finally {
+      setIsUsersLoading(false);
     }
   };
 
@@ -375,6 +394,9 @@ const App: React.FC = () => {
                             <button onClick={() => setIsManageClassesModalOpen(true)} className="bg-slate-700 hover:bg-slate-600 text-white font-semibold text-xs py-1 px-3 rounded">
                                 Manage Classes
                             </button>
+                            <button onClick={handleOpenViewUsersModal} className="bg-slate-700 hover:bg-slate-600 text-white font-semibold text-xs py-1 px-3 rounded">
+                                View Users
+                            </button>
                             <select
                                 value={selectedClass}
                                 onChange={(e) => setSelectedClass(e.target.value)}
@@ -403,12 +425,20 @@ const App: React.FC = () => {
             <BottomNavBar activeModule={activeModule} setActiveModule={handleModuleChange} onNavigate={() => {}} userType={userType!} />
         </div>
         {currentUser.role === 'lecturer' && (
-            <ManageClassesModal
-                isOpen={isManageClassesModalOpen}
-                onClose={() => setIsManageClassesModalOpen(false)}
-                currentClassCodes={(currentUser as Lecturer).classCodes}
-                onSave={handleUpdateLecturerClasses}
-            />
+            <>
+                <ManageClassesModal
+                    isOpen={isManageClassesModalOpen}
+                    onClose={() => setIsManageClassesModalOpen(false)}
+                    currentClassCodes={(currentUser as Lecturer).classCodes}
+                    onSave={handleUpdateLecturerClasses}
+                />
+                <ViewUsersModal
+                    isOpen={isViewUsersModalOpen}
+                    onClose={() => setIsViewUsersModalOpen(false)}
+                    users={allUsers}
+                    isLoading={isUsersLoading}
+                />
+            </>
         )}
     </PresentationProvider>
   );
@@ -499,5 +529,46 @@ const ManageClassesModal: React.FC<{
         </Modal>
     );
 }
+
+const ViewUsersModal: React.FC<{
+    isOpen: boolean;
+    onClose: () => void;
+    users: UserProfile[];
+    isLoading: boolean;
+}> = ({ isOpen, onClose, users, isLoading }) => {
+    return (
+        <Modal isOpen={isOpen} onClose={onClose} title="Registered Users">
+            {isLoading ? (
+                <Loader message="Fetching users..." />
+            ) : (
+                <div className="space-y-3 max-h-[60vh] overflow-y-auto pr-2">
+                    {users.length === 0 ? (
+                        <p className="text-slate-400 text-center">No registered users found for your account.</p>
+                    ) : (
+                        users.map(user => (
+                            <div key={user.uid} className="bg-slate-900/50 p-3 rounded-lg border border-slate-700">
+                                <p className="font-semibold text-slate-200">{user.email}</p>
+                                <div className="text-xs text-slate-400 flex items-center gap-4 mt-1">
+                                    <span className={`capitalize px-2 py-0.5 rounded-full text-white ${user.role === 'lecturer' ? 'bg-cyan-600' : 'bg-fuchsia-600'}`}>
+                                        {user.role}
+                                    </span>
+                                    {user.role === 'student' && (
+                                        <span>Class ID: <span className="font-semibold text-slate-300">{(user as Student).classCode}</span></span>
+                                    )}
+                                    {user.role === 'lecturer' && (
+                                        <span>Course ID: <span className="font-semibold text-slate-300">{(user as Lecturer).courseCode}</span></span>
+                                    )}
+                                </div>
+                            </div>
+                        ))
+                    )}
+                </div>
+            )}
+             <div className="mt-6 flex justify-end">
+                 <button onClick={onClose} className="bg-slate-600 text-white font-bold py-2 px-4 rounded-lg hover:bg-slate-500">Close</button>
+            </div>
+        </Modal>
+    );
+};
 
 export default App;
