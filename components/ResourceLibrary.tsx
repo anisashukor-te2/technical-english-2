@@ -1,9 +1,11 @@
 
 
+
 import React, { useState, useEffect } from 'react';
 import Card from './Card';
 import Modal from './common/Modal';
 import { PracticeSession, PeerFeedback } from '../types';
+import { blobToBase64 } from '../services/firebaseService';
 
 const PRESENTATION_TEMPLATE = `
 PRESENTATION SLIDE TEMPLATE (.pptx)
@@ -292,9 +294,27 @@ const PeerReviewModal: React.FC<{
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [mediaSrc, setMediaSrc] = useState<string>('');
 
+    // FIX: Property 'recordingData' does not exist. Replaced with logic to fetch from recordingUrl.
     useEffect(() => {
-        if (session?.recordingData) {
-            setMediaSrc(`data:${session.recordingMimeType};base64,${session.recordingData}`);
+        const loadMedia = async () => {
+            if (session?.recordingUrl) {
+                try {
+                    const response = await fetch(session.recordingUrl);
+                    if (!response.ok) throw new Error('Failed to fetch recording');
+                    const blob = await response.blob();
+                    const base64 = await blobToBase64(blob);
+                    setMediaSrc(`data:${session.recordingMimeType};base64,${base64}`);
+                } catch (e) {
+                    console.error("Failed to load recording for peer review:", e);
+                    setMediaSrc('');
+                }
+            }
+        };
+
+        if (session) {
+            loadMedia();
+        } else {
+            setMediaSrc('');
         }
     }, [session]);
 

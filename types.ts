@@ -72,7 +72,7 @@ export interface PracticeSession {
   id: string; 
   timestamp: number; 
   feedbackData: FeedbackData;
-  recordingData: string; // base64 encoded recording data
+  recordingUrl: string; 
   recordingMimeType: string;
   peerReviews: PeerFeedback[];
   selfReflection?: string;
@@ -84,6 +84,7 @@ export interface PracticeSession {
   lecturerEmail: string; // For querying
   grade?: number;
   lecturerFeedback?: string;
+  isSharedForPeerReview?: boolean;
 }
 
 export interface Lecturer {
@@ -92,7 +93,6 @@ export interface Lecturer {
   role: 'lecturer';
   courseCode: string;
   classCodes: string[];
-  password?: string;
 }
 
 export interface Student {
@@ -102,8 +102,6 @@ export interface Student {
     courseId: string;
     classCode: string;
     lecturerEmail: string;
-    // FIX: Added optional password for login/registration purposes.
-    password?: string;
 }
 
 // --- App-level Types ---

@@ -1,9 +1,11 @@
 
 
+
 import React from 'react';
 import { useState, useEffect } from 'react';
 import { FeedbackData, PracticeSession, Slide, PeerFeedback } from '../types';
 import Card from './Card';
+import { blobToBase64 } from '../services/firebaseService';
 
 interface FeedbackScreenProps {
   feedback: FeedbackData;
@@ -140,12 +142,28 @@ const FeedbackScreen: React.FC<FeedbackScreenProps> = ({ feedback, onPracticeAga
     const [lecturerFeedback, setLecturerFeedback] = useState<string>(sessionData?.lecturerFeedback ?? '');
     const [feedbackSaveStatus, setFeedbackSaveStatus] = useState<'idle' | 'saving' | 'saved' | 'error'>('idle');
 
+    // FIX: Property 'recordingData' does not exist. Replaced with logic to fetch from recordingUrl for past sessions.
     useEffect(() => {
-        // If this is a review of a past session, construct a data URL from base64 data
-        if (sessionData?.recordingData) {
-            setMediaSrc(`data:${sessionData.recordingMimeType};base64,${sessionData.recordingData}`);
-        } else {
-            setMediaSrc(recordingUrl); // Otherwise, use the blob URL passed in props
+        // If this is a review of a past session, fetch the recording from its URL
+        if (sessionData?.recordingUrl) {
+            const loadRecording = async () => {
+                try {
+                    const response = await fetch(sessionData.recordingUrl);
+                    if (!response.ok) throw new Error('Failed to fetch recording');
+                    const blob = await response.blob();
+                    const base64 = await blobToBase64(blob);
+                    setMediaSrc(`data:${sessionData.recordingMimeType};base64,${base64}`);
+                } catch (e) {
+                    console.error("Failed to load recording from URL:", e);
+                    setMediaSrc('');
+                }
+            };
+            loadRecording();
+        } else if (sessionData) {
+             setMediaSrc(''); // A reviewed session with no URL
+        }
+        else {
+            setMediaSrc(recordingUrl); // For new sessions, use the blob URL passed in props
         }
     }, [sessionData, recordingUrl]);
 

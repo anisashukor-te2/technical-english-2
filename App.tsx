@@ -1,8 +1,11 @@
 
 
+
 import React, { useState, useEffect, useCallback } from 'react';
-// FIX: Import necessary services and types
 import { getPresentationFeedback, getFreePracticeFeedback } from './services/geminiService';
+import { auth } from './firebase';
+import { onAuthStateChanged } from 'firebase/auth';
+import * as firebaseService from './services/firebaseService';
 
 import BottomNavBar from './components/BottomNavBar';
 import Loader from './components/Loader';
@@ -10,7 +13,6 @@ import PresentationModeSelection from './components/PresentationModeSelection';
 import PracticeScreen from './components/PracticeScreen';
 import FreePracticeScreen from './components/FreePracticeScreen';
 import FeedbackScreen from './components/FeedbackScreen';
-// FIX: Changed to a named import to resolve module export issue.
 import { PresentationReviewScreen } from './components/PresentationReviewScreen';
 import MeetingSkillsModule from './components/meeting/MeetingSkillsModule';
 import HandlingComplaintsModule from './components/complaints/HandlingComplaintsModule';
@@ -21,29 +23,15 @@ import LecturerLoginScreen from './components/LecturerLoginScreen';
 import Breadcrumbs from './components/common/Breadcrumbs';
 import Modal from './components/common/Modal';
 import { PresentationProvider, usePresentation } from './contexts/PresentationContext';
-// FIX: Import necessary types
-import { Student, Lecturer, ActiveModule, PresentationMode, PracticeView, FeedbackData, Slide, PracticeSession } from './types';
-
-
-// FIX: Helper function to convert Blob to Base64
-const blobToBase64 = (blob: Blob): Promise<string> => {
-    return new Promise((resolve, reject) => {
-        const reader = new FileReader();
-        reader.readAsDataURL(blob);
-        reader.onloadend = () => {
-            const base64data = reader.result as string;
-            resolve(base64data.split(',')[1]);
-        };
-        reader.onerror = (error) => reject(error);
-    });
-};
+import { Student, Lecturer, ActiveModule, PresentationMode, PracticeView, FeedbackData, Slide, PracticeSession, UserProfile } from './types';
 
 
 const App: React.FC = () => {
   // User Authentication State
   const [userType, setUserType] = useState<'student' | 'lecturer' | null>(null);
-  const [currentUser, setCurrentUser] = useState<Student | Lecturer | null>(null);
+  const [currentUser, setCurrentUser] = useState<UserProfile | null>(null);
   const [authError, setAuthError] = useState<string | null>(null);
+  const [isAuthLoading, setIsAuthLoading] = useState(true);
 
   // Navigation State
   const [activeModule, setActiveModule] = useState<ActiveModule>('PRESENTATION');
@@ -66,20 +54,33 @@ const App: React.FC = () => {
   const [selectedClass, setSelectedClass] = useState('ALL');
 
 
-  // Load user from localStorage on initial render
+  // Listen for auth state changes
   useEffect(() => {
-    try {
-      const storedUser = localStorage.getItem('currentUser');
-      const storedType = localStorage.getItem('userType');
-      if (storedUser && storedType) {
-        setCurrentUser(JSON.parse(storedUser));
-        setUserType(storedType as 'student' | 'lecturer');
+    const unsubscribe = onAuthStateChanged(auth, async (user) => {
+      if (user) {
+        try {
+          const userProfile = await firebaseService.getUserProfile(user.uid);
+          if (userProfile) {
+            setCurrentUser(userProfile);
+            setUserType(userProfile.role);
+          } else {
+            // This case might happen if user exists in Auth but not Firestore
+            // For now, we log them out to force a clean slate.
+            await firebaseService.signOutUser();
+          }
+        } catch (error) {
+          console.error("Failed to fetch user profile:", error);
+          setAuthError("Could not load your profile. Please try logging in again.");
+          await firebaseService.signOutUser();
+        }
+      } else {
+        setCurrentUser(null);
+        setUserType(null);
       }
-    } catch (e) {
-      console.error("Failed to parse user data from localStorage", e);
-      localStorage.removeItem('currentUser');
-      localStorage.removeItem('userType');
-    }
+      setIsAuthLoading(false);
+    });
+
+    return () => unsubscribe();
   }, []);
 
   // --- AUTHENTICATION HANDLERS ---
@@ -93,109 +94,56 @@ const App: React.FC = () => {
       setUserType(null);
   };
 
-  const handleLogin = (email: string, password: string, type: 'student' | 'lecturer'): void => {
+  const handleLogin = async (email: string, password: string): Promise<void> => {
     setAuthError(null);
-    const userList = JSON.parse(localStorage.getItem(`${type}s`) || '[]');
-    const user = userList.find((u: Student | Lecturer) => u.email === email);
-    if (user && user.password === password) {
-      setCurrentUser(user);
-      setUserType(type);
-      localStorage.setItem('currentUser', JSON.stringify(user));
-      localStorage.setItem('userType', type);
-    } else {
-        setAuthError(`Login failed: Invalid email or password. Please try again or register.`);
+    try {
+      await firebaseService.signInUser(email, password);
+      // onAuthStateChanged will handle setting the user state
+    } catch (error: any) {
+        setAuthError(firebaseService.formatAuthError(error));
     }
   };
 
-  const handleStudentRegister = (studentDetails: { email: string; courseId: string; lecturerClassCode: string; }, password: string): void => {
+  const handleStudentRegister = async (studentDetails: { email: string; courseId: string; lecturerClassCode: string; }, password: string): Promise<void> => {
     setAuthError(null);
-    const lecturers: Lecturer[] = JSON.parse(localStorage.getItem('lecturers') || '[]');
-    const foundLecturer = lecturers.find(l => l.classCodes.includes(studentDetails.lecturerClassCode) && l.courseCode === studentDetails.courseId);
-
-    if (!foundLecturer) {
-        setAuthError(`Registration failed: No lecturer found with Course ID "${studentDetails.courseId}" and Class ID "${studentDetails.lecturerClassCode}". Please check and try again.`);
-        return;
+    try {
+        await firebaseService.signUpStudent(studentDetails, password);
+    } catch (error: any) {
+        setAuthError(firebaseService.formatAuthError(error));
     }
-
-    const students: Student[] = JSON.parse(localStorage.getItem('students') || '[]');
-    if (students.some(s => s.email === studentDetails.email)) {
-        setAuthError('This email is already registered.');
-        return;
-    }
-    
-    const newStudent: Student = {
-        email: studentDetails.email,
-        courseId: studentDetails.courseId,
-        lecturerEmail: foundLecturer.email,
-        classCode: studentDetails.lecturerClassCode,
-        uid: `student_${Date.now()}_${Math.random()}`,
-        role: 'student',
-        password: password
-    };
-    
-    students.push(newStudent);
-    localStorage.setItem('students', JSON.stringify(students));
-    
-    // Set user in local storage and update state for a clean transition
-    localStorage.setItem('currentUser', JSON.stringify(newStudent));
-    localStorage.setItem('userType', 'student');
-    setCurrentUser(newStudent);
-    setUserType('student');
   };
   
-  const handleLecturerRegister = (lecturerDetails: Omit<Lecturer, 'uid' | 'role' | 'password'>, password: string): void => {
-      setAuthError(null);
-      const lecturers: Lecturer[] = JSON.parse(localStorage.getItem('lecturers') || '[]');
-      if (lecturers.some(l => l.email === lecturerDetails.email)) {
-        setAuthError('This email is already registered. Please log in to manage your classes.');
-        return;
-      }
-      
-      const newLecturer: Lecturer = {
-          ...lecturerDetails,
-          uid: `lecturer_${Date.now()}_${Math.random()}`,
-          role: 'lecturer',
-          password: password,
-      };
-
-      lecturers.push(newLecturer);
-      localStorage.setItem('lecturers', JSON.stringify(newLecturer));
-
-      // Set user in local storage and update state for a clean transition
-      localStorage.setItem('currentUser', JSON.stringify(newLecturer));
-      localStorage.setItem('userType', 'lecturer');
-      setCurrentUser(newLecturer);
-      setUserType('lecturer');
+  const handleLecturerRegister = async (lecturerDetails: Omit<Lecturer, 'uid' | 'role'>, password: string): Promise<void> => {
+    setAuthError(null);
+    try {
+      await firebaseService.signUpLecturer(lecturerDetails, password);
+    } catch (error: any) {
+      setAuthError(firebaseService.formatAuthError(error));
+    }
   };
 
-  const handleUpdateLecturerClasses = (newClassCodes: string[]) => {
+  const handleUpdateLecturerClasses = async (newClassCodes: string[]) => {
     if (!currentUser || currentUser.role !== 'lecturer') return;
-
-    const updatedLecturer = { ...currentUser, classCodes: newClassCodes };
-    
-    const allLecturers: Lecturer[] = JSON.parse(localStorage.getItem('lecturers') || '[]');
-    const lecturerIndex = allLecturers.findIndex(l => l.uid === currentUser.uid);
-
-    if (lecturerIndex !== -1) {
-        allLecturers[lecturerIndex] = updatedLecturer;
-        localStorage.setItem('lecturers', JSON.stringify(allLecturers));
-        setCurrentUser(updatedLecturer);
-        localStorage.setItem('currentUser', JSON.stringify(updatedLecturer));
-        setIsManageClassesModalOpen(false);
-    } else {
-        // Handle error case where lecturer is not found in storage
-        console.error("Could not find lecturer in storage to update.");
+    try {
+      await firebaseService.updateUser(currentUser.uid, { classCodes: newClassCodes });
+      setCurrentUser(prev => prev ? { ...prev, classCodes: newClassCodes } : null);
+      setIsManageClassesModalOpen(false);
+    } catch (error) {
+      console.error("Could not update classes:", error);
+      alert("Failed to update classes. Please try again.");
     }
   };
 
 
-  const handleLogout = () => {
-    setCurrentUser(null);
-    setUserType(null);
-    setAuthError(null);
-    localStorage.removeItem('currentUser');
-    localStorage.removeItem('userType');
-    setSelectedClass('ALL');
+  const handleLogout = async () => {
+    try {
+        await firebaseService.signOutUser();
+        setSelectedClass('ALL');
+        setAuthError(null);
+    } catch (error) {
+        console.error("Logout failed:", error);
+        setAuthError("Failed to log out. Please try again.");
+    }
   };
   
   // --- PRESENTATION CONTEXT HANDLERS ---
@@ -229,8 +177,8 @@ const App: React.FC = () => {
     presentationSlides?: Slide[],
     isSubmission = false
   ) => {
-    if (!currentUser) {
-        setPresentationError("User not found. Cannot process recording.");
+    if (!currentUser || currentUser.role !== 'student') {
+        setPresentationError("User not found or not a student. Cannot process recording.");
         return;
     }
     setPracticeView('PROCESSING');
@@ -239,61 +187,49 @@ const App: React.FC = () => {
 
     try {
         const mimeType = recordingBlob.type;
-        const base64Data = await blobToBase64(recordingBlob);
+        const newSessionId = `session_${Date.now()}`;
+
+        setLoadingMessage('Uploading your recording...');
+        const downloadURL = await firebaseService.uploadRecording(recordingBlob, currentUser.uid, newSessionId);
+
+        setRecordingUrl(downloadURL);
+        setSlides(presentationSlides || null);
+        
+        // Convert blob to base64 for Gemini API analysis (Storage is for persistence)
+        const base64Data = await firebaseService.blobToBase64(recordingBlob);
         setRecordingBase64(base64Data);
         setRecordingMimeType(mimeType);
-        setRecordingUrl(URL.createObjectURL(recordingBlob));
-        setSlides(presentationSlides || null);
 
+        setLoadingMessage('Generating AI feedback...');
         const feedback = userScript
             ? await getFreePracticeFeedback(base64Data, mimeType, duration, userScript)
             : await getPresentationFeedback(base64Data, mimeType, duration);
 
         setLoadingMessage('Saving your session...');
-
-        const allSessions: PracticeSession[] = JSON.parse(localStorage.getItem('practiceSessions') || '[]');
-        const newSessionId = `session_${Date.now()}`;
-
+        
         const student = currentUser as Student;
-        const newSession: PracticeSession = {
-            id: newSessionId,
+        const newSession: Omit<PracticeSession, 'id'> = {
             timestamp: Date.now(),
             studentUid: currentUser.uid,
             studentEmail: currentUser.email,
             lecturerEmail: student.lecturerEmail || '',
             classCode: student.classCode || '',
             feedbackData: feedback,
-            recordingData: base64Data,
+            recordingUrl: downloadURL,
             recordingMimeType: mimeType,
             slides: presentationSlides || [],
             isSubmitted: isSubmission,
             peerReviews: [],
         };
         
-        allSessions.push(newSession);
-        localStorage.setItem('practiceSessions', JSON.stringify(allSessions));
+        await firebaseService.saveSession('practiceSessions', newSessionId, newSession);
         
         setSessionId(newSessionId);
         setFeedbackData(feedback);
         setPracticeView('FEEDBACK');
     } catch (err: any) {
         console.error("Processing failed:", err);
-        let errorMessage = "An unknown error occurred during analysis.";
-        if (err.message) {
-            try {
-                // Check if the message is a JSON string from the API
-                const errorObj = JSON.parse(err.message);
-                if (errorObj.error && errorObj.error.message) {
-                    errorMessage = `Failed to call the Gemini API. ${errorObj.error.message}`;
-                } else {
-                    errorMessage = err.message;
-                }
-            } catch (jsonParseError) {
-                // It's not a JSON string, use it as is.
-                errorMessage = err.message;
-            }
-        }
-        setPresentationError(errorMessage);
+        setPresentationError(err.message || "An unknown error occurred during analysis.");
         setPracticeView('PRACTICE'); // Go back to allow retrying
     } finally {
         setIsLoading(false);
@@ -301,7 +237,6 @@ const App: React.FC = () => {
     }
   }, [currentUser]);
 
-  // FIX: Create a stable function to pass to BottomNavBar to avoid type mismatch.
   const handleModuleChange = (module: ActiveModule) => {
     setActiveModule(module);
   };
@@ -320,7 +255,7 @@ const App: React.FC = () => {
         handlePracticeAgain
     } = usePresentation();
     
-    const isStudent = currentUser && 'lecturerEmail' in currentUser;
+    const isStudent = currentUser?.role === 'student';
 
     switch (activeModule) {
         case 'PRESENTATION':
@@ -390,14 +325,18 @@ const App: React.FC = () => {
     };
     return <Breadcrumbs items={generateBreadcrumbs()} />;
   };
+  
+  if (isAuthLoading) {
+    return <Loader message="Authenticating..." />;
+  }
 
-  if (!userType || !currentUser) {
+  if (!currentUser) {
     const clearError = () => setAuthError(null);
     if (userType === 'student') {
-      return <StudentLoginScreen onLogin={(email, password) => handleLogin(email, password, 'student')} onRegister={(details, password) => handleStudentRegister(details, password)} onBack={handleBackToUserTypeSelection} error={authError} clearError={clearError} />;
+      return <StudentLoginScreen onLogin={handleLogin} onRegister={handleStudentRegister} onBack={handleBackToUserTypeSelection} error={authError} clearError={clearError} />;
     }
     if (userType === 'lecturer') {
-      return <LecturerLoginScreen onLogin={(email, password) => handleLogin(email, password, 'lecturer')} onRegister={(details, password) => handleLecturerRegister(details, password)} onBack={handleBackToUserTypeSelection} error={authError} clearError={clearError} />;
+      return <LecturerLoginScreen onLogin={handleLogin} onRegister={handleLecturerRegister} onBack={handleBackToUserTypeSelection} error={authError} clearError={clearError} />;
     }
     return <UserTypeSelectionScreen onSelectType={handleSelectUserType} />;
   }
@@ -461,7 +400,7 @@ const App: React.FC = () => {
             <main className="flex-grow p-4 md:p-8 overflow-y-auto pb-28">
               <ActiveModuleRenderer />
             </main>
-            <BottomNavBar activeModule={activeModule} setActiveModule={handleModuleChange} onNavigate={() => {}} userType={userType} />
+            <BottomNavBar activeModule={activeModule} setActiveModule={handleModuleChange} onNavigate={() => {}} userType={userType!} />
         </div>
         {currentUser.role === 'lecturer' && (
             <ManageClassesModal
@@ -512,7 +451,7 @@ const ManageClassesModal: React.FC<{
     };
 
     const handleSaveChanges = () => {
-        const cleanedCodes = classCodes.map(c => c.trim()).filter(Boolean);
+        const cleanedCodes = classCodes.map(c => c.trim().toUpperCase()).filter(Boolean);
         if (cleanedCodes.length === 0) {
             alert("Please provide at least one class ID.");
             return;
