@@ -169,11 +169,16 @@ const HandlingComplaintsModule: React.FC<HandlingComplaintsModuleProps> = ({ use
                                     {emailError && <p className="text-red-400 text-center text-sm mb-2">{emailError}</p>}
                                     <button
                                         onClick={handleSaveAndGetFeedback}
-                                        disabled={!userEmail.trim()}
+                                        disabled={!userEmail.trim() || user?.role !== 'student'}
                                         className="w-full bg-cyan-600 text-white font-bold py-3 px-4 rounded-lg hover:bg-cyan-700 transition-colors focus:outline-none focus:ring-4 focus:ring-cyan-500/50 disabled:bg-slate-600 disabled:cursor-not-allowed"
                                     >
                                         Submit for Feedback
                                     </button>
+                                    {user?.role !== 'student' && (
+                                        <p className="text-xs text-yellow-400 text-center">
+                                            This is a student-only feature. Feedback cannot be generated for lecturer accounts.
+                                        </p>
+                                    )}
                                 </div>
                             </div>
                           </div>
