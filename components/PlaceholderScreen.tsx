@@ -10,7 +10,7 @@ const PlaceholderScreen: React.FC<PlaceholderScreenProps> = ({ moduleName }) => 
        <svg xmlns="http://www.w3.org/2000/svg" className="h-16 w-16 text-blue-500 mb-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
         <path strokeLinecap="round" strokeLinejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
       </svg>
-      <h2 className="text-3xl font-bold text-blue-700 mb-3">{moduleName}</h2>
+      <h2 className="text-3xl font-bold text-slate-900 mb-3">{moduleName}</h2>
       <p className="text-lg text-slate-600">This module is coming soon!</p>
       <p className="mt-2 text-slate-500">We're working hard to bring you more features. Please check back later.</p>
     </div>

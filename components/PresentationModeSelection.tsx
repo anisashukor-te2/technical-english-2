@@ -9,20 +9,20 @@ interface PresentationModeSelectionProps {
 const ModeCard = ({ title, description, onClick, icon, color }: { title: string, description: string, onClick: () => void, icon: React.ReactNode, color: 'blue' | 'green' | 'purple' }) => {
     const colorClasses = {
         blue: {
-            bg: 'bg-blue-100/70',
-            hoverBg: 'hover:bg-blue-200/80',
+            bg: 'bg-blue-100',
+            hoverBg: 'hover:bg-blue-200',
             hoverBorder: 'hover:border-blue-400',
             icon: 'text-blue-700',
         },
         green: {
-            bg: 'bg-green-100/70',
-            hoverBg: 'hover:bg-green-200/80',
+            bg: 'bg-green-100',
+            hoverBg: 'hover:bg-green-200',
             hoverBorder: 'hover:border-green-400',
             icon: 'text-green-700',
         },
         purple: {
-            bg: 'bg-purple-100/70',
-            hoverBg: 'hover:bg-purple-200/80',
+            bg: 'bg-purple-100',
+            hoverBg: 'hover:bg-purple-200',
             hoverBorder: 'hover:border-purple-400',
             icon: 'text-purple-700',
         },
@@ -33,7 +33,7 @@ const ModeCard = ({ title, description, onClick, icon, color }: { title: string,
     return (
         <div 
             onClick={onClick}
-            className={`border border-white/30 backdrop-blur-md rounded-lg p-6 text-center cursor-pointer transition-all transform hover:-translate-y-1 shadow-md hover:shadow-xl ${classes.bg} ${classes.hoverBg} ${classes.hoverBorder}`}
+            className={`border border-slate-200 rounded-lg p-6 text-center cursor-pointer transition-all transform hover:-translate-y-1 shadow-md hover:shadow-xl ${classes.bg} ${classes.hoverBg} ${classes.hoverBorder}`}
         >
             <div className={`flex justify-center items-center mb-4 ${classes.icon}`}>
                 {icon}

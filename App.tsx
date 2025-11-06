@@ -128,7 +128,7 @@ const App: React.FC = () => {
     if (!currentUser || currentUser.role !== 'lecturer') return;
     try {
       await firebaseService.updateUser(currentUser.uid, { classCodes: newClassCodes });
-      setCurrentUser(prev => prev ? { ...prev, classCodes: newClassCodes } : null);
+      setCurrentUser(prev => prev ? { ...prev, classCodes: newClassCodes } as UserProfile : null);
       setIsManageClassesModalOpen(false);
     } catch (error) {
       console.error("Could not update classes:", error);
@@ -194,8 +194,8 @@ const App: React.FC = () => {
     presentationSlides?: Slide[],
     isSubmission = false
   ) => {
-    if (!currentUser || currentUser.role !== 'student') {
-        setPresentationError("User not found or not a student. Cannot process recording.");
+    if (!currentUser) { // Allow both students and lecturers
+        setPresentationError("User not found. Cannot process recording.");
         return;
     }
     setPracticeView('PROCESSING');
@@ -204,15 +204,8 @@ const App: React.FC = () => {
 
     try {
         const mimeType = recordingBlob.type;
-        const newSessionId = `session_${Date.now()}`;
-
-        setLoadingMessage('Uploading your recording...');
-        const downloadURL = await firebaseService.uploadRecording(recordingBlob, currentUser.uid, newSessionId);
-
-        setRecordingUrl(downloadURL);
-        setSlides(presentationSlides || null);
         
-        // Convert blob to base64 for Gemini API analysis (Storage is for persistence)
+        // Convert blob to base64 for Gemini API analysis
         const base64Data = await firebaseService.blobToBase64(recordingBlob);
         setRecordingBase64(base64Data);
         setRecordingMimeType(mimeType);
@@ -222,28 +215,48 @@ const App: React.FC = () => {
             ? await getFreePracticeFeedback(base64Data, mimeType, duration, userScript)
             : await getPresentationFeedback(base64Data, mimeType, duration);
 
-        setLoadingMessage('Saving your session...');
+        // If user is a student, save the session.
+        if (currentUser.role === 'student') {
+            const newSessionId = `session_${Date.now()}`;
+
+            setLoadingMessage('Uploading your recording...');
+            const downloadURL = await firebaseService.uploadRecording(recordingBlob, currentUser.uid, newSessionId);
+
+            setRecordingUrl(downloadURL);
+            setSlides(presentationSlides || null);
+            
+            setLoadingMessage('Saving your session...');
+            
+            const student = currentUser as Student;
+            const newSession: Omit<PracticeSession, 'id'> = {
+                timestamp: Date.now(),
+                studentUid: currentUser.uid,
+                studentEmail: currentUser.email,
+                lecturerEmail: student.lecturerEmail || '',
+                classCode: student.classCode || '',
+                feedbackData: feedback,
+                recordingUrl: downloadURL,
+                recordingMimeType: mimeType,
+                slides: presentationSlides || [],
+                isSubmitted: isSubmission,
+                peerReviews: [],
+            };
+            
+            await firebaseService.saveSession('practiceSessions', newSessionId, newSession);
+            setSessionId(newSessionId);
+
+        } else {
+            // For lecturers, just show the feedback temporarily without saving.
+            // Create a temporary URL for the recording blob to be played back on the feedback screen.
+            const tempRecordingUrl = URL.createObjectURL(recordingBlob);
+            setRecordingUrl(tempRecordingUrl);
+            setSlides(presentationSlides || null);
+            setSessionId(null); // No session ID for lecturers
+        }
         
-        const student = currentUser as Student;
-        const newSession: Omit<PracticeSession, 'id'> = {
-            timestamp: Date.now(),
-            studentUid: currentUser.uid,
-            studentEmail: currentUser.email,
-            lecturerEmail: student.lecturerEmail || '',
-            classCode: student.classCode || '',
-            feedbackData: feedback,
-            recordingUrl: downloadURL,
-            recordingMimeType: mimeType,
-            slides: presentationSlides || [],
-            isSubmitted: isSubmission,
-            peerReviews: [],
-        };
-        
-        await firebaseService.saveSession('practiceSessions', newSessionId, newSession);
-        
-        setSessionId(newSessionId);
         setFeedbackData(feedback);
         setPracticeView('FEEDBACK');
+
     } catch (err: any) {
         console.error("Processing failed:", err);
         setPresentationError(err.message || "An unknown error occurred during analysis.");
@@ -285,7 +298,7 @@ const App: React.FC = () => {
                     if (practiceView === 'FEEDBACK' && feedbackData) return <FeedbackScreen feedback={feedbackData} onPracticeAgain={handlePracticeAgain} onBackToMenu={handleBackToSelection} recordingUrl={recordingUrl} slides={slides} sessionId={sessionId} studentEmail={currentUser!.email} isStudent={isStudent} />;
                     return <Loader message="Loading..." />;
                 case 'FREE':
-                    if (practiceView === 'PRACTICE') return <FreePracticeScreen />;
+                    if (practiceView === 'PRACTICE') return <FreePracticeScreen userType={userType!} />;
                     if (practiceView === 'PROCESSING') return <Loader message={loadingMessage} />;
                     if (practiceView === 'FEEDBACK' && feedbackData) return <FeedbackScreen feedback={feedbackData} onPracticeAgain={handlePracticeAgain} onBackToMenu={handleBackToSelection} recordingUrl={recordingUrl} slides={slides} sessionId={sessionId} studentEmail={currentUser!.email} isStudent={isStudent} />;
                     return <Loader message="Loading..." />;
@@ -336,237 +349,73 @@ const App: React.FC = () => {
           case 'RESOURCES':
               items.push({ label: 'Resource Library' });
               break;
+          default:
+              items.push({ label: 'Dashboard' });
       }
-      
       return items;
     };
     return <Breadcrumbs items={generateBreadcrumbs()} />;
   };
-  
+
+    const presentationContextValue = {
+        presentationMode,
+        practiceView,
+        feedbackData,
+        slides,
+        sessionId,
+        isLoading,
+        loadingMessage,
+        error: presentationError,
+        recordingUrl,
+        recordingBase64,
+        recordingMimeType,
+        handleRecordingComplete,
+        handlePracticeAgain,
+        handleSelectPresentationMode,
+        handleBackToSelection,
+        setError: setPresentationError,
+    };
+
   if (isAuthLoading) {
     return <Loader message="Authenticating..." />;
   }
 
   if (!currentUser) {
-    const clearError = () => setAuthError(null);
-    if (userType === 'student') {
-      return <StudentLoginScreen onLogin={handleLogin} onRegister={handleStudentRegister} onBack={handleBackToUserTypeSelection} error={authError} clearError={clearError} />;
-    }
-    if (userType === 'lecturer') {
-      return <LecturerLoginScreen onLogin={handleLogin} onRegister={handleLecturerRegister} onBack={handleBackToUserTypeSelection} error={authError} clearError={clearError} />;
-    }
-    return <UserTypeSelectionScreen onSelectType={handleSelectUserType} />;
+      if (userType === 'student') {
+          return <StudentLoginScreen onLogin={handleLogin} onRegister={handleStudentRegister} onBack={handleBackToUserTypeSelection} error={authError} clearError={() => setAuthError(null)} />;
+      }
+      if (userType === 'lecturer') {
+          return <LecturerLoginScreen onLogin={handleLogin} onRegister={handleLecturerRegister} onBack={handleBackToUserTypeSelection} error={authError} clearError={() => setAuthError(null)} />;
+      }
+      return <UserTypeSelectionScreen onSelectType={handleSelectUserType} />;
   }
-
-  const presentationContextValue = {
-    presentationMode,
-    practiceView,
-    feedbackData,
-    slides,
-    sessionId,
-    isLoading,
-    loadingMessage,
-    error: presentationError,
-    recordingUrl,
-    recordingBase64,
-    recordingMimeType,
-    handleRecordingComplete,
-    handlePracticeAgain,
-    handleSelectPresentationMode,
-    handleBackToSelection,
-    setError: setPresentationError,
-  };
-
 
   return (
     <PresentationProvider value={presentationContextValue}>
-        <div className="flex flex-col h-full">
-            <header className="bg-white/50 backdrop-blur-lg border-b border-white/30 p-4 sticky top-0 z-10">
-              <div className="max-w-7xl mx-auto">
-                <div className="flex justify-between items-center">
-                  <h1 className="text-xl font-bold text-blue-700">Technical English 2</h1>
-                  <div className="flex items-center gap-4">
-                    <span className="text-sm text-slate-600">Welcome, {currentUser.email}</span>
-                    {currentUser.role === 'lecturer' && (
-                        <>
-                            <button onClick={() => setIsManageClassesModalOpen(true)} className="bg-white/70 hover:bg-white text-slate-700 font-semibold text-xs py-1 px-3 rounded-md shadow-sm">
-                                Manage Class IDs
-                            </button>
-                            <button onClick={handleOpenViewUsersModal} className="bg-white/70 hover:bg-white text-slate-700 font-semibold text-xs py-1 px-3 rounded-md shadow-sm">
-                                View Users
-                            </button>
-                            <select
-                                value={selectedClass}
-                                onChange={(e) => setSelectedClass(e.target.value)}
-                                className="bg-white/70 border border-slate-300 text-slate-700 text-xs rounded-lg focus:ring-blue-500 focus:border-blue-500 block py-1 px-2"
-                            >
-                                <option value="ALL">All Classes</option>
-                                {(currentUser as Lecturer).classCodes.map(code => (
-                                    <option key={code} value={code}>{code}</option>
-                                ))}
-                            </select>
-                        </>
-                    )}
-                    <button onClick={handleLogout} className="bg-slate-200 hover:bg-slate-300 text-slate-700 font-semibold text-sm py-1 px-3 rounded-md shadow-sm">
-                      Logout
-                    </button>
-                  </div>
-                </div>
-                <div className="mt-2">
-                    <BreadcrumbsRenderer />
-                </div>
-              </div>
-            </header>
-            <main className="flex-grow p-4 md:p-8 overflow-y-auto pb-28">
-              <ActiveModuleRenderer />
-            </main>
-            <BottomNavBar activeModule={activeModule} setActiveModule={handleModuleChange} onNavigate={() => {}} userType={userType!} />
-        </div>
-        {currentUser.role === 'lecturer' && (
-            <>
-                <ManageClassesModal
-                    isOpen={isManageClassesModalOpen}
-                    onClose={() => setIsManageClassesModalOpen(false)}
-                    currentClassCodes={(currentUser as Lecturer).classCodes}
-                    onSave={handleUpdateLecturerClasses}
-                />
-                <ViewUsersModal
-                    isOpen={isViewUsersModalOpen}
-                    onClose={() => setIsViewUsersModalOpen(false)}
-                    users={allUsers}
-                    isLoading={isUsersLoading}
-                />
-            </>
-        )}
-    </PresentationProvider>
-  );
-};
-
-const ManageClassesModal: React.FC<{
-    isOpen: boolean;
-    onClose: () => void;
-    currentClassCodes: string[];
-    onSave: (newClassCodes: string[]) => void;
-}> = ({ isOpen, onClose, currentClassCodes, onSave }) => {
-    const [classCodes, setClassCodes] = useState<string[]>([]);
-    
-    useEffect(() => {
-        if (isOpen) {
-            setClassCodes(currentClassCodes.length > 0 ? [...currentClassCodes] : ['']);
-        }
-    }, [isOpen, currentClassCodes]);
-
-    const handleClassCodeChange = (index: number, value: string) => {
-        const newClassCodes = [...classCodes];
-        newClassCodes[index] = value;
-        setClassCodes(newClassCodes);
-    };
-
-    const handleAddClassCode = () => {
-        if (classCodes.length < 5) {
-            setClassCodes([...classCodes, '']);
-        }
-    };
-
-    const handleRemoveClassCode = (index: number) => {
-        if (classCodes.length > 1) {
-            const newClassCodes = classCodes.filter((_, i) => i !== index);
-            setClassCodes(newClassCodes);
-        } else {
-            // If it's the last one, just clear it
-            setClassCodes(['']);
-        }
-    };
-
-    const handleSaveChanges = () => {
-        const cleanedCodes = classCodes.map(c => c.trim().toUpperCase()).filter(Boolean);
-        if (cleanedCodes.length === 0) {
-            alert("Please provide at least one class ID.");
-            return;
-        }
-        onSave(cleanedCodes);
-    };
-
-    return (
-        <Modal isOpen={isOpen} onClose={onClose} title="Manage Your Class IDs">
-            <div className="space-y-4">
-                <p className="text-sm text-slate-500">Add, edit, or remove the class IDs associated with your account. Students will use these to register under you.</p>
-                {classCodes.map((code, index) => (
-                    <div key={index} className="flex items-center gap-2">
-                        <input
-                            type="text"
-                            value={code}
-                            onChange={(e) => handleClassCodeChange(index, e.target.value)}
-                            placeholder={`e.g., DKM5A`}
-                            className="flex-grow bg-slate-100 border border-slate-300 rounded-md p-2 focus:ring-blue-500 text-slate-800"
-                        />
-                        <button
-                            type="button"
-                            onClick={() => handleRemoveClassCode(index)}
-                            className="p-2 bg-red-600 text-white rounded-md hover:bg-red-700"
-                        >
-                             <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                                <path fillRule="evenodd" d="M5 10a1 1 0 011-1h8a1 1 0 110 2H6a1 1 0 01-1-1z" clipRule="evenodd" />
-                            </svg>
+        <div className="bg-slate-100 min-h-screen font-sans pb-32">
+            <header className="bg-white shadow-sm p-4 sticky top-0 z-10">
+                <div className="max-w-7xl mx-auto flex justify-between items-center">
+                    <div className="flex-1">
+                      <BreadcrumbsRenderer />
+                    </div>
+                    <div className="flex-1 text-center">
+                      <h1 className="text-xl font-bold text-slate-800 hidden md:block">Technical English 2</h1>
+                    </div>
+                    <div className="flex-1 flex justify-end items-center gap-4">
+                        <span className="text-sm text-slate-600 hidden md:block">{currentUser.email}</span>
+                        <button onClick={handleLogout} className="text-sm bg-slate-200 text-slate-800 font-bold py-2 px-4 rounded-lg hover:bg-slate-300">
+                            Logout
                         </button>
                     </div>
-                ))}
-                <button
-                    type="button"
-                    onClick={handleAddClassCode}
-                    className="w-full text-sm text-blue-600 hover:text-blue-700 transition-colors py-1 disabled:opacity-50"
-                    disabled={classCodes.length >= 5}
-                >
-                    + Add Another Class
-                </button>
-            </div>
-            <div className="mt-6 flex justify-end gap-3">
-                 <button onClick={onClose} className="bg-slate-200 text-slate-800 font-bold py-2 px-4 rounded-lg hover:bg-slate-300">Cancel</button>
-                 <button onClick={handleSaveChanges} className="bg-blue-600 text-white font-bold py-2 px-4 rounded-lg hover:bg-blue-700">Save Changes</button>
-            </div>
-        </Modal>
-    );
-}
-
-const ViewUsersModal: React.FC<{
-    isOpen: boolean;
-    onClose: () => void;
-    users: UserProfile[];
-    isLoading: boolean;
-}> = ({ isOpen, onClose, users, isLoading }) => {
-    return (
-        <Modal isOpen={isOpen} onClose={onClose} title="Registered Users">
-            {isLoading ? (
-                <Loader message="Fetching users..." />
-            ) : (
-                <div className="space-y-3 max-h-[60vh] overflow-y-auto pr-2">
-                    {users.length === 0 ? (
-                        <p className="text-slate-500 text-center">No registered users found for your account.</p>
-                    ) : (
-                        users.map(user => (
-                            <div key={user.uid} className="bg-white/70 p-3 rounded-lg border border-slate-200">
-                                <p className="font-semibold text-slate-800">{user.email}</p>
-                                <div className="text-xs text-slate-600 flex items-center gap-4 mt-1">
-                                    <span className={`capitalize px-2 py-0.5 rounded-full text-white ${user.role === 'lecturer' ? 'bg-blue-600' : 'bg-violet-600'}`}>
-                                        {user.role}
-                                    </span>
-                                    {user.role === 'student' && (
-                                        <span>Class ID: <span className="font-semibold text-slate-700">{(user as Student).classCode}</span></span>
-                                    )}
-                                    {user.role === 'lecturer' && (
-                                        <span>Course ID: <span className="font-semibold text-slate-700">{(user as Lecturer).courseCode}</span></span>
-                                    )}
-                                </div>
-                            </div>
-                        ))
-                    )}
                 </div>
-            )}
-             <div className="mt-6 flex justify-end">
-                 <button onClick={onClose} className="bg-slate-200 text-slate-800 font-bold py-2 px-4 rounded-lg hover:bg-slate-300">Close</button>
-            </div>
-        </Modal>
-    );
+            </header>
+            <main className="max-w-7xl mx-auto p-4 sm:p-6">
+                <ActiveModuleRenderer />
+            </main>
+            <BottomNavBar activeModule={activeModule} setActiveModule={handleModuleChange} userType={userType!} onNavigate={() => {}} />
+        </div>
+    </PresentationProvider>
+  );
 };
 
 export default App;

@@ -9,13 +9,13 @@ interface MicrophoneHelpModalProps {
 const InstructionStep: React.FC<{ step: number; children: React.ReactNode }> = ({ step, children }) => (
     <li className="flex items-start gap-3">
         <div className="flex-shrink-0 w-6 h-6 rounded-full bg-blue-600 text-white flex items-center justify-center font-bold text-sm">{step}</div>
-        <div className="flex-grow pt-0.5 text-slate-700">{children}</div>
+        <div className="flex-grow pt-0.5 text-slate-800">{children}</div>
     </li>
 );
 
 const BrowserInstructions: React.FC<{ browserName: string; children: React.ReactNode }> = ({ browserName, children }) => (
     <div>
-        <h4 className="text-lg font-semibold text-slate-800 mb-2">{browserName}</h4>
+        <h4 className="text-lg font-semibold text-blue-700 mb-2">{browserName}</h4>
         <ol className="space-y-3 text-sm">
             {children}
         </ol>

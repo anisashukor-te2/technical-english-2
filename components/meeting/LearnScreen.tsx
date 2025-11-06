@@ -9,12 +9,12 @@ const LearnScreen: React.FC<LearnScreenProps> = ({ onBack }) => {
   return (
     <div className="max-w-4xl mx-auto animate-fade-in space-y-6 pb-24">
       <div className="text-center mb-8">
-        <h2 className="text-3xl font-bold text-white">Learn: Meeting & Social Skills Essentials</h2>
-        <p className="mt-2 text-lg text-slate-400">Master the fundamentals of effective professional meetings.</p>
+        <h2 className="text-3xl font-bold text-slate-900">Learn: Meeting & Social Skills Essentials</h2>
+        <p className="mt-2 text-lg text-slate-600">Master the fundamentals of effective professional meetings.</p>
       </div>
 
       <Card title="1. The Purpose of a Meeting">
-        <div className="p-4 text-slate-300 space-y-2 text-sm">
+        <div className="p-4 text-slate-700 space-y-2 text-sm">
           <p>A professional meeting should never be "just a chat." Every meeting must have a clear purpose. Before scheduling or accepting a meeting, ask: "What is the desired outcome of this meeting?"</p>
           <p className="font-semibold">Common purposes include:</p>
           <ul className="list-disc list-inside ml-4">
@@ -27,7 +27,7 @@ const LearnScreen: React.FC<LearnScreenProps> = ({ onBack }) => {
       </Card>
 
       <Card title="2. The Agenda: Your Meeting Roadmap">
-        <div className="p-4 text-slate-300 space-y-2 text-sm">
+        <div className="p-4 text-slate-700 space-y-2 text-sm">
           <p>An agenda is a non-negotiable for a productive meeting. It outlines the topics to be discussed, the person responsible for each topic, and the time allocated. A good agenda is sent out at least 24 hours in advance.</p>
           <p className="font-semibold">A simple agenda includes:</p>
           <ul className="list-disc list-inside ml-4">
@@ -40,7 +40,7 @@ const LearnScreen: React.FC<LearnScreenProps> = ({ onBack }) => {
       </Card>
 
       <Card title="3. Key Meeting Roles">
-        <div className="p-4 text-slate-300 space-y-2 text-sm">
+        <div className="p-4 text-slate-700 space-y-2 text-sm">
           <p>Even in informal meetings, participants naturally take on roles. Understanding these helps ensure the meeting stays on track.</p>
           <ul className="list-disc list-inside ml-4 space-y-2">
             <li><strong>Chairperson/Facilitator:</strong> Guides the conversation, ensures the meeting stays on agenda and on time, and facilitates discussion so that all voices are heard.</li>
@@ -51,7 +51,7 @@ const LearnScreen: React.FC<LearnScreenProps> = ({ onBack }) => {
       </Card>
       
       <Card title="4. Effective Participation">
-        <div className="p-4 text-slate-300 space-y-2 text-sm">
+        <div className="p-4 text-slate-700 space-y-2 text-sm">
             <p>Your contribution is valuable. Here's how to make it count:</p>
             <ul className="list-disc list-inside ml-4">
                 <li><strong>Be Prepared:</strong> Read the agenda and any materials beforehand.</li>
@@ -64,7 +64,7 @@ const LearnScreen: React.FC<LearnScreenProps> = ({ onBack }) => {
       </Card>
 
       <div className="text-center pt-4">
-        <button onClick={onBack} className="text-sm text-cyan-400 hover:text-cyan-300 flex items-center mx-auto">
+        <button onClick={onBack} className="text-sm text-blue-600 hover:text-blue-700 flex items-center mx-auto">
             <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                 <path strokeLinecap="round" strokeLinejoin="round" d="M11 17l-5-5m0 0l5-5m-5 5h12" />
             </svg>

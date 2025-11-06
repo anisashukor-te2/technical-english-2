@@ -4,7 +4,7 @@ import MicrophoneHelpModal from './common/MicrophoneHelpModal';
 import Card from './Card';
 
 const Scenario: React.FC = () => (
-    <Card title="Module 1: Guided Practice">
+    <Card title="Module 1: Guided Practice" color="blue">
         <div className="p-4">
             <p className="text-slate-600 mb-4">
                 <span className="font-semibold text-slate-700">Scenario:</span> You are presenting the step-by-step process of designing a robust bolted joint for a structural application to a team of junior engineers. Focus on clarity, logical flow, and using appropriate technical language.
@@ -17,39 +17,39 @@ const Scenario: React.FC = () => (
 );
 
 const Script: React.FC = () => (
-    <Card title="Starter Script">
+    <Card title="Starter Script" color="green">
         <div className="p-4 h-96 overflow-y-auto">
             <div className="space-y-4 text-slate-700">
                 <details className="cursor-pointer">
-                    <summary className="font-semibold text-blue-600">Slide 1: Title Slide & Opening</summary>
+                    <summary className="font-semibold text-green-700">Slide 1: Title Slide & Opening</summary>
                     <p className="mt-2 pl-4 border-l-2 border-slate-200 text-sm">"Good morning, everyone. Today, I'll be walking you through the critical steps involved in designing a robust bolted joint assembly..."</p>
                 </details>
                 <details className="cursor-pointer">
-                    <summary className="font-semibold text-blue-600">Slide 2: Introduction</summary>
+                    <summary className="font-semibold text-green-700">Slide 2: Introduction</summary>
                     <p className="mt-2 pl-4 border-l-2 border-slate-200 text-sm">"Firstly, let's understand why bolted joints are so prevalent. They offer versatility, ease of assembly and disassembly, and adjustability..."</p>
                 </details>
                 <details className="cursor-pointer">
-                    <summary className="font-semibold text-blue-600">Slide 3: Step 1 - Define Requirements</summary>
+                    <summary className="font-semibold text-green-700">Slide 3: Step 1 - Define Requirements</summary>
                     <p className="mt-2 pl-4 border-l-2 border-slate-200 text-sm">"The initial phase involves thoroughly defining the design requirements. We must identify the magnitude and type of applied loads..."</p>
                 </details>
                 <details className="cursor-pointer">
-                    <summary className="font-semibold text-blue-600">Slide 4: Step 2 - Select Bolt</summary>
+                    <summary className="font-semibold text-green-700">Slide 4: Step 2 - Select Bolt</summary>
                     <p className="mt-2 pl-4 border-l-2 border-slate-200 text-sm">"Following the requirements, the next step is to select the appropriate bolt material and size. High-strength steel bolts are commonly used..."</p>
                 </details>
                  <details className="cursor-pointer">
-                    <summary className="font-semibold text-blue-600">Slide 5: Step 3 - Determine Geometry</summary>
+                    <summary className="font-semibold text-green-700">Slide 5: Step 3 - Determine Geometry</summary>
                     <p className="mt-2 pl-4 border-l-2 border-slate-200 text-sm">"With the bolt chosen, we proceed to determine the optimal joint geometry and configuration. This includes specifying the pitch..."</p>
                 </details>
                  <details className="cursor-pointer">
-                    <summary className="font-semibold text-blue-600">Slide 6: Step 4 - Stress Analysis</summary>
+                    <summary className="font-semibold text-green-700">Slide 6: Step 4 - Stress Analysis</summary>
                     <p className="mt-2 pl-4 border-l-2 border-slate-200 text-sm">"The fourth step involves a comprehensive stress analysis. Bearing stress is calculated at the bolt holes, and tensile stress is checked..."</p>
                 </details>
                  <details className="cursor-pointer">
-                    <summary className="font-semibold text-blue-600">Slide 7: Step 5 - Preload and Torque</summary>
+                    <summary className="font-semibold text-green-700">Slide 7: Step 5 - Preload and Torque</summary>
                     <p className="mt-2 pl-4 border-l-2 border-slate-200 text-sm">"Crucially, for many applications, the bolts must be preloaded to a specific tension. This preload enhances the joint's resistance to slipping..."</p>
                 </details>
                  <details className="cursor-pointer">
-                    <summary className="font-semibold text-blue-600">Slide 8: Conclusion</summary>
+                    <summary className="font-semibold text-green-700">Slide 8: Conclusion</summary>
                     <p className="mt-2 pl-4 border-l-2 border-slate-200 text-sm">"In summary, designing a bolted joint is a systematic process... Are there any questions?"</p>
                 </details>
             </div>
@@ -216,7 +216,7 @@ const PracticeScreen: React.FC = () => {
             <Scenario />
             <div className="grid md:grid-cols-2 gap-6 mt-6">
                 <Script />
-                <Card title="Recording Controls">
+                <Card title="Recording Controls" color="purple">
                     <div className="p-6 h-96 flex flex-col items-center justify-center">
                         {micError ? (
                             <>

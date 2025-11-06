@@ -25,24 +25,24 @@ interface HandlingComplaintsModuleProps {
 const MenuCard = ({ title, description, onClick, icon, color, comingSoon = false }: { title: string, description: string, onClick: () => void, icon: React.ReactNode, color: 'blue' | 'green' | 'purple', comingSoon?: boolean }) => {
     const colorClasses = {
         blue: {
-            bg: 'bg-blue-100/70',
-            hoverBg: 'hover:bg-blue-200/80',
+            bg: 'bg-blue-100',
+            hoverBg: 'hover:bg-blue-200',
             hoverBorder: 'hover:border-blue-400',
             icon: 'text-blue-700',
             text: 'text-slate-800',
             subtext: 'text-slate-600',
         },
         green: {
-            bg: 'bg-green-100/70',
-            hoverBg: 'hover:bg-green-200/80',
+            bg: 'bg-green-100',
+            hoverBg: 'hover:bg-green-200',
             hoverBorder: 'hover:border-green-400',
             icon: 'text-green-700',
             text: 'text-slate-800',
             subtext: 'text-slate-600',
         },
         purple: {
-            bg: 'bg-purple-100/70',
-            hoverBg: 'hover:bg-purple-200/80',
+            bg: 'bg-purple-100',
+            hoverBg: 'hover:bg-purple-200',
             hoverBorder: 'hover:border-purple-400',
             icon: 'text-purple-700',
             text: 'text-slate-800',
@@ -55,7 +55,7 @@ const MenuCard = ({ title, description, onClick, icon, color, comingSoon = false
     return (
         <div 
             onClick={!comingSoon ? onClick : undefined}
-            className={`relative border border-white/30 backdrop-blur-md rounded-lg p-6 text-center transition-all transform ${comingSoon ? 'opacity-50 cursor-not-allowed' : `cursor-pointer hover:-translate-y-1 shadow-md hover:shadow-xl ${classes.hoverBg} ${classes.hoverBorder}`} ${classes.bg}`}
+            className={`relative border border-slate-200 rounded-lg p-6 text-center transition-all transform ${comingSoon ? 'opacity-50 cursor-not-allowed' : `cursor-pointer hover:-translate-y-1 shadow-md hover:shadow-xl ${classes.hoverBg} ${classes.hoverBorder}`} ${classes.bg}`}
         >
             {comingSoon && <span className="absolute top-2 right-2 bg-yellow-500 text-slate-900 text-xs font-bold px-2 py-1 rounded">Coming Soon</span>}
             <div className={`flex justify-center items-center mb-4 ${classes.icon}`}>
@@ -185,7 +185,7 @@ const HandlingComplaintsModule: React.FC<HandlingComplaintsModuleProps> = ({ use
                           <div className="grid lg:grid-cols-2 gap-6">
                             <Card title="Complaint Scenario">
                                 <div className="p-4 h-[60vh] overflow-y-auto">
-                                    <p className="text-sm text-slate-300">
+                                    <p className="text-sm text-slate-700">
                                         {COMPLAINT_EMAIL_SCENARIO}
                                     </p>
                                 </div>
@@ -197,16 +197,16 @@ const HandlingComplaintsModule: React.FC<HandlingComplaintsModuleProps> = ({ use
                                             value={userEmail}
                                             onChange={(e) => setUserEmail(e.target.value)}
                                             placeholder="Dear [Client Name], ..."
-                                            className="w-full h-[calc(60vh-80px)] p-3 bg-slate-900 border border-slate-600 rounded-md focus:ring-2 focus:ring-fuchsia-500 focus:border-fuchsia-500 transition"
+                                            className="w-full h-[calc(60vh-80px)] p-3 bg-white border border-slate-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition"
                                         />
                                     </div>
                                 </Card>
-                                <div className="bg-slate-800 p-4 rounded-lg border border-slate-700 space-y-3">
-                                    {emailError && <p className="text-red-400 text-center text-sm mb-2">{emailError}</p>}
+                                <div className="bg-white p-4 rounded-lg border border-slate-200 space-y-3">
+                                    {emailError && <p className="text-red-500 text-center text-sm mb-2">{emailError}</p>}
                                     <button
                                         onClick={handleSubmitEmail}
                                         disabled={!userEmail.trim()}
-                                        className="w-full bg-fuchsia-600 text-white font-bold py-3 px-4 rounded-lg hover:bg-fuchsia-700 transition-colors focus:outline-none focus:ring-4 focus:ring-fuchsia-500/50 disabled:bg-slate-600 disabled:cursor-not-allowed"
+                                        className="w-full bg-blue-600 text-white font-bold py-3 px-4 rounded-lg hover:bg-blue-700 transition-colors focus:outline-none focus:ring-4 focus:ring-blue-500/50 disabled:bg-slate-400 disabled:cursor-not-allowed"
                                     >
                                         Submit for Feedback
                                     </button>
@@ -214,7 +214,7 @@ const HandlingComplaintsModule: React.FC<HandlingComplaintsModuleProps> = ({ use
                             </div>
                           </div>
                           <div className="text-center pt-4">
-                            <button onClick={handleBackToPracticeSelection} className="text-sm text-fuchsia-400 hover:text-fuchsia-300 flex items-center mx-auto">
+                            <button onClick={handleBackToPracticeSelection} className="text-sm text-blue-600 hover:text-blue-700 flex items-center mx-auto">
                                 <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                                     <path strokeLinecap="round" strokeLinejoin="round" d="M11 17l-5-5m0 0l5-5m-5 5h12" />
                                 </svg>

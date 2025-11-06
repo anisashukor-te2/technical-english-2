@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import LearnScreen from './LearnScreen';
 import PracticePlaceholder from './PracticePlaceholder';
@@ -6,6 +5,7 @@ import ReviewScreen from './ReviewScreen';
 import MeetingSimulationScreen from './MeetingSimulationScreen';
 import PracticeSelectionScreen from './PracticeSelectionScreen';
 import MinuteTakingPracticeScreen from './MinuteTakingPracticeScreen';
+// FIX: The error indicates no default export, but we will add one in QuizScreen.tsx
 import QuizScreen from './QuizScreen'; // Import the new QuizScreen component
 import RoleSelectionScreen from './RoleSelectionScreen';
 import { Lecturer, Student, MeetingScenario } from '../../types';
@@ -23,32 +23,32 @@ interface MeetingSkillsModuleProps {
 const MenuCard = ({ title, description, onClick, icon, color, comingSoon = false }: { title: string, description: string, onClick: () => void, icon: React.ReactNode, color: 'blue' | 'green' | 'orange' | 'purple', comingSoon?: boolean }) => {
     const colorClasses = {
         blue: {
-            bg: 'bg-blue-100/70',
-            hoverBg: 'hover:bg-blue-200/80',
+            bg: 'bg-blue-100',
+            hoverBg: 'hover:bg-blue-200',
             hoverBorder: 'hover:border-blue-400',
             icon: 'text-blue-700',
             text: 'text-slate-800',
             subtext: 'text-slate-600',
         },
         green: {
-            bg: 'bg-green-100/70',
-            hoverBg: 'hover:bg-green-200/80',
+            bg: 'bg-green-100',
+            hoverBg: 'hover:bg-green-200',
             hoverBorder: 'hover:border-green-400',
             icon: 'text-green-700',
             text: 'text-slate-800',
             subtext: 'text-slate-600',
         },
         orange: {
-            bg: 'bg-orange-100/70',
-            hoverBg: 'hover:bg-orange-200/80',
+            bg: 'bg-orange-100',
+            hoverBg: 'hover:bg-orange-200',
             hoverBorder: 'hover:border-orange-400',
             icon: 'text-orange-700',
             text: 'text-slate-800',
             subtext: 'text-slate-600',
         },
         purple: {
-            bg: 'bg-purple-100/70',
-            hoverBg: 'hover:bg-purple-200/80',
+            bg: 'bg-purple-100',
+            hoverBg: 'hover:bg-purple-200',
             hoverBorder: 'hover:border-purple-400',
             icon: 'text-purple-700',
             text: 'text-slate-800',
@@ -61,7 +61,7 @@ const MenuCard = ({ title, description, onClick, icon, color, comingSoon = false
     return (
         <div 
             onClick={!comingSoon ? onClick : undefined}
-            className={`relative border border-white/30 backdrop-blur-md rounded-lg p-6 text-center transition-all transform ${comingSoon ? 'opacity-50 cursor-not-allowed' : `cursor-pointer hover:-translate-y-1 shadow-md hover:shadow-xl ${classes.hoverBg} ${classes.hoverBorder}`} ${classes.bg}`}
+            className={`relative border border-slate-200 rounded-lg p-6 text-center transition-all transform ${comingSoon ? 'opacity-50 cursor-not-allowed' : `cursor-pointer hover:-translate-y-1 shadow-md hover:shadow-xl ${classes.hoverBg} ${classes.hoverBorder}`} ${classes.bg}`}
         >
             {comingSoon && <span className="absolute top-2 right-2 bg-yellow-500 text-slate-900 text-xs font-bold px-2 py-1 rounded">Coming Soon</span>}
             <div className={`flex justify-center items-center mb-4 ${classes.icon}`}>

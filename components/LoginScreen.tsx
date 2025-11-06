@@ -1,4 +1,5 @@
 
+
 import React, { useState } from 'react';
 
 interface LoginScreenProps {
@@ -46,28 +47,28 @@ const LoginScreen: React.FC<LoginScreenProps> = ({ onLogin, onRegister }) => {
   const renderLoginForm = () => (
     <form onSubmit={handleLoginSubmit} className="space-y-4 animate-fade-in">
       <div>
-        <label htmlFor="email" className="block text-sm font-medium text-slate-300">Email Address</label>
+        <label htmlFor="email" className="block text-sm font-medium text-slate-700">Email Address</label>
         <input
           id="email"
           type="email"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           placeholder="e.g., lecturer@example.com"
-          className="mt-1 block w-full bg-slate-900 border border-slate-600 rounded-md shadow-sm p-3 focus:ring-fuchsia-500 focus:border-fuchsia-500"
+          className="mt-1 block w-full bg-white border border-slate-300 rounded-md shadow-sm p-3 focus:ring-purple-500 focus:border-purple-500"
         />
       </div>
       <div>
-        <label htmlFor="password" className="block text-sm font-medium text-slate-300">Password</label>
+        <label htmlFor="password" className="block text-sm font-medium text-slate-700">Password</label>
         <input
           id="password"
           type="password"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
           placeholder="••••••••"
-          className="mt-1 block w-full bg-slate-900 border border-slate-600 rounded-md shadow-sm p-3 focus:ring-fuchsia-500 focus:border-fuchsia-500"
+          className="mt-1 block w-full bg-white border border-slate-300 rounded-md shadow-sm p-3 focus:ring-purple-500 focus:border-purple-500"
         />
       </div>
-      <button type="submit" className="w-full bg-fuchsia-600 text-white font-bold py-3 px-4 rounded-lg hover:bg-fuchsia-700 transition-colors">
+      <button type="submit" className="w-full bg-purple-600 text-white font-bold py-3 px-4 rounded-lg hover:bg-purple-700 transition-colors">
         Login
       </button>
     </form>
@@ -76,28 +77,28 @@ const LoginScreen: React.FC<LoginScreenProps> = ({ onLogin, onRegister }) => {
   const renderRegisterForm = () => (
     <form onSubmit={handleRegisterSubmit} className="space-y-4 animate-fade-in">
       <div>
-        <label htmlFor="registerEmail" className="block text-sm font-medium text-slate-300">Email Address</label>
+        <label htmlFor="registerEmail" className="block text-sm font-medium text-slate-700">Email Address</label>
         <input
           id="registerEmail"
           type="email"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           placeholder="e.g., lecturer@example.com"
-          className="mt-1 block w-full bg-slate-900 border border-slate-600 rounded-md shadow-sm p-3 focus:ring-fuchsia-500 focus:border-fuchsia-500"
+          className="mt-1 block w-full bg-white border border-slate-300 rounded-md shadow-sm p-3 focus:ring-purple-500 focus:border-purple-500"
         />
       </div>
       <div>
-        <label htmlFor="registerPassword" className="block text-sm font-medium text-slate-300">Password</label>
+        <label htmlFor="registerPassword" className="block text-sm font-medium text-slate-700">Password</label>
         <input
           id="registerPassword"
           type="password"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
           placeholder="6+ characters"
-          className="mt-1 block w-full bg-slate-900 border border-slate-600 rounded-md shadow-sm p-3 focus:ring-fuchsia-500 focus:border-fuchsia-500"
+          className="mt-1 block w-full bg-white border border-slate-300 rounded-md shadow-sm p-3 focus:ring-purple-500 focus:border-purple-500"
         />
       </div>
-      <button type="submit" className="w-full bg-fuchsia-600 text-white font-bold py-3 px-4 rounded-lg hover:bg-fuchsia-700 transition-colors">
+      <button type="submit" className="w-full bg-purple-600 text-white font-bold py-3 px-4 rounded-lg hover:bg-purple-700 transition-colors">
         Register
       </button>
     </form>
@@ -107,27 +108,27 @@ const LoginScreen: React.FC<LoginScreenProps> = ({ onLogin, onRegister }) => {
     <div className="min-h-screen flex items-center justify-center p-4">
       <div className="w-full max-w-md">
         <div className="text-center mb-8">
-            <h1 className="text-3xl font-bold text-fuchsia-400">Technical Communication Coach</h1>
-            <p className="text-slate-400">Lecturer Portal</p>
+            <h1 className="text-3xl font-bold text-purple-700">Technical Communication Coach</h1>
+            <p className="text-slate-600">Lecturer Portal</p>
         </div>
-        <div className="bg-slate-800/70 backdrop-blur-sm border border-slate-700 rounded-lg shadow-lg p-8">
+        <div className="bg-white/70 backdrop-blur-sm border border-slate-200 rounded-lg shadow-lg p-8">
           <div className="mb-6">
-            <div className="flex border-b border-slate-600">
+            <div className="flex border-b border-slate-300">
               <button
                 onClick={() => { setView('LOGIN'); setError(null); }}
-                className={`flex-1 py-2 text-center font-semibold transition-colors ${view === 'LOGIN' ? 'text-fuchsia-400 border-b-2 border-fuchsia-400' : 'text-slate-400 hover:text-white'}`}
+                className={`flex-1 py-2 text-center font-semibold transition-colors ${view === 'LOGIN' ? 'text-purple-600 border-b-2 border-purple-600' : 'text-slate-500 hover:text-slate-800'}`}
               >
                 Login
               </button>
               <button
                 onClick={() => { setView('REGISTER'); setError(null); }}
-                className={`flex-1 py-2 text-center font-semibold transition-colors ${view === 'REGISTER' ? 'text-fuchsia-400 border-b-2 border-fuchsia-400' : 'text-slate-400 hover:text-white'}`}
+                className={`flex-1 py-2 text-center font-semibold transition-colors ${view === 'REGISTER' ? 'text-purple-600 border-b-2 border-purple-600' : 'text-slate-500 hover:text-slate-800'}`}
               >
                 Register
               </button>
             </div>
           </div>
-          {error && <p className="text-red-400 text-center text-sm mb-4">{error}</p>}
+          {error && <p className="text-red-500 text-center text-sm mb-4">{error}</p>}
           {view === 'LOGIN' ? renderLoginForm() : renderRegisterForm()}
         </div>
       </div>

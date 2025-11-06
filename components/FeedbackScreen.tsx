@@ -1,7 +1,3 @@
-
-
-
-
 import React from 'react';
 import { useState, useEffect } from 'react';
 import { FeedbackData, PracticeSession, Slide, PeerFeedback } from '../types';
@@ -25,15 +21,15 @@ const ScoreCircle: React.FC<{ score: number }> = ({ score }) => {
     const radius = 42;
     const circumference = 2 * Math.PI * radius;
     const offset = circumference - (score / 100) * circumference;
-    const colorClass = score >= 80 ? 'text-green-400' : score >= 60 ? 'text-yellow-400' : 'text-red-400';
+    const colorClass = score >= 80 ? 'text-green-500' : score >= 60 ? 'text-yellow-500' : 'text-red-500';
 
     return (
         <div className="relative flex items-center justify-center w-28 h-28">
             <svg className="w-full h-full transform -rotate-90" viewBox="0 0 100 100">
-                <circle className="text-slate-700" strokeWidth="8" stroke="currentColor" fill="transparent" r={radius} cx="50" cy="50" />
+                <circle className="text-slate-200" strokeWidth="8" stroke="currentColor" fill="transparent" r={radius} cx="50" cy="50" />
                 <circle className={colorClass} strokeWidth="8" strokeDasharray={circumference} strokeDashoffset={offset} strokeLinecap="round" stroke="currentColor" fill="transparent" r={radius} cx="50" cy="50" />
             </svg>
-            <span className={`absolute text-3xl font-bold ${colorClass}`}>{score}</span>
+            <span className={`absolute text-3xl font-bold ${colorClass.replace('text-green-500', 'text-green-600').replace('text-yellow-500', 'text-yellow-600').replace('text-red-500', 'text-red-600')}`}>{score}</span>
         </div>
     );
 };
@@ -68,7 +64,7 @@ const HighlightedTranscription: React.FC<{
             {parts.map((part, partIndex) =>
               // Odd-indexed parts are the keywords themselves due to the capturing group in split()
               keywordRegex && partIndex % 2 === 1 ? (
-                <span key={partIndex} className="bg-green-900/50 text-green-300 font-semibold px-1 py-0.5 rounded">
+                <span key={partIndex} className="bg-green-100 text-green-800 font-semibold px-1 py-0.5 rounded">
                   {part}
                 </span>
               ) : (
@@ -93,17 +89,17 @@ const SlidesViewer: React.FC<{ slides: Slide[] }> = ({ slides }) => {
     return (
         <div className="flex flex-col md:flex-row gap-4 h-[40vh] max-h-[500px]">
             {/* Slide list */}
-            <div className="w-full md:w-1/3 md:border-r md:border-slate-700 md:pr-4 overflow-y-auto">
-                <h4 className="text-md font-semibold text-slate-300 mb-3 sticky top-0 bg-slate-800 pb-2">Slide Deck</h4>
+            <div className="w-full md:w-1/3 md:border-r md:border-slate-200 md:pr-4 overflow-y-auto">
+                <h4 className="text-md font-semibold text-slate-700 mb-3 sticky top-0 bg-white pb-2">Slide Deck</h4>
                 <ul className="space-y-2">
                     {slides.map((slide, index) => (
                         <li 
                             key={slide.id} 
                             onClick={() => setCurrentSlideIndex(index)}
-                            className={`p-3 rounded-lg cursor-pointer border-2 transition-colors ${currentSlideIndex === index ? 'border-cyan-500 bg-slate-700/50' : 'border-transparent bg-slate-900/50 hover:bg-slate-700'}`}
+                            className={`p-3 rounded-lg cursor-pointer border-2 transition-colors ${currentSlideIndex === index ? 'border-blue-500 bg-blue-50' : 'border-transparent bg-slate-100 hover:bg-slate-200'}`}
                         >
-                            <p className="text-sm font-semibold text-slate-200 truncate">{slide.title || `Slide ${index + 1}`}</p>
-                            <p className="text-xs text-slate-400">Slide {index + 1}</p>
+                            <p className="text-sm font-semibold text-slate-800 truncate">{slide.title || `Slide ${index + 1}`}</p>
+                            <p className="text-xs text-slate-500">Slide {index + 1}</p>
                         </li>
                     ))}
                 </ul>
@@ -112,8 +108,8 @@ const SlidesViewer: React.FC<{ slides: Slide[] }> = ({ slides }) => {
             <div className="w-full md:w-2/3 overflow-y-auto">
                 {currentSlide ? (
                     <div>
-                        <h4 className="text-lg font-bold text-cyan-400 mb-2 sticky top-0 bg-slate-800 pb-2">{currentSlide.title}</h4>
-                        <div className="text-slate-300 whitespace-pre-wrap text-sm leading-relaxed">
+                        <h4 className="text-lg font-bold text-blue-600 mb-2 sticky top-0 bg-white pb-2">{currentSlide.title}</h4>
+                        <div className="text-slate-700 whitespace-pre-wrap text-sm leading-relaxed">
                             <p>{currentSlide.script || <span className="italic text-slate-500">No script provided for this slide.</span>}</p>
                         </div>
                     </div>
@@ -243,14 +239,14 @@ const FeedbackScreen: React.FC<FeedbackScreenProps> = ({ feedback, onPracticeAga
                  <Card title="Overall Score">
                     <div className="flex flex-col items-center justify-center p-2">
                         <ScoreCircle score={feedback.overallScore} />
-                        <p className="text-center text-slate-400 text-sm mt-2">An aggregated score based on pacing, keyword usage, language, and clarity.</p>
+                        <p className="text-center text-slate-500 text-sm mt-2">An aggregated score based on pacing, keyword usage, language, and clarity.</p>
                     </div>
                 </Card>
                 <Card title="Pacing">
                     <div className="flex flex-col items-center justify-center p-3 h-full">
-                        <p className="text-5xl font-bold text-cyan-400">{feedback.pacing.wpm}<span className="text-xl font-normal text-slate-400"> WPM</span></p>
-                        <p className="mt-1 text-center text-slate-400 text-sm">{feedback.pacing.feedback}</p>
-                        <p className="text-xs text-slate-500 mt-1">(Aim for 140-160 WPM)</p>
+                        <p className="text-5xl font-bold text-blue-600">{feedback.pacing.wpm}<span className="text-xl font-normal text-slate-500"> WPM</span></p>
+                        <p className="mt-1 text-center text-slate-500 text-sm">{feedback.pacing.feedback}</p>
+                        <p className="text-xs text-slate-400 mt-1">(Aim for 140-160 WPM)</p>
                     </div>
                 </Card>
                 <Card title="Filler Words">
@@ -258,14 +254,14 @@ const FeedbackScreen: React.FC<FeedbackScreenProps> = ({ feedback, onPracticeAga
                         {feedback.fillerWords.length > 0 ? (
                             <ul className="space-y-2">
                                 {feedback.fillerWords.map(fw => (
-                                    <li key={fw.word} className="flex justify-between items-center text-slate-300">
-                                        <span className="font-mono bg-slate-700 px-2 py-1 rounded text-cyan-400 text-sm">"{fw.word}"</span>
+                                    <li key={fw.word} className="flex justify-between items-center text-slate-700">
+                                        <span className="font-mono bg-slate-200 px-2 py-1 rounded text-blue-700 text-sm">"{fw.word}"</span>
                                         <span className="font-semibold">{fw.count} time(s)</span>
                                     </li>
                                 ))}
                             </ul>
                         ) : (
-                            <p className="text-center text-slate-400">No filler words detected. Great job!</p>
+                            <p className="text-center text-slate-500">No filler words detected. Great job!</p>
                         )}
                     </div>
                 </Card>
@@ -274,7 +270,7 @@ const FeedbackScreen: React.FC<FeedbackScreenProps> = ({ feedback, onPracticeAga
             {feedback.sessionSummary && (
                 <Card title="Session Summary">
                     <div className="p-4">
-                        <ul className="list-disc list-inside space-y-2 text-slate-300">
+                        <ul className="list-disc list-inside space-y-2 text-slate-700">
                             {feedback.sessionSummary.split('-').filter(s => s.trim()).map((point, index) => (
                                 <li key={index}>{point.trim()}</li>
                             ))}
@@ -294,11 +290,11 @@ const FeedbackScreen: React.FC<FeedbackScreenProps> = ({ feedback, onPracticeAga
                             Your browser does not support the audio element.
                         </audio>
                     ) : (
-                        <div className="w-full h-14 flex items-center justify-center bg-slate-900 rounded-md mb-3">
+                        <div className="w-full h-14 flex items-center justify-center bg-slate-100 rounded-md mb-3">
                             <p className="text-slate-500 text-sm">Loading recording...</p>
                         </div>
                     )}
-                    <div className="max-h-96 overflow-y-auto text-slate-300 leading-relaxed border-t border-slate-700 pt-3 text-sm">
+                    <div className="max-h-96 overflow-y-auto text-slate-700 leading-relaxed border-t border-slate-200 pt-3 text-sm">
                         <HighlightedTranscription
                             transcription={feedback.transcription}
                             keywordsFound={feedback.keywordAnalysis.keywordsFound}
@@ -319,32 +315,32 @@ const FeedbackScreen: React.FC<FeedbackScreenProps> = ({ feedback, onPracticeAga
                 <Card title="Delivery & Content Analysis">
                     <div className="p-4 space-y-6">
                         <div>
-                            <h4 className="font-semibold text-cyan-400 mb-2 text-md">Technical Keyword Usage</h4>
+                            <h4 className="font-semibold text-blue-600 mb-2 text-md">Technical Keyword Usage</h4>
                             <div className="space-y-2">
                                 <div>
-                                    <h5 className="font-semibold text-green-400 mb-1 text-sm">Found ({feedback.keywordAnalysis.keywordsFound.length})</h5>
+                                    <h5 className="font-semibold text-green-600 mb-1 text-sm">Found ({feedback.keywordAnalysis.keywordsFound.length})</h5>
                                     <div className="flex flex-wrap gap-1">
-                                        {feedback.keywordAnalysis.keywordsFound.length > 0 ? feedback.keywordAnalysis.keywordsFound.map(k => <span key={k} className="bg-green-900/50 text-green-300 text-xs font-medium px-2 py-0.5 rounded">{k}</span>) : <p className="text-xs text-slate-400 italic">None found.</p>}
+                                        {feedback.keywordAnalysis.keywordsFound.length > 0 ? feedback.keywordAnalysis.keywordsFound.map(k => <span key={k} className="bg-green-100 text-green-800 text-xs font-medium px-2 py-0.5 rounded">{k}</span>) : <p className="text-xs text-slate-500 italic">None found.</p>}
                                     </div>
                                 </div>
                                 <div>
-                                    <h5 className="font-semibold text-yellow-400 mb-1 text-sm">Missed ({feedback.keywordAnalysis.keywordsMissed.length})</h5>
+                                    <h5 className="font-semibold text-yellow-600 mb-1 text-sm">Missed ({feedback.keywordAnalysis.keywordsMissed.length})</h5>
                                     <div className="flex flex-wrap gap-1">
-                                        {feedback.keywordAnalysis.keywordsMissed.length > 0 ? feedback.keywordAnalysis.keywordsMissed.map(k => <span key={k} className="bg-yellow-900/50 text-yellow-300 text-xs font-medium px-2 py-0.5 rounded">{k}</span>) : <p className="text-xs text-slate-400 italic">None missed. Well done!</p>}
+                                        {feedback.keywordAnalysis.keywordsMissed.length > 0 ? feedback.keywordAnalysis.keywordsMissed.map(k => <span key={k} className="bg-yellow-100 text-yellow-800 text-xs font-medium px-2 py-0.5 rounded">{k}</span>) : <p className="text-xs text-slate-500 italic">None missed. Well done!</p>}
                                     </div>
                                 </div>
-                                <p className="text-xs text-slate-400 pt-2 border-t border-slate-700/50">{feedback.keywordAnalysis.feedback}</p>
+                                <p className="text-xs text-slate-500 pt-2 border-t border-slate-200/50">{feedback.keywordAnalysis.feedback}</p>
                             </div>
                         </div>
 
                         <div>
-                            <h4 className="font-semibold text-cyan-400 mb-2 text-md">Language & Clarity</h4>
-                            <p className="text-sm text-slate-300 leading-relaxed">{feedback.languageFeedback}</p>
+                            <h4 className="font-semibold text-blue-600 mb-2 text-md">Language & Clarity</h4>
+                            <p className="text-sm text-slate-700 leading-relaxed">{feedback.languageFeedback}</p>
                         </div>
 
                         <div>
-                            <h4 className="font-semibold text-cyan-400 mb-2 text-md">Voice Modulation</h4>
-                            <p className="text-sm text-slate-300 leading-relaxed">{feedback.voiceModulation.feedback}</p>
+                            <h4 className="font-semibold text-blue-600 mb-2 text-md">Voice Modulation</h4>
+                            <p className="text-sm text-slate-700 leading-relaxed">{feedback.voiceModulation.feedback}</p>
                         </div>
                     </div>
                 </Card>
@@ -353,12 +349,12 @@ const FeedbackScreen: React.FC<FeedbackScreenProps> = ({ feedback, onPracticeAga
                     <Card title="Lecturer's Feedback">
                         <div className="p-4 space-y-4">
                             <div>
-                                <h4 className="font-semibold text-cyan-400 mb-1">Grade</h4>
-                                <p className="text-2xl font-bold text-slate-200">{sessionData.grade}%</p>
+                                <h4 className="font-semibold text-blue-600 mb-1">Grade</h4>
+                                <p className="text-2xl font-bold text-slate-800">{sessionData.grade}%</p>
                             </div>
                             <div>
-                                <h4 className="font-semibold text-cyan-400 mb-1">Comments</h4>
-                                <blockquote className="p-3 bg-slate-900 border-l-4 border-cyan-500 text-slate-300 italic text-sm">
+                                <h4 className="font-semibold text-blue-600 mb-1">Comments</h4>
+                                <blockquote className="p-3 bg-slate-100 border-l-4 border-blue-500 text-slate-700 italic text-sm">
                                     {sessionData.lecturerFeedback}
                                 </blockquote>
                             </div>
@@ -372,7 +368,7 @@ const FeedbackScreen: React.FC<FeedbackScreenProps> = ({ feedback, onPracticeAga
                              {isStudent && (
                                 <div className="p-4">
                                     {saveStatusMessage && (
-                                        <p className={`text-center mb-3 text-xs transition-opacity duration-500 ${messageIsVisible ? 'opacity-100' : 'opacity-0'} ${statusMessageType === 'success' ? 'text-green-400' : 'text-red-400'}`}>
+                                        <p className={`text-center mb-3 text-xs transition-opacity duration-500 ${messageIsVisible ? 'opacity-100' : 'opacity-0'} ${statusMessageType === 'success' ? 'text-green-500' : 'text-red-500'}`}>
                                             {saveStatusMessage}
                                         </p>
                                     )}
@@ -380,7 +376,7 @@ const FeedbackScreen: React.FC<FeedbackScreenProps> = ({ feedback, onPracticeAga
                                         value={selfReflection}
                                         onChange={(e) => setSelfReflection(e.target.value)}
                                         placeholder="What went well? What could be improved? Add your self-reflection notes here..."
-                                        className="w-full p-2 bg-slate-900 border border-slate-600 rounded-md focus:ring-2 focus:ring-cyan-500 focus:border-cyan-500 transition text-sm"
+                                        className="w-full p-2 bg-white border border-slate-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition text-sm"
                                         rows={2}
                                     ></textarea>
                                     <button
@@ -393,11 +389,11 @@ const FeedbackScreen: React.FC<FeedbackScreenProps> = ({ feedback, onPracticeAga
                                     </button>
                                 </div>
                              )}
-                            <div className="p-4 border-t border-slate-700">
+                            <div className="p-4 border-t border-slate-200">
                                 <div className="flex flex-wrap items-center justify-center gap-4">
                                     <button
                                         onClick={onPracticeAgain}
-                                        className="bg-cyan-600 text-white font-bold py-2 px-4 rounded-lg hover:bg-cyan-700 transition-colors focus:outline-none focus:ring-4 focus:ring-cyan-500/50 text-sm"
+                                        className="bg-blue-600 text-white font-bold py-2 px-4 rounded-lg hover:bg-blue-700 transition-colors focus:outline-none focus:ring-4 focus:ring-blue-500/50 text-sm"
                                     >
                                         Try Again
                                     </button>
@@ -406,14 +402,14 @@ const FeedbackScreen: React.FC<FeedbackScreenProps> = ({ feedback, onPracticeAga
                                             <button
                                                 onClick={handleSubmitToLecturer}
                                                 disabled={isSubmitted}
-                                                className="bg-blue-600 text-white font-bold py-2 px-4 rounded-lg hover:bg-blue-700 transition-colors focus:outline-none focus:ring-4 focus:ring-blue-500/50 text-sm disabled:bg-slate-500 disabled:cursor-not-allowed"
+                                                className="bg-indigo-600 text-white font-bold py-2 px-4 rounded-lg hover:bg-indigo-700 transition-colors focus:outline-none focus:ring-4 focus:ring-indigo-500/50 text-sm disabled:bg-slate-400 disabled:cursor-not-allowed"
                                             >
                                                 {isSubmitted ? 'Submitted!' : 'Submit to Lecturer'}
                                             </button>
                                             <button
                                                 onClick={handleShareForReview}
                                                 disabled={isShared}
-                                                className="bg-indigo-600 text-white font-bold py-2 px-4 rounded-lg hover:bg-indigo-700 transition-colors focus:outline-none focus:ring-4 focus:ring-indigo-500/50 flex items-center justify-center gap-2 disabled:bg-slate-500 disabled:cursor-not-allowed text-sm"
+                                                className="bg-purple-600 text-white font-bold py-2 px-4 rounded-lg hover:bg-purple-700 transition-colors focus:outline-none focus:ring-4 focus:ring-purple-500/50 flex items-center justify-center gap-2 disabled:bg-slate-400 disabled:cursor-not-allowed text-sm"
                                             >
                                                 <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" viewBox="0 0 20 20" fill="currentColor"><path d="M15 8a3 3 0 10-2.977-2.63l-4.94 2.47a3 3 0 100 4.319l4.94 2.47a3 3 0 10.895-1.789l-4.94-2.47a3.027 3.027 0 000-.74l4.94-2.47C13.456 7.68 14.19 8 15 8z" /></svg>
                                                 {isShared ? 'Shared!' : 'Share for Peer Review'}
@@ -422,7 +418,7 @@ const FeedbackScreen: React.FC<FeedbackScreenProps> = ({ feedback, onPracticeAga
                                     )}
                                      <button
                                         onClick={onBackToMenu}
-                                        className="bg-slate-600 text-white font-bold py-2 px-4 rounded-lg hover:bg-slate-500 transition-colors focus:outline-none focus:ring-4 focus:ring-slate-500/50 text-sm flex items-center justify-center gap-2"
+                                        className="bg-slate-500 text-white font-bold py-2 px-4 rounded-lg hover:bg-slate-600 transition-colors focus:outline-none focus:ring-4 focus:ring-slate-400/50 text-sm flex items-center justify-center gap-2"
                                     >
                                         <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                                             <path strokeLinecap="round" strokeLinejoin="round" d="M11 17l-5-5m0 0l5-5m-5 5h12" />
@@ -435,7 +431,7 @@ const FeedbackScreen: React.FC<FeedbackScreenProps> = ({ feedback, onPracticeAga
                     ) : (
                         <div className="p-4">
                             {selfReflection ? (
-                                <blockquote className="p-3 bg-slate-900 border-l-4 border-cyan-500 text-slate-300 italic text-sm">
+                                <blockquote className="p-3 bg-slate-100 border-l-4 border-blue-500 text-slate-700 italic text-sm">
                                     {selfReflection}
                                 </blockquote>
                             ) : (
@@ -449,7 +445,7 @@ const FeedbackScreen: React.FC<FeedbackScreenProps> = ({ feedback, onPracticeAga
                     <Card title="Lecturer Assessment">
                         <div className="p-4 space-y-4">
                             <div>
-                                <label htmlFor="grade" className="block text-sm font-medium text-slate-300">Grade (%)</label>
+                                <label htmlFor="grade" className="block text-sm font-medium text-slate-700">Grade (%)</label>
                                 <input
                                     type="number"
                                     id="grade"
@@ -458,18 +454,18 @@ const FeedbackScreen: React.FC<FeedbackScreenProps> = ({ feedback, onPracticeAga
                                     min="0"
                                     max="100"
                                     placeholder="Enter a score from 0 to 100"
-                                    className="mt-1 w-full p-2 bg-slate-900 border border-slate-600 rounded-md focus:ring-2 focus:ring-cyan-500"
+                                    className="mt-1 w-full p-2 bg-white border border-slate-300 rounded-md focus:ring-2 focus:ring-blue-500"
                                 />
                             </div>
                             <div>
-                                <label htmlFor="lecturerFeedback" className="block text-sm font-medium text-slate-300">Written Feedback</label>
+                                <label htmlFor="lecturerFeedback" className="block text-sm font-medium text-slate-700">Written Feedback</label>
                                 <textarea
                                     id="lecturerFeedback"
                                     value={lecturerFeedback}
                                     onChange={(e) => setLecturerFeedback(e.target.value)}
                                     rows={4}
                                     placeholder="Provide constructive feedback..."
-                                    className="mt-1 w-full p-2 bg-slate-900 border border-slate-600 rounded-md focus:ring-2 focus:ring-cyan-500"
+                                    className="mt-1 w-full p-2 bg-white border border-slate-300 rounded-md focus:ring-2 focus:ring-blue-500"
                                 />
                             </div>
                             <button

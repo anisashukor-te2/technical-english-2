@@ -40,7 +40,7 @@ const Modal: React.FC<ModalProps> = ({ isOpen, onClose, title, children, footer 
       role="dialog"
     >
       <div
-        className="bg-slate-50/80 backdrop-blur-xl rounded-lg shadow-2xl w-full max-w-3xl max-h-[90vh] flex flex-col border border-white/50"
+        className="bg-white rounded-lg shadow-2xl w-full max-w-3xl max-h-[90vh] flex flex-col border border-slate-300"
         onClick={(e) => e.stopPropagation()}
       >
         <header className="flex justify-between items-center p-4 border-b border-slate-200 flex-shrink-0">
@@ -59,7 +59,7 @@ const Modal: React.FC<ModalProps> = ({ isOpen, onClose, title, children, footer 
           {children}
         </main>
         {footer && (
-          <footer className="p-4 border-t border-slate-200 bg-slate-50/50 rounded-b-lg flex-shrink-0">
+          <footer className="p-4 border-t border-slate-200 bg-slate-50 rounded-b-lg flex-shrink-0">
             {footer}
           </footer>
         )}

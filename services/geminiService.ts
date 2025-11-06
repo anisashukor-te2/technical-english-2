@@ -1,7 +1,3 @@
-
-
-
-
 import { GoogleGenAI, Type } from "@google/genai";
 import { FeedbackData, MinuteFeedbackData, ComplaintFeedbackData, PracticeSession } from '../types';
 
@@ -187,9 +183,9 @@ export const getPresentationFeedback = async (audioBase64: string, mimeType: str
 
     const prompt = `
     You are an expert AI coach for technical presentations. A student is practicing a presentation for their "Technical English 2" course.
-    Their script is provided below. I have also provided an audio file of their practice session. The audio is ${durationInSeconds} seconds long.
+    Their script is provided below. I have also provided a video file of their practice session containing their audio. The media is ${durationInSeconds} seconds long.
 
-    Your task is to:
+    Your task is to analyze the audio from the provided video file:
     1.  Transcribe the audio VERBATIM.
     2.  Compare the transcription to the official script to analyze keyword usage. The key technical terms are provided below.
     3.  Calculate their pacing (Words Per Minute). A good pace is between 140-160 WPM.
@@ -226,9 +222,9 @@ export const getFreePracticeFeedback = async (audioBase64: string, mimeType: str
     ${userScript}
     --- SCRIPT END ---
 
-    I have provided an audio file of their practice session. The audio is ${durationInSeconds} seconds long.
+    I have provided a video file of their practice session containing their audio. The media is ${durationInSeconds} seconds long.
 
-    Please analyze the student's performance based ONLY on the provided audio and their script.
+    Please analyze the student's performance based ONLY on the audio from the provided video and their script.
 
     Your task is to:
     1.  Transcribe the audio VERBATIM.

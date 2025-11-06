@@ -63,30 +63,53 @@ export const signUpStudent = async (
 };
 
 export const signUpLecturer = async (details: Omit<Lecturer, 'uid' | 'role'>, password: string) => {
+  const usersRef = collection(db, 'users');
   // 1. Check if email is already in use
-   const lecturersRef = collection(db, 'users');
-   const q = query(lecturersRef, where('email', '==', details.email));
-   const existingUser = await getDocs(q);
-   if (!existingUser.empty) {
-       throw new Error("This email is already registered.");
-   }
+  const emailQuery = query(usersRef, where('email', '==', details.email));
+  const existingUser = await getDocs(emailQuery);
+  if (!existingUser.empty) {
+    throw new Error('This email is already registered.');
+  }
 
-  // 2. Create user in Firebase Auth
+  // 2. NEW VALIDATION: Check if any class codes are already taken
+  const upperCaseClassCodes = details.classCodes.map((c) => c.toUpperCase().trim()).filter(Boolean);
+  if (upperCaseClassCodes.length > 0) {
+    const classCodeQuery = query(
+      usersRef,
+      where('role', '==', 'lecturer'),
+      where('classCodes', 'array-contains-any', upperCaseClassCodes)
+    );
+    const existingClassSnapshot = await getDocs(classCodeQuery);
+
+    if (!existingClassSnapshot.empty) {
+      // Find which class code is already taken to provide a better error message
+      const existingLecturer = existingClassSnapshot.docs[0].data() as Lecturer;
+      const takenClass = upperCaseClassCodes.find((code) =>
+        existingLecturer.classCodes.includes(code)
+      );
+      throw new Error(
+        `Registration failed: Class ID "${takenClass}" is already registered by another lecturer.`
+      );
+    }
+  }
+
+  // 3. Create user in Firebase Auth
   const userCredential = await createUserWithEmailAndPassword(auth, details.email, password);
   const { user } = userCredential;
 
-  // 3. Create lecturer profile in Firestore
+  // 4. Create lecturer profile in Firestore
   const newLecturer: Lecturer = {
     ...details,
     uid: user.uid,
     role: 'lecturer',
-    classCodes: details.classCodes.map(c => c.toUpperCase()),
+    classCodes: upperCaseClassCodes,
     courseCode: details.courseCode.toUpperCase(),
   };
 
   await setDoc(doc(db, 'users', user.uid), newLecturer);
   return newLecturer;
 };
+
 
 export const signInUser = (email: string, password: string) => {
   return signInWithEmailAndPassword(auth, email, password);

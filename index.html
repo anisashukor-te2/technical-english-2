@@ -32,17 +32,9 @@
     overscroll-behavior-y: contain;
   }
   body {
-    position: relative;
-    overflow-y: auto; /* Allow scrolling */
-    background: linear-gradient(to bottom right, #E9E7FD, #D8E6FF); /* New gradient background */
+    background-color: #f0f4f8; /* A light, pastel-friendly blue-gray */
     font-family: sans-serif;
-  }
-
-  /* Root element for content */
-  #root {
-      position: relative;
-      z-index: 1;
-      height: 100%;
+    overflow-y: auto;
   }
 
   /* Add animations for slide transitions */
@@ -76,7 +68,7 @@
   /* Update highlight animation for new card background */
   @keyframes highlightFade {
     from { background-color: rgba(59, 130, 246, 0.3); } /* A blue highlight */
-    to { background-color: rgba(255, 255, 255, 0.6); } /* New card background */
+    to { background-color: rgba(255, 255, 255, 1); } /* New opaque card background */
   }
 
   .animate-highlight-fade {

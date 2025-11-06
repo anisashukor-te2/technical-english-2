@@ -7,7 +7,7 @@ interface UserTypeSelectionScreenProps {
 const UserTypeCard = ({ title, description, onClick, icon }: { title: string, description: string, onClick: () => void, icon: React.ReactNode }) => (
     <div 
         onClick={onClick}
-        className="bg-white/50 backdrop-blur-lg border border-white/30 rounded-lg p-8 text-center cursor-pointer hover:bg-white/70 hover:border-blue-400 transition-all transform hover:-translate-y-2 shadow-lg hover:shadow-2xl"
+        className="bg-white border border-slate-200 rounded-lg p-8 text-center cursor-pointer hover:bg-slate-50 hover:border-blue-400 transition-all transform hover:-translate-y-2 shadow-lg hover:shadow-2xl"
     >
         <div className="flex justify-center items-center mb-4 text-blue-600">
             {icon}
@@ -22,8 +22,8 @@ const UserTypeSelectionScreen: React.FC<UserTypeSelectionScreenProps> = ({ onSel
     <div className="min-h-screen flex flex-col">
         <main className="flex-grow flex items-center justify-center p-4">
             <div className="max-w-4xl mx-auto text-center">
-                <div className="mb-10">
-                    <h1 className="text-5xl font-extrabold text-blue-700">Technical English 2</h1>
+                <div className="mb-10 p-6 rounded-lg">
+                    <h1 className="text-5xl font-extrabold text-slate-900">Technical English 2</h1>
                     <p className="mt-4 text-lg text-slate-600">AI-Powered Training for Professional Communication</p>
                 </div>
                 <div className="grid md:grid-cols-2 gap-8">
