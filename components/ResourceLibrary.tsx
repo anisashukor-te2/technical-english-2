@@ -181,9 +181,9 @@ const downloadTextFile = (content: string, filename: string) => {
 
 
 const PresentationChecklistContent = () => (
-    <div className="space-y-4 text-slate-700">
+    <div className="space-y-4 text-slate-300">
         <div>
-            <h4 className="font-bold text-blue-600">1. Content & Structure (The "What")</h4>
+            <h4 className="font-bold text-cyan-400">1. Content & Structure (The "What")</h4>
             <ul className="list-disc list-inside mt-1 text-sm space-y-1">
                 <li>Define your core objective: What's the key takeaway for your audience?</li>
                 <li>Analyze your audience: Who are they and what do they already know?</li>
@@ -193,7 +193,7 @@ const PresentationChecklistContent = () => (
             </ul>
         </div>
         <div>
-            <h4 className="font-bold text-blue-600">2. Slide Design (The "Visuals")</h4>
+            <h4 className="font-bold text-cyan-400">2. Slide Design (The "Visuals")</h4>
             <ul className="list-disc list-inside mt-1 text-sm space-y-1">
                 <li>Keep it simple: One main idea per slide. Avoid clutter.</li>
                 <li>Use high-quality, relevant images and graphics.</li>
@@ -203,7 +203,7 @@ const PresentationChecklistContent = () => (
             </ul>
         </div>
         <div>
-            <h4 className="font-bold text-blue-600">3. Delivery Practice (The "How")</h4>
+            <h4 className="font-bold text-cyan-400">3. Delivery Practice (The "How")</h4>
             <ul className="list-disc list-inside mt-1 text-sm space-y-1">
                 <li>Rehearse out loud multiple times, not just in your head.</li>
                 <li>Time yourself to ensure you respect the time limit.</li>
@@ -213,7 +213,7 @@ const PresentationChecklistContent = () => (
             </ul>
         </div>
         <div>
-            <h4 className="font-bold text-blue-600">4. Final Checks (The "Day Of")</h4>
+            <h4 className="font-bold text-cyan-400">4. Final Checks (The "Day Of")</h4>
             <ul className="list-disc list-inside mt-1 text-sm space-y-1">
                 <li>Test all equipment: projector, laptop, clicker, and microphone.</li>
                 <li>Have a backup of your presentation on a USB drive and in the cloud.</li>
@@ -225,29 +225,29 @@ const PresentationChecklistContent = () => (
 );
 
 const LASTGuideContent = () => (
-    <div className="space-y-4 text-slate-700">
+    <div className="space-y-4 text-slate-300">
         <p className="text-sm">The L.A.S.T. method is a simple, effective framework for handling complaints. It provides a clear, four-step process to de-escalate tension and find a resolution.</p>
         <div>
-            <h4 className="text-xl font-bold text-blue-600">L - Listen</h4>
-            <p className="mt-1 pl-4 border-l-2 border-slate-300 text-sm">
+            <h4 className="text-xl font-bold text-cyan-400">L - Listen</h4>
+            <p className="mt-1 pl-4 border-l-2 border-slate-600 text-sm">
                 Give the person your complete, uninterrupted attention. Let them explain their issue fully. Focus on understanding their perspective, not on preparing your defense. Use active listening cues like nodding and confirming you understand.
             </p>
         </div>
         <div>
-            <h4 className="text-xl font-bold text-blue-600">A - Acknowledge & Apologize</h4>
-            <p className="mt-1 pl-4 border-l-2 border-slate-300 text-sm">
+            <h4 className="text-xl font-bold text-cyan-400">A - Acknowledge & Apologize</h4>
+            <p className="mt-1 pl-4 border-l-2 border-slate-600 text-sm">
                 Validate their feelings by acknowledging their frustration or disappointment. A sincere, simple apology can be very powerful. Say "I'm sorry this happened" or "I understand why you're upset." This is not about admitting fault, but about showing empathy for their experience.
             </p>
         </div>
         <div>
-            <h4 className="text-xl font-bold text-blue-600">S - Solve</h4>
-            <p className="mt-1 pl-4 border-l-2 border-slate-300 text-sm">
+            <h4 className="text-xl font-bold text-cyan-400">S - Solve</h4>
+            <p className="mt-1 pl-4 border-l-2 border-slate-600 text-sm">
                 Take ownership of finding a solution. Ask, "What would be an ideal outcome for you?" If you can, offer a concrete solution immediately. If not, clearly explain the next steps you will take to resolve the issue and provide a timeline.
             </p>
         </div>
         <div>
-            <h4 className="text-xl font-bold text-blue-600">T - Thank</h4>
-            <p className="mt-1 pl-4 border-l-2 border-slate-300 text-sm">
+            <h4 className="text-xl font-bold text-cyan-400">T - Thank</h4>
+            <p className="mt-1 pl-4 border-l-2 border-slate-600 text-sm">
                 Thank the person for bringing the issue to your attention. Their feedback is valuable, even if it's hard to hear. This final step helps to rebuild the relationship and shows that you see their complaint as an opportunity to improve.
             </p>
         </div>
@@ -267,7 +267,7 @@ const StarRating: React.FC<{ rating: number; setRating: (r: number) => void }> =
                     aria-label={`Rate ${star} out of 5 stars`}
                 >
                     <svg
-                        className={`w-6 h-6 ${rating >= star ? 'text-yellow-400' : 'text-slate-400'}`}
+                        className={`w-6 h-6 ${rating >= star ? 'text-yellow-400' : 'text-slate-500'}`}
                         fill="currentColor"
                         viewBox="0 0 20 20"
                     >
@@ -313,23 +313,21 @@ const PeerReviewModal: React.FC<{
             <div className="grid lg:grid-cols-2 gap-6">
                  {/* Left Column: Original Feedback */}
                  <div className="space-y-4">
-                    {/* FIX: Add missing 'title' prop */}
-<Card title="Original AI Feedback">
+                    <Card title="Original AI Feedback">
                          <div className="p-4 space-y-3">
                             <div className="flex justify-around text-center">
                                 <div>
-                                    <p className="text-slate-500 text-sm">Score</p>
-                                    <p className="text-2xl font-bold text-blue-600">{feedbackData.overallScore}</p>
+                                    <p className="text-slate-400 text-sm">Score</p>
+                                    <p className="text-2xl font-bold text-cyan-400">{feedbackData.overallScore}</p>
                                 </div>
                                 <div>
-                                    <p className="text-slate-500 text-sm">Pacing</p>
-                                    <p className="text-2xl font-bold text-blue-600">{feedbackData.pacing.wpm} WPM</p>
+                                    <p className="text-slate-400 text-sm">Pacing</p>
+                                    <p className="text-2xl font-bold text-cyan-400">{feedbackData.pacing.wpm} WPM</p>
                                 </div>
                             </div>
                          </div>
                     </Card>
-                     {/* FIX: Add missing 'title' prop */}
-<Card title="Session Recording & Transcription">
+                    <Card title="Session Recording & Transcription">
                         <div className="p-4">
                             {mediaSrc ? (
                                 session.recordingMimeType.startsWith('video/') ? (
@@ -342,61 +340,59 @@ const PeerReviewModal: React.FC<{
                                     </audio>
                                 )
                             ) : (
-                                <div className="w-full h-14 flex items-center justify-center bg-slate-100 rounded-md mb-4">
-                                    <p className="text-slate-500 text-sm">Loading recording...</p>
+                                <div className="w-full h-14 flex items-center justify-center bg-slate-700 rounded-md mb-4">
+                                    <p className="text-slate-400 text-sm">Loading recording...</p>
                                 </div>
                             )}
-                            <div className="h-40 overflow-y-auto text-slate-600 text-sm leading-relaxed border-t border-slate-200 pt-4">
+                            <div className="h-40 overflow-y-auto text-slate-300 text-sm leading-relaxed border-t border-slate-700 pt-4">
                                 {feedbackData.transcription}
                             </div>
                         </div>
                     </Card>
-                     {/* FIX: Add missing 'title' prop */}
-<Card title="Existing Peer Feedback">
+                    <Card title="Existing Peer Feedback">
                          <div className="p-4 h-48 overflow-y-auto space-y-4">
                             {session.peerReviews.length > 0 ? (
                                 session.peerReviews.map(review => (
-                                    <div key={review.id} className="text-sm border-b border-slate-200 pb-2">
-                                        <div className="flex justify-between items-center text-xs text-slate-500 mb-1">
+                                    <div key={review.id} className="text-sm border-b border-slate-700 pb-2">
+                                        <div className="flex justify-between items-center text-xs text-slate-400 mb-1">
                                             <span>Clarity: {'⭐'.repeat(review.clarityRating)}</span>
                                             <span>Engagement: {'⭐'.repeat(review.engagementRating)}</span>
                                         </div>
-                                        <p className="text-slate-600 italic">"{review.comment}"</p>
+                                        <p className="text-slate-300 italic">"{review.comment}"</p>
                                     </div>
                                 ))
                             ) : (
-                                <p className="text-sm text-slate-500 text-center pt-12">No peer feedback yet. Be the first!</p>
+                                <p className="text-sm text-slate-400 text-center pt-12">No peer feedback yet. Be the first!</p>
                             )}
                          </div>
                     </Card>
                  </div>
                  {/* Right Column: Add Feedback */}
                  <div className="space-y-4">
-                     {/* FIX: Add missing 'title' prop */}
-<Card title="Add Your Feedback">
+                    <Card title="Add Your Feedback">
                          <form onSubmit={handleSubmit} className="p-4 space-y-4">
                              <div>
-                                 <label className="block text-sm font-medium text-slate-700 mb-1">Clarity</label>
+                                 <label className="block text-sm font-medium text-slate-300 mb-1">Clarity</label>
                                  <StarRating rating={clarityRating} setRating={setClarityRating} />
                                  <p className="text-xs text-slate-500 mt-1">How clear and easy to understand was the speaker?</p>
                              </div>
                              <div>
-                                 <label className="block text-sm font-medium text-slate-700 mb-1">Engagement</label>
+                                 <label className="block text-sm font-medium text-slate-300 mb-1">Engagement</label>
                                  <StarRating rating={engagementRating} setRating={setEngagementRating} />
                                  <p className="text-xs text-slate-500 mt-1">How engaging and confident did the speaker sound?</p>
                              </div>
                              <div>
-                                 <label htmlFor="comment" className="block text-sm font-medium text-slate-700 mb-1">Constructive Comment</label>
+                                 <label htmlFor="comment" className="block text-sm font-medium text-slate-300 mb-1">Constructive Comment</label>
                                  <textarea
                                     id="comment"
                                     value={comment}
                                     onChange={e => setComment(e.target.value)}
                                     placeholder="Provide one piece of positive feedback and one suggestion for improvement."
-                                    className="w-full h-32 p-2 bg-white border border-slate-300 rounded-md focus:ring-2 focus:ring-blue-500"
+                                    className="w-full h-32 p-2 bg-slate-900 border border-slate-600 rounded-md focus:ring-2 focus:ring-cyan-500 text-white"
                                     required
                                 />
                              </div>
-                             <button type="submit" disabled={isSubmitting} className="w-full bg-blue-600 text-white font-bold py-2 px-4 rounded-lg hover:bg-blue-700 disabled:opacity-50">
+                             <button type="submit" disabled={isSubmitting} className="w-full bg-cyan-600 text-white font-bold py-2 px-4 rounded-lg hover:bg-cyan-700 disabled:opacity-50">
                                 {isSubmitting ? 'Submitting...' : 'Submit Feedback'}
                             </button>
                          </form>
@@ -412,14 +408,17 @@ const PeerReviewSystem = () => {
     const [sessions, setSessions] = useState<PracticeSession[]>([]);
     const [selectedSession, setSelectedSession] = useState<PracticeSession | null>(null);
     const [isLoading, setIsLoading] = useState(true);
+    const [error, setError] = useState<string | null>(null);
 
     const fetchSessions = async () => {
         setIsLoading(true);
+        setError(null);
         try {
             const fetchedSessions = await firebaseService.getPeerReviewSessions();
             setSessions(fetchedSessions);
         } catch (error) {
             console.error("Error fetching peer review sessions:", error);
+            setError("Missing or insufficient permissions.");
         } finally {
             setIsLoading(false);
         }
@@ -438,7 +437,6 @@ const PeerReviewSystem = () => {
 
         try {
             await firebaseService.addPeerReviewFeedback(sessionId, feedbackToAdd);
-            // Optimistically update the UI or refetch
             const updatedSessions = sessions.map(s => {
                 if (s.id === sessionId) {
                     return { ...s, peerReviews: [...s.peerReviews, feedbackToAdd] };
@@ -449,7 +447,7 @@ const PeerReviewSystem = () => {
             
             setTimeout(() => {
                 setSelectedSession(null);
-            }, 1500); // Close modal after a short delay
+            }, 1500);
         } catch (error) {
             console.error("Error adding feedback:", error);
             alert("Failed to submit feedback.");
@@ -458,38 +456,43 @@ const PeerReviewSystem = () => {
 
     return (
         <div className="p-4">
-            <p className="text-sm text-slate-600 mb-4">Review anonymous practice sessions from your peers to help them improve. Remember to provide constructive and encouraging feedback.</p>
-            {isLoading ? <Loader message="Loading sessions..." /> : sessions.length === 0 ? (
-                <div className="text-center py-10 bg-slate-100/80 rounded-lg">
+            <p className="text-sm text-slate-400 mb-4">Review anonymous practice sessions from your peers to help them improve. Remember to provide constructive and encouraging feedback.</p>
+            {isLoading ? <Loader message="Loading sessions..." /> : error ? (
+                <div className="text-center py-10 bg-slate-800/50 rounded-lg">
+                    <h3 className="text-sm font-semibold text-red-400">Error</h3>
+                    <p className="mt-1 text-sm text-slate-500">{error}</p>
+                </div>
+            ) : sessions.length === 0 ? (
+                <div className="text-center py-10 bg-slate-800/50 rounded-lg">
                     <svg xmlns="http://www.w3.org/2000/svg" className="mx-auto h-12 w-12 text-slate-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.375 3.375 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" /></svg>
-                    <h3 className="mt-2 text-sm font-semibold text-slate-700">No Sessions Available for Review</h3>
+                    <h3 className="mt-2 text-sm font-semibold text-slate-300">No Sessions Available for Review</h3>
                     <p className="mt-1 text-sm text-slate-500">Complete a practice session and share it to get started.</p>
                 </div>
             ) : (
                 <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
                     {sessions.map(session => (
-                        <div key={session.id} className="bg-white/50 border border-slate-200 rounded-lg p-4 flex flex-col justify-between">
+                        <div key={session.id} className="bg-slate-800 border border-slate-700 rounded-lg p-4 flex flex-col justify-between">
                             <div>
-                                <p className="text-sm font-semibold text-slate-800">Anonymous Session</p>
-                                <p className="text-xs text-slate-500">Submitted: {new Date(session.timestamp).toLocaleString()}</p>
-                                <div className="flex justify-around text-center my-3 py-2 border-y border-slate-200">
+                                <p className="text-sm font-semibold text-slate-200">Anonymous Session</p>
+                                <p className="text-xs text-slate-400">Submitted: {new Date(session.timestamp).toLocaleString()}</p>
+                                <div className="flex justify-around text-center my-3 py-2 border-y border-slate-700">
                                     <div>
-                                        <p className="text-xs text-slate-500">Score</p>
-                                        <p className="font-bold text-blue-600">{session.feedbackData.overallScore}</p>
+                                        <p className="text-xs text-slate-400">Score</p>
+                                        <p className="font-bold text-cyan-400">{session.feedbackData.overallScore}</p>
                                     </div>
                                     <div>
-                                        <p className="text-xs text-slate-500">Pacing</p>
-                                        <p className="font-bold text-blue-600">{session.feedbackData.pacing.wpm} WPM</p>
+                                        <p className="text-xs text-slate-400">Pacing</p>
+                                        <p className="font-bold text-cyan-400">{session.feedbackData.pacing.wpm} WPM</p>
                                     </div>
                                     <div>
-                                        <p className="text-xs text-slate-500">Reviews</p>
-                                        <p className="font-bold text-blue-600">{session.peerReviews.length}</p>
+                                        <p className="text-xs text-slate-400">Reviews</p>
+                                        <p className="font-bold text-cyan-400">{session.peerReviews.length}</p>
                                     </div>
                                 </div>
                             </div>
                             <button
                                 onClick={() => setSelectedSession(session)}
-                                className="w-full bg-slate-200 hover:bg-slate-300 text-slate-700 font-semibold py-2 px-4 rounded transition-colors text-sm"
+                                className="w-full bg-slate-700 hover:bg-slate-600 text-slate-200 font-semibold py-2 px-4 rounded transition-colors text-sm"
                             >
                                 Review Session
                             </button>
@@ -518,33 +521,46 @@ export const ResourceLibrary: React.FC = () => {
         <>
             <div className="max-w-5xl mx-auto animate-fade-in space-y-6 pb-24">
                 <div className="text-center">
-                    <h2 className="text-3xl font-bold text-slate-900">Resource Library</h2>
-                    <p className="mt-2 text-lg text-slate-600">Supporting materials for your Technical English 2 course.</p>
+                    <h2 className="text-3xl font-bold text-slate-100">Resource Library</h2>
+                    <p className="mt-2 text-lg text-slate-400">Supporting materials for your Technical English 2 course.</p>
                 </div>
 
                 <div className="grid md:grid-cols-2 gap-6">
                     <Card title="Course References" color="blue">
-                        <div className="p-4">
-                            <ul className="list-disc list-inside space-y-2 text-slate-600">
-                                <li><a href="https://polycc.cidos.edu.my/" target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline">Politeknik Malaysia CIDOS E-Learning Portal</a></li>
-                                <li><a href="https://www.toastmasters.org/resources/public-speaking-tips" target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline">Toastmasters International: Public Speaking Tips</a></li>
-                                <li><a href="https://www.robertsrules.com/" target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline">Robert's Rules of Order (Meeting Protocols)</a></li>
-                            </ul>
+                        <div className="p-4 space-y-3">
+                            <a href="https://polycc.cidos.edu.my/" target="_blank" rel="noopener noreferrer" className="w-full text-left bg-white/75 hover:bg-white/90 text-blue-800 font-semibold py-2 px-4 rounded-lg transition-colors flex items-center shadow-sm">
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="h-5 w-5 mr-3 flex-shrink-0 text-blue-800">
+                                  <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 6H5.25A2.25 2.25 0 003 8.25v10.5A2.25 2.25 0 005.25 21h10.5A2.25 2.25 0 0018 18.75V10.5M15 3h6m0 0v6m0-6l-7.5 7.5" />
+                                </svg>
+                                Politeknik Malaysia CIDOS E-Learning Portal
+                            </a>
+                            <a href="https://www.toastmasters.org/resources/public-speaking-tips" target="_blank" rel="noopener noreferrer" className="w-full text-left bg-white/75 hover:bg-white/90 text-blue-800 font-semibold py-2 px-4 rounded-lg transition-colors flex items-center shadow-sm">
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="h-5 w-5 mr-3 flex-shrink-0 text-blue-800">
+                                  <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 6H5.25A2.25 2.25 0 003 8.25v10.5A2.25 2.25 0 005.25 21h10.5A2.25 2.25 0 0018 18.75V10.5M15 3h6m0 0v6m0-6l-7.5 7.5" />
+                                </svg>
+                                Toastmasters International: Public Speaking Tips
+                            </a>
+                            <a href="https://www.robertsrules.com/" target="_blank" rel="noopener noreferrer" className="w-full text-left bg-white/75 hover:bg-white/90 text-blue-800 font-semibold py-2 px-4 rounded-lg transition-colors flex items-center shadow-sm">
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="h-5 w-5 mr-3 flex-shrink-0 text-blue-800">
+                                  <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 6H5.25A2.25 2.25 0 003 8.25v10.5A2.25 2.25 0 005.25 21h10.5A2.25 2.25 0 0018 18.75V10.5M15 3h6m0 0v6m0-6l-7.5 7.5" />
+                                </svg>
+                                Robert's Rules of Order (Meeting Protocols)
+                            </a>
                         </div>
                     </Card>
 
                     <Card title="Downloadable Templates" color="green">
                         <div className="p-4 space-y-3">
-                            <button onClick={() => downloadTextFile(PRESENTATION_TEMPLATE, 'presentation-template.pptx')} className="w-full text-left bg-white hover:bg-green-50 text-green-700 font-semibold py-2 px-4 rounded-lg transition-colors flex items-center border border-green-200 shadow-sm">
-                                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-3 text-green-700" viewBox="0 0 20 20" fill="currentColor"><path fillRule="evenodd" d="M3 17a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm3.293-7.707a1 1 0 011.414 0L9 10.586V3a1 1 0 112 0v7.586l1.293-1.293a1 1 0 111.414 1.414l-3 3a1 1 0 01-1.414 0l-3-3a1 1 0 010-1.414z" clipRule="evenodd" /></svg>
+                            <button onClick={() => downloadTextFile(PRESENTATION_TEMPLATE, 'presentation-template.pptx')} className="w-full text-left bg-white/10 hover:bg-white/20 text-green-300 font-semibold py-2 px-4 rounded-lg transition-colors flex items-center border border-green-700/50 shadow-sm">
+                                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-3 text-green-400" viewBox="0 0 20 20" fill="currentColor"><path fillRule="evenodd" d="M3 17a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm3.293-7.707a1 1 0 011.414 0L9 10.586V3a1 1 0 112 0v7.586l1.293-1.293a1 1 0 111.414 1.414l-3 3a1 1 0 01-1.414 0l-3-3a1 1 0 010-1.414z" clipRule="evenodd" /></svg>
                                 Presentation Slide Template (.pptx)
                             </button>
-                            <button onClick={() => downloadTextFile(MINUTES_TEMPLATE, 'meeting-minutes-template.docx')} className="w-full text-left bg-white hover:bg-green-50 text-green-700 font-semibold py-2 px-4 rounded-lg transition-colors flex items-center border border-green-200 shadow-sm">
-                               <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-3 text-green-700" viewBox="0 0 20 20" fill="currentColor"><path fillRule="evenodd" d="M3 17a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm3.293-7.707a1 1 0 011.414 0L9 10.586V3a1 1 0 112 0v7.586l1.293-1.293a1 1 0 111.414 1.414l-3 3a1 1 0 01-1.414 0l-3-3a1 1 0 010-1.414z" clipRule="evenodd" /></svg>
+                            <button onClick={() => downloadTextFile(MINUTES_TEMPLATE, 'meeting-minutes-template.docx')} className="w-full text-left bg-white/10 hover:bg-white/20 text-green-300 font-semibold py-2 px-4 rounded-lg transition-colors flex items-center border border-green-700/50 shadow-sm">
+                               <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-3 text-green-400" viewBox="0 0 20 20" fill="currentColor"><path fillRule="evenodd" d="M3 17a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm3.293-7.707a1 1 0 011.414 0L9 10.586V3a1 1 0 112 0v7.586l1.293-1.293a1 1 0 111.414 1.414l-3 3a1 1 0 01-1.414 0l-3-3a1 1 0 010-1.414z" clipRule="evenodd" /></svg>
                                 Meeting Minutes Template (.docx)
                             </button>
-                            <button onClick={() => downloadTextFile(COMPLAINT_TEMPLATE, 'complaint-response-template.docx')} className="w-full text-left bg-white hover:bg-green-50 text-green-700 font-semibold py-2 px-4 rounded-lg transition-colors flex items-center border border-green-200 shadow-sm">
-                               <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-3 text-green-700" viewBox="0 0 20 20" fill="currentColor"><path fillRule="evenodd" d="M3 17a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm3.293-7.707a1 1 0 011.414 0L9 10.586V3a1 1 0 112 0v7.586l1.293-1.293a1 1 0 111.414 1.414l-3 3a1 1 0 01-1.414 0l-3-3a1 1 0 010-1.414z" clipRule="evenodd" /></svg>
+                            <button onClick={() => downloadTextFile(COMPLAINT_TEMPLATE, 'complaint-response-template.docx')} className="w-full text-left bg-white/10 hover:bg-white/20 text-green-300 font-semibold py-2 px-4 rounded-lg transition-colors flex items-center border border-green-700/50 shadow-sm">
+                               <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-3 text-green-400" viewBox="0 0 20 20" fill="currentColor"><path fillRule="evenodd" d="M3 17a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm3.293-7.707a1 1 0 011.414 0L9 10.586V3a1 1 0 112 0v7.586l1.293-1.293a1 1 0 111.414 1.414l-3 3a1 1 0 01-1.414 0l-3-3a1 1 0 010-1.414z" clipRule="evenodd" /></svg>
                                 Complaint Response Email Template (.docx)
                             </button>
                         </div>
@@ -557,10 +573,10 @@ export const ResourceLibrary: React.FC = () => {
 
                 <Card title="Quick Guides" color="orange">
                     <div className="p-4 flex flex-col md:flex-row gap-4">
-                        <button onClick={() => setActiveModal('checklist')} className="flex-1 text-left bg-white hover:bg-orange-50 text-orange-700 font-semibold py-3 px-5 rounded-lg transition-colors text-lg border border-orange-200 shadow-sm">
+                        <button onClick={() => setActiveModal('checklist')} className="flex-1 text-left bg-white/10 hover:bg-white/20 text-orange-300 font-semibold py-3 px-5 rounded-lg transition-colors text-lg border border-orange-700/50 shadow-sm">
                             Presentation Checklist
                         </button>
-                        <button onClick={() => setActiveModal('guide')} className="flex-1 text-left bg-white hover:bg-orange-50 text-orange-700 font-semibold py-3 px-5 rounded-lg transition-colors text-lg border border-orange-200 shadow-sm">
+                        <button onClick={() => setActiveModal('guide')} className="flex-1 text-left bg-white/10 hover:bg-white/20 text-orange-300 font-semibold py-3 px-5 rounded-lg transition-colors text-lg border border-orange-700/50 shadow-sm">
                             L.A.S.T. Method Guide
                         </button>
                     </div>

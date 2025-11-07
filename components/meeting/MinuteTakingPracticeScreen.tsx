@@ -1,10 +1,9 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import Card from '../Card';
 import Loader from '../Loader';
-// FIX: Add missing imports from geminiService
 import { MINUTE_TAKING_TRANSCRIPT, getMinuteTakingFeedback } from '../../services/geminiService';
 import { MinuteFeedbackData, MinuteTakingSession, Student, Lecturer } from '../../types';
-// FIX: Switched to a named import for MinuteFeedbackDisplay to resolve module resolution error.
+import { saveMinuteTakingSession } from '../../services/firebaseService';
 import { MinuteFeedbackDisplay } from './MinuteFeedbackDisplay';
 
 interface MinuteTakingPracticeScreenProps {
@@ -23,7 +22,6 @@ const getCanonicalSpeaker = (speakerStr: string): 'Tuan Ihsan' | 'Iman' | 'Sarah
   if (lowerCaseStr.includes('sarah')) {
     return 'Sarah';
   }
-  // This case should not be reached with the current transcript, but it's a safe fallback.
   return 'Tuan Ihsan';
 };
 
@@ -41,18 +39,15 @@ const MinuteTakingPracticeScreen: React.FC<MinuteTakingPracticeScreenProps> = ({
   const utterancesQueue = useRef<SpeechSynthesisUtterance[]>([]);
   const synthRef = useRef(window.speechSynthesis);
 
-  // Load voices and handle cleanup
   useEffect(() => {
     const synth = synthRef.current;
     const loadVoices = () => {
         setVoices(synth.getVoices().filter(v => v.lang.startsWith('en')));
     };
     
-    // Voices may load asynchronously
     synth.onvoiceschanged = loadVoices;
-    loadVoices(); // Initial attempt
+    loadVoices();
     
-    // Cleanup function to cancel speech if component unmounts
     return () => {
         if (synth.speaking) {
             synth.cancel();
@@ -65,7 +60,7 @@ const MinuteTakingPracticeScreen: React.FC<MinuteTakingPracticeScreenProps> = ({
     if (utterancesQueue.current.length > 0) {
       const utterance = utterancesQueue.current.shift();
       if(utterance) {
-        utterance.onend = playNextUtterance; // Chain the next utterance
+        utterance.onend = playNextUtterance;
         synth.speak(utterance);
       }
     } else {
@@ -81,12 +76,12 @@ const MinuteTakingPracticeScreen: React.FC<MinuteTakingPracticeScreenProps> = ({
     } else if (playbackState === 'paused') {
       synth.resume();
       setPlaybackState('playing');
-    } else { // 'idle' or 'finished'
+    } else { 
       if (voices.length === 0) {
         alert("Speech synthesis voices are still loading. Please wait a moment and try again.");
         return;
       }
-      synth.cancel(); // Clear any previous speech
+      synth.cancel();
       
       const enVoices = voices.filter(v => v.lang.startsWith('en'));
       if (enVoices.length === 0) {
@@ -94,7 +89,6 @@ const MinuteTakingPracticeScreen: React.FC<MinuteTakingPracticeScreenProps> = ({
           return;
       }
   
-      // Heuristics to find gendered voices
       const femaleVoices = enVoices.filter(v => v.name.toLowerCase().includes('female') || ['zira', 'susan', 'eva', 'serena', 'hazel'].some(n => v.name.toLowerCase().includes(n)));
       const maleVoices = enVoices.filter(v => v.name.toLowerCase().includes('male') || ['david', 'mark', 'tom', 'alex', 'george'].some(n => v.name.toLowerCase().includes(n)));
       
@@ -155,9 +149,7 @@ const MinuteTakingPracticeScreen: React.FC<MinuteTakingPracticeScreenProps> = ({
       
       if (user && user.role === 'student') {
          const studentUser = user as Student;
-         const newSessionId = `minute_${Date.now()}`;
-         const newSession: MinuteTakingSession = {
-             id: newSessionId,
+         const newSession: Omit<MinuteTakingSession, 'id'> = {
              timestamp: Date.now(),
              studentUid: studentUser.uid,
              studentEmail: studentUser.email,
@@ -165,12 +157,9 @@ const MinuteTakingPracticeScreen: React.FC<MinuteTakingPracticeScreenProps> = ({
              classCode: studentUser.classCode,
              userMinutes: userMinutes,
              feedbackData: feedbackData,
-             isSubmitted: false, // Can be submitted from the feedback screen
          };
          
-         const allSessions: MinuteTakingSession[] = JSON.parse(localStorage.getItem('minuteTakingSessions') || '[]');
-         allSessions.push(newSession);
-         localStorage.setItem('minuteTakingSessions', JSON.stringify(allSessions));
+         const newSessionId = await saveMinuteTakingSession(newSession);
          setSessionId(newSessionId);
       }
 

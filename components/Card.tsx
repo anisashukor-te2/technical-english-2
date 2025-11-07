@@ -9,36 +9,36 @@ interface CardProps {
 const Card: React.FC<CardProps> = ({ title, children, color }) => {
   const colorClasses = {
     blue: {
-      bg: 'bg-blue-100',
-      titleColor: 'text-blue-700',
-      borderColor: 'border-blue-200'
+      bg: 'bg-blue-900/20',
+      titleColor: 'text-blue-300',
+      borderColor: 'border-blue-800/50'
     },
     green: {
-      bg: 'bg-green-100',
-      titleColor: 'text-green-700',
-      borderColor: 'border-green-200'
+      bg: 'bg-green-900/20',
+      titleColor: 'text-green-300',
+      borderColor: 'border-green-800/50'
     },
     purple: {
-      bg: 'bg-purple-100',
-      titleColor: 'text-purple-700',
-      borderColor: 'border-purple-200'
+      bg: 'bg-purple-900/20',
+      titleColor: 'text-purple-300',
+      borderColor: 'border-purple-800/50'
     },
     orange: {
-      bg: 'bg-orange-100',
-      titleColor: 'text-orange-700',
-      borderColor: 'border-orange-200'
+      bg: 'bg-orange-900/20',
+      titleColor: 'text-orange-300',
+      borderColor: 'border-orange-800/50'
     },
     default: {
-      bg: 'bg-white',
-      titleColor: 'text-blue-600',
-      borderColor: 'border-slate-200'
+      bg: 'bg-slate-800/60',
+      titleColor: 'text-cyan-400',
+      borderColor: 'border-slate-700'
     }
   };
 
   const selectedColor = colorClasses[color || 'default'];
 
   return (
-    <div className={`${selectedColor.bg} border border-slate-200 rounded-lg shadow-lg`}>
+    <div className={`${selectedColor.bg} border ${selectedColor.borderColor} rounded-lg shadow-lg`}>
       <h3 className={`text-lg font-bold ${selectedColor.titleColor} p-4 border-b ${selectedColor.borderColor}`}>
         {title}
       </h3>

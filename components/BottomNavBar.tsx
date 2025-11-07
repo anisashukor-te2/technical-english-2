@@ -1,4 +1,5 @@
 
+
 import React from 'react';
 import { ActiveModule } from '../types';
 
@@ -51,7 +52,7 @@ const NavItem: React.FC<NavItemProps> = ({ label, module, isActive, onClick, chi
   <button
     onClick={() => onClick(module)}
     className={`flex-1 flex flex-col items-center justify-center p-2 rounded-lg transition-colors focus:outline-none focus:ring-2 ${focusRingColor} ${
-      isActive ? activeColor : 'text-slate-500 hover:bg-slate-100'
+      isActive ? activeColor : 'text-slate-400 hover:bg-slate-700'
     }`}
     aria-current={isActive ? 'page' : undefined}
   >
@@ -67,14 +68,14 @@ const BottomNavBar: React.FC<BottomNavBarProps> = ({ activeModule, setActiveModu
   };
 
   return (
-    <footer className="fixed bottom-0 left-0 right-0 bg-white border-t border-slate-200 z-20">
+    <footer className="fixed bottom-0 left-0 right-0 bg-slate-800 border-t border-slate-700 z-20">
       <nav className="max-w-md mx-auto flex items-center justify-around p-1">
         <NavItem
           label="Presentation"
           module="PRESENTATION"
           isActive={activeModule === 'PRESENTATION'}
           onClick={handleNavClick}
-          activeColor="bg-blue-100 text-blue-700 font-bold"
+          activeColor="bg-blue-900/50 text-blue-300 font-bold"
           focusRingColor="focus:ring-blue-500/50"
         >
           <PresentationIcon />
@@ -84,7 +85,7 @@ const BottomNavBar: React.FC<BottomNavBarProps> = ({ activeModule, setActiveModu
           module="MEETING"
           isActive={activeModule === 'MEETING'}
           onClick={handleNavClick}
-          activeColor="bg-purple-100 text-purple-700 font-bold"
+          activeColor="bg-purple-900/50 text-purple-300 font-bold"
           focusRingColor="focus:ring-purple-500/50"
         >
           <MeetingIcon />
@@ -94,7 +95,7 @@ const BottomNavBar: React.FC<BottomNavBarProps> = ({ activeModule, setActiveModu
           module="COMPLAINTS"
           isActive={activeModule === 'COMPLAINTS'}
           onClick={handleNavClick}
-          activeColor="bg-orange-100 text-orange-700 font-bold"
+          activeColor="bg-orange-900/50 text-orange-300 font-bold"
           focusRingColor="focus:ring-orange-500/50"
         >
           <ComplaintsIcon />
@@ -104,7 +105,7 @@ const BottomNavBar: React.FC<BottomNavBarProps> = ({ activeModule, setActiveModu
           module="RESOURCES"
           isActive={activeModule === 'RESOURCES'}
           onClick={handleNavClick}
-          activeColor="bg-green-100 text-green-700 font-bold"
+          activeColor="bg-green-900/50 text-green-300 font-bold"
           focusRingColor="focus:ring-green-500/50"
         >
           <ResourcesIcon />

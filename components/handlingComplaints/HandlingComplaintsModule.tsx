@@ -1,5 +1,3 @@
-
-
 import React, { useState } from 'react';
 import LearnScreen from '../complaints/LearnScreen';
 import PracticeScenarioSelectionScreen from '../complaints/PracticeScenarioSelectionScreen';
@@ -10,7 +8,7 @@ import Loader from '../Loader';
 import Card from '../Card';
 import ComplaintFeedbackDisplay from '../complaints/ComplaintFeedbackDisplay';
 import { getComplaintEmailFeedback, COMPLAINT_EMAIL_SCENARIO } from '../../services/geminiService';
-import * as firebaseService from '../../services/firebaseService';
+import { saveComplaintEmailSession } from '../../services/firebaseService';
 
 
 type ComplaintView = 'MENU' | 'LEARN' | 'PRACTICE' | 'REVIEW';
@@ -18,51 +16,29 @@ type ComplaintView = 'MENU' | 'LEARN' | 'PRACTICE' | 'REVIEW';
 interface HandlingComplaintsModuleProps {
   user: Student | Lecturer | null;
   userType: 'student' | 'lecturer' | null;
-  // FIX: Add selectedClass to props to be passed to ReviewScreen.
   selectedClass: string;
 }
 
 const MenuCard = ({ title, description, onClick, icon, color, comingSoon = false }: { title: string, description: string, onClick: () => void, icon: React.ReactNode, color: 'blue' | 'green' | 'purple', comingSoon?: boolean }) => {
     const colorClasses = {
-        blue: {
-            bg: 'bg-blue-100',
-            hoverBg: 'hover:bg-blue-200',
-            hoverBorder: 'hover:border-blue-400',
-            icon: 'text-blue-700',
-            text: 'text-slate-800',
-            subtext: 'text-slate-600',
-        },
-        green: {
-            bg: 'bg-green-100',
-            hoverBg: 'hover:bg-green-200',
-            hoverBorder: 'hover:border-green-400',
-            icon: 'text-green-700',
-            text: 'text-slate-800',
-            subtext: 'text-slate-600',
-        },
-        purple: {
-            bg: 'bg-purple-100',
-            hoverBg: 'hover:bg-purple-200',
-            hoverBorder: 'hover:border-purple-400',
-            icon: 'text-purple-700',
-            text: 'text-slate-800',
-            subtext: 'text-slate-600',
-        },
+        blue: { hoverBorder: 'hover:border-blue-400', icon: 'text-blue-400' },
+        green: { hoverBorder: 'hover:border-green-400', icon: 'text-green-400' },
+        purple: { hoverBorder: 'hover:border-purple-400', icon: 'text-purple-400' },
     };
-
+    
     const classes = colorClasses[color];
     
     return (
         <div 
             onClick={!comingSoon ? onClick : undefined}
-            className={`relative border border-slate-200 rounded-lg p-6 text-center transition-all transform ${comingSoon ? 'opacity-50 cursor-not-allowed' : `cursor-pointer hover:-translate-y-1 shadow-md hover:shadow-xl ${classes.hoverBg} ${classes.hoverBorder}`} ${classes.bg}`}
+            className={`relative bg-slate-800/60 backdrop-blur-sm border border-slate-700 rounded-lg p-6 text-center transition-all transform ${comingSoon ? 'opacity-50 cursor-not-allowed' : `cursor-pointer hover:-translate-y-1 shadow-lg hover:shadow-cyan-500/10 hover:bg-slate-700/80 ${classes.hoverBorder}`}`}
         >
             {comingSoon && <span className="absolute top-2 right-2 bg-yellow-500 text-slate-900 text-xs font-bold px-2 py-1 rounded">Coming Soon</span>}
             <div className={`flex justify-center items-center mb-4 ${classes.icon}`}>
                 {icon}
             </div>
-            <h3 className={`text-xl font-bold ${classes.text}`}>{title}</h3>
-            <p className={`mt-2 ${classes.subtext}`}>{description}</p>
+            <h3 className="text-xl font-bold text-slate-200">{title}</h3>
+            <p className="mt-2 text-slate-400">{description}</p>
         </div>
     );
 };
@@ -77,7 +53,6 @@ const HandlingComplaintsModule: React.FC<HandlingComplaintsModuleProps> = ({ use
     const [emailFeedback, setEmailFeedback] = useState<ComplaintFeedbackData | null>(null);
     const [isLoadingEmail, setIsLoadingEmail] = useState(false);
     const [emailError, setEmailError] = useState<string | null>(null);
-    // FIX: Add state to hold the session ID for the email practice.
     const [emailSessionId, setEmailSessionId] = useState<string | null>(null);
 
 
@@ -115,7 +90,6 @@ const HandlingComplaintsModule: React.FC<HandlingComplaintsModuleProps> = ({ use
         try {
           const feedbackData = await getComplaintEmailFeedback(userEmail);
 
-          // FIX: Add logic to save the session to get a session ID.
           const studentUser = user as Student;
           const newSession: Omit<ComplaintEmailSession, 'id'> = {
               timestamp: Date.now(),
@@ -126,12 +100,10 @@ const HandlingComplaintsModule: React.FC<HandlingComplaintsModuleProps> = ({ use
               scenario: COMPLAINT_EMAIL_SCENARIO,
               userEmail: userEmail,
               feedbackData: feedbackData,
-              isSubmitted: false,
           };
           
-          const savedId = await firebaseService.addSession('complaintEmailSessions', newSession);
-
-          setEmailSessionId(savedId);
+          const newSessionId = await saveComplaintEmailSession(newSession);
+          setEmailSessionId(newSessionId);
           setEmailFeedback(feedbackData);
         } catch (e: any) {
           setEmailError(e.message || 'Failed to get feedback from the AI. Please try again.');
@@ -145,7 +117,6 @@ const HandlingComplaintsModule: React.FC<HandlingComplaintsModuleProps> = ({ use
         setUserEmail('');
         setEmailFeedback(null);
         setEmailError(null);
-        // FIX: Reset session ID on practice again.
         setEmailSessionId(null);
     };
 
@@ -163,7 +134,6 @@ const HandlingComplaintsModule: React.FC<HandlingComplaintsModuleProps> = ({ use
                     if (emailFeedback) {
                         return (
                             <div className="max-w-4xl mx-auto">
-                                {/* FIX: Add missing sessionId and isStudent props. Also pass onBack to handle navigation from within the component. */}
                                 <ComplaintFeedbackDisplay
                                     feedback={emailFeedback}
                                     userEmail={userEmail}
@@ -178,14 +148,14 @@ const HandlingComplaintsModule: React.FC<HandlingComplaintsModuleProps> = ({ use
                     return (
                         <div className="max-w-5xl mx-auto animate-fade-in space-y-6 pb-24">
                           <div className="text-center">
-                            <h2 className="text-3xl font-bold text-slate-900">Practice: Written Email Response</h2>
-                            <p className="mt-2 text-lg text-slate-600">Read the scenario, then write a professional email to resolve the complaint.</p>
+                            <h2 className="text-3xl font-bold text-slate-100">Practice: Written Email Response</h2>
+                            <p className="mt-2 text-lg text-slate-400">Read the scenario, then write a professional email to resolve the complaint.</p>
                           </div>
                           
                           <div className="grid lg:grid-cols-2 gap-6">
                             <Card title="Complaint Scenario">
                                 <div className="p-4 h-[60vh] overflow-y-auto">
-                                    <p className="text-sm text-slate-700">
+                                    <p className="text-sm text-slate-300">
                                         {COMPLAINT_EMAIL_SCENARIO}
                                     </p>
                                 </div>
@@ -197,16 +167,16 @@ const HandlingComplaintsModule: React.FC<HandlingComplaintsModuleProps> = ({ use
                                             value={userEmail}
                                             onChange={(e) => setUserEmail(e.target.value)}
                                             placeholder="Dear [Client Name], ..."
-                                            className="w-full h-[calc(60vh-80px)] p-3 bg-white border border-slate-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition"
+                                            className="w-full h-[calc(60vh-80px)] p-3 bg-slate-900 border border-slate-600 rounded-md focus:ring-2 focus:ring-cyan-500 focus:border-cyan-500 transition text-slate-200"
                                         />
                                     </div>
                                 </Card>
-                                <div className="bg-white p-4 rounded-lg border border-slate-200 space-y-3">
-                                    {emailError && <p className="text-red-500 text-center text-sm mb-2">{emailError}</p>}
+                                <div className="bg-slate-800/60 p-4 rounded-lg border border-slate-700 space-y-3">
+                                    {emailError && <p className="text-red-400 text-center text-sm mb-2">{emailError}</p>}
                                     <button
                                         onClick={handleSubmitEmail}
                                         disabled={!userEmail.trim()}
-                                        className="w-full bg-blue-600 text-white font-bold py-3 px-4 rounded-lg hover:bg-blue-700 transition-colors focus:outline-none focus:ring-4 focus:ring-blue-500/50 disabled:bg-slate-400 disabled:cursor-not-allowed"
+                                        className="w-full bg-cyan-600 text-white font-bold py-3 px-4 rounded-lg hover:bg-cyan-700 transition-colors focus:outline-none focus:ring-4 focus:ring-cyan-500/50 disabled:bg-slate-500 disabled:cursor-not-allowed"
                                     >
                                         Submit for Feedback
                                     </button>
@@ -214,7 +184,7 @@ const HandlingComplaintsModule: React.FC<HandlingComplaintsModuleProps> = ({ use
                             </div>
                           </div>
                           <div className="text-center pt-4">
-                            <button onClick={handleBackToPracticeSelection} className="text-sm text-blue-600 hover:text-blue-700 flex items-center mx-auto">
+                            <button onClick={handleBackToPracticeSelection} className="text-sm text-cyan-400 hover:text-cyan-300 flex items-center mx-auto">
                                 <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                                     <path strokeLinecap="round" strokeLinejoin="round" d="M11 17l-5-5m0 0l5-5m-5 5h12" />
                                 </svg>
@@ -240,7 +210,6 @@ const HandlingComplaintsModule: React.FC<HandlingComplaintsModuleProps> = ({ use
                     onSelectEmailPractice={handleSelectEmailPractice}
                  />;
             case 'REVIEW':
-                // FIX: Add missing selectedClass prop required by ReviewScreen.
                 return <ReviewScreen onBack={handleBackToMenu} user={user} userType={userType} selectedClass={selectedClass} />;
             case 'MENU':
             default:
@@ -251,8 +220,8 @@ const HandlingComplaintsModule: React.FC<HandlingComplaintsModuleProps> = ({ use
                 return (
                      <div className="max-w-4xl mx-auto animate-fade-in">
                         <div className="text-center mb-8">
-                            <h2 className="text-3xl font-bold text-slate-900">{menuTitle}</h2>
-                            <p className="mt-2 text-lg text-slate-600">{menuDescription}</p>
+                            <h2 className="text-3xl font-bold text-slate-100">{menuTitle}</h2>
+                            <p className="mt-2 text-lg text-slate-400">{menuDescription}</p>
                         </div>
                         <div className="grid md:grid-cols-3 gap-8">
                             <MenuCard 

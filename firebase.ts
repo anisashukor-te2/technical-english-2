@@ -1,6 +1,4 @@
-
-
-import firebase from 'firebase/compat/app';
+import { initializeApp } from 'firebase/app';
 import { getAuth } from 'firebase/auth';
 import { getFirestore } from 'firebase/firestore';
 import { getStorage } from 'firebase/storage';
@@ -23,8 +21,7 @@ const firebaseConfig = {
 
 
 // Initialize Firebase
-// FIX: Use compat library's initializeApp to work around potential module resolution issues.
-const app = firebase.initializeApp(firebaseConfig);
+const app = initializeApp(firebaseConfig);
 
 // Get instances of Firebase services
 const auth = getAuth(app);

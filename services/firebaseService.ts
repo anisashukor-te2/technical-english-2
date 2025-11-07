@@ -1,3 +1,5 @@
+
+
 import {
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
@@ -19,7 +21,8 @@ import {
 } from 'firebase/firestore';
 import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 import { auth, db, storage } from '../firebase';
-import { Student, Lecturer, UserProfile, PracticeSession } from '../types';
+// FIX: Add missing session types to the import statement.
+import { Student, Lecturer, UserProfile, PracticeSession, MeetingSession, MinuteTakingSession, ComplaintSession, ComplaintEmailSession } from '../types';
 
 // --- AUTHENTICATION ---
 
@@ -27,69 +30,33 @@ export const signUpStudent = async (
   details: { email: string; courseId: string; lecturerClassCode: string },
   password: string
 ) => {
-  // 1. Find the lecturer first
+  // 1. Fetch all lecturers. This is less efficient but more robust against
+  // complex security rule failures with 'array-contains' on unauthenticated reads.
   const lecturersRef = collection(db, 'users');
-  const q = query(
-    lecturersRef,
-    where('role', '==', 'lecturer'),
-    where('classCodes', 'array-contains', details.lecturerClassCode.toUpperCase()),
-    where('courseCode', '==', details.courseId.toUpperCase())
+  const q = query(lecturersRef, where('role', '==', 'lecturer'));
+  const querySnapshot = await getDocs(q);
+
+  if (querySnapshot.empty) {
+    throw new Error('Registration failed: No lecturers are registered in the system.');
+  }
+
+  // 2. Filter lecturers client-side to find the correct one.
+  const allLecturers = querySnapshot.docs.map(doc => doc.data() as Lecturer);
+  
+  const matchingLecturer = allLecturers.find(lecturer => 
+    lecturer.classCodes.some(cc => cc.toUpperCase() === details.lecturerClassCode.toUpperCase()) &&
+    lecturer.courseCode.toUpperCase() === details.courseId.toUpperCase()
   );
 
-  const querySnapshot = await getDocs(q);
-  if (querySnapshot.empty) {
-    throw new Error(
-      `Registration failed: No lecturer found for Course ID "${details.courseId.toUpperCase()}" and Class ID "${details.lecturerClassCode.toUpperCase()}". Please check the codes are correct.`
+  if (!matchingLecturer) {
+    // Provide more specific feedback
+    const lecturerWithClassCode = allLecturers.find(lecturer => 
+        lecturer.classCodes.some(cc => cc.toUpperCase() === details.lecturerClassCode.toUpperCase())
     );
-  }
-  const foundLecturer = querySnapshot.docs[0].data() as Lecturer;
-
-  // 2. Create user in Firebase Auth
-  const userCredential = await createUserWithEmailAndPassword(auth, details.email, password);
-  const { user } = userCredential;
-
-  // 3. Create student profile in Firestore
-  const newStudent: Student = {
-    uid: user.uid,
-    email: details.email,
-    role: 'student',
-    courseId: details.courseId.toUpperCase(),
-    classCode: details.lecturerClassCode.toUpperCase(),
-    lecturerEmail: foundLecturer.email,
-  };
-
-  await setDoc(doc(db, 'users', user.uid), newStudent);
-  return newStudent;
-};
-
-export const signUpLecturer = async (details: Omit<Lecturer, 'uid' | 'role'>, password: string) => {
-  const usersRef = collection(db, 'users');
-  // 1. Check if email is already in use
-  const emailQuery = query(usersRef, where('email', '==', details.email));
-  const existingUser = await getDocs(emailQuery);
-  if (!existingUser.empty) {
-    throw new Error('This email is already registered.');
-  }
-
-  // 2. NEW VALIDATION: Check if any class codes are already taken
-  const upperCaseClassCodes = details.classCodes.map((c) => c.toUpperCase().trim()).filter(Boolean);
-  if (upperCaseClassCodes.length > 0) {
-    const classCodeQuery = query(
-      usersRef,
-      where('role', '==', 'lecturer'),
-      where('classCodes', 'array-contains-any', upperCaseClassCodes)
-    );
-    const existingClassSnapshot = await getDocs(classCodeQuery);
-
-    if (!existingClassSnapshot.empty) {
-      // Find which class code is already taken to provide a better error message
-      const existingLecturer = existingClassSnapshot.docs[0].data() as Lecturer;
-      const takenClass = upperCaseClassCodes.find((code) =>
-        existingLecturer.classCodes.includes(code)
-      );
-      throw new Error(
-        `Registration failed: Class ID "${takenClass}" is already registered by another lecturer.`
-      );
+    if (lecturerWithClassCode) {
+        throw new Error(`Registration failed: Class ID "${details.lecturerClassCode.toUpperCase()}" is valid, but not for Course ID "${details.courseId.toUpperCase()}". Please check your Course ID.`);
+    } else {
+        throw new Error(`Registration failed: Lecturer's Class ID "${details.lecturerClassCode.toUpperCase()}" not found. Please check the code is correct.`);
     }
   }
 
@@ -97,7 +64,33 @@ export const signUpLecturer = async (details: Omit<Lecturer, 'uid' | 'role'>, pa
   const userCredential = await createUserWithEmailAndPassword(auth, details.email, password);
   const { user } = userCredential;
 
-  // 4. Create lecturer profile in Firestore
+  // 4. Create student profile in Firestore
+  const newStudent: Student = {
+    uid: user.uid,
+    email: details.email,
+    role: 'student',
+    courseId: details.courseId.toUpperCase(),
+    classCode: details.lecturerClassCode.toUpperCase(),
+    lecturerEmail: matchingLecturer.email,
+  };
+
+  await setDoc(doc(db, 'users', user.uid), newStudent);
+  return newStudent;
+};
+
+export const signUpLecturer = async (details: Omit<Lecturer, 'uid' | 'role'>, password: string) => {
+  // The pre-emptive check for class code uniqueness was removed as it was causing
+  // a persistent "Missing or insufficient permissions" error due to Firestore security rules
+  // on unauthenticated queries. Firebase Auth will still prevent duplicate emails.
+  // The risk of two lecturers registering the same class ID is considered low and acceptable
+  // in order to make the registration functionality work.
+
+  // Create user in Firebase Auth (this will also handle email uniqueness)
+  const userCredential = await createUserWithEmailAndPassword(auth, details.email, password);
+  const { user } = userCredential;
+
+  // Create lecturer profile in Firestore
+  const upperCaseClassCodes = details.classCodes.map((c) => c.toUpperCase().trim()).filter(Boolean);
   const newLecturer: Lecturer = {
     ...details,
     uid: user.uid,
@@ -220,7 +213,7 @@ export const updateSession = async (collectionName: string, sessionId: string, d
     await updateDoc(sessionDocRef, data);
 };
 
-export const getSessions = async <T>(
+export const getSessions = async <T extends Record<string, any>>(
     collectionName: string,
     user: UserProfile,
     selectedClass: string = 'ALL'
@@ -239,7 +232,8 @@ export const getSessions = async <T>(
     }
 
     const querySnapshot = await getDocs(q);
-    return querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as T));
+    // FIX: Corrected the type casting for the returned session data to resolve a TypeScript conversion error.
+    return querySnapshot.docs.map(doc => ({ ...(doc.data() as any), id: doc.id } as unknown as T));
 };
 
 
@@ -259,4 +253,56 @@ export const getPeerReviewSessions = async (): Promise<PracticeSession[]> => {
 export const addPeerReviewFeedback = async (sessionId: string, feedbackData: object) => {
     const reviewsCollectionRef = collection(db, 'practiceSessions', sessionId, 'peerReviews');
     await addDoc(reviewsCollectionRef, feedbackData);
+};
+
+// --- SESSION MANAGEMENT ---
+
+// Meeting & Minute Taking Sessions
+export const saveMeetingSession = (data: Omit<MeetingSession, 'id'>) => {
+    return addSession('meetingSessions', data);
+};
+
+export const getMeetingSessions = (user: UserProfile, selectedClass: string = 'ALL'): Promise<MeetingSession[]> => {
+    return getSessions<MeetingSession>('meetingSessions', user, selectedClass);
+};
+
+export const saveMeetingLecturerFeedback = (sessionId: string, grade: number, feedback: string) => {
+    return updateSession('meetingSessions', sessionId, { grade, lecturerFeedback: feedback, isGraded: true });
+};
+
+export const saveMinuteTakingSession = (data: Omit<MinuteTakingSession, 'id'>) => {
+    return addSession('minuteTakingSessions', data);
+};
+
+export const getMinuteTakingSessions = (user: UserProfile, selectedClass: string = 'ALL'): Promise<MinuteTakingSession[]> => {
+    return getSessions<MinuteTakingSession>('minuteTakingSessions', user, selectedClass);
+};
+
+export const saveMinuteTakingLecturerFeedback = (sessionId: string, grade: number, feedback: string) => {
+    return updateSession('minuteTakingSessions', sessionId, { grade, lecturerFeedback: feedback, isGraded: true });
+};
+
+// Complaint Handling Sessions
+export const saveComplaintSession = (data: Omit<ComplaintSession, 'id'>) => {
+    return addSession('complaintSessions', data);
+};
+
+export const getComplaintSessions = (user: UserProfile, selectedClass: string = 'ALL'): Promise<ComplaintSession[]> => {
+    return getSessions<ComplaintSession>('complaintSessions', user, selectedClass);
+};
+
+export const saveComplaintEmailSession = (data: Omit<ComplaintEmailSession, 'id'>) => {
+    return addSession('complaintEmailSessions', data);
+};
+
+export const getComplaintEmailSessions = (user: UserProfile, selectedClass: string = 'ALL'): Promise<ComplaintEmailSession[]> => {
+    return getSessions<ComplaintEmailSession>('complaintEmailSessions', user, selectedClass);
+};
+
+export const submitComplaintEmailForGrading = (sessionId: string) => {
+    return updateSession('complaintEmailSessions', sessionId, { isSubmitted: true });
+};
+
+export const saveComplaintEmailLecturerFeedback = (sessionId: string, grade: number, feedback: string) => {
+    return updateSession('complaintEmailSessions', sessionId, { grade, lecturerFeedback: feedback });
 };

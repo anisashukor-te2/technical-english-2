@@ -22,38 +22,10 @@ interface MeetingSkillsModuleProps {
 
 const MenuCard = ({ title, description, onClick, icon, color, comingSoon = false }: { title: string, description: string, onClick: () => void, icon: React.ReactNode, color: 'blue' | 'green' | 'orange' | 'purple', comingSoon?: boolean }) => {
     const colorClasses = {
-        blue: {
-            bg: 'bg-blue-100',
-            hoverBg: 'hover:bg-blue-200',
-            hoverBorder: 'hover:border-blue-400',
-            icon: 'text-blue-700',
-            text: 'text-slate-800',
-            subtext: 'text-slate-600',
-        },
-        green: {
-            bg: 'bg-green-100',
-            hoverBg: 'hover:bg-green-200',
-            hoverBorder: 'hover:border-green-400',
-            icon: 'text-green-700',
-            text: 'text-slate-800',
-            subtext: 'text-slate-600',
-        },
-        orange: {
-            bg: 'bg-orange-100',
-            hoverBg: 'hover:bg-orange-200',
-            hoverBorder: 'hover:border-orange-400',
-            icon: 'text-orange-700',
-            text: 'text-slate-800',
-            subtext: 'text-slate-600',
-        },
-        purple: {
-            bg: 'bg-purple-100',
-            hoverBg: 'hover:bg-purple-200',
-            hoverBorder: 'hover:border-purple-400',
-            icon: 'text-purple-700',
-            text: 'text-slate-800',
-            subtext: 'text-slate-600',
-        },
+        blue: { hoverBorder: 'hover:border-blue-400', icon: 'text-blue-400' },
+        green: { hoverBorder: 'hover:border-green-400', icon: 'text-green-400' },
+        orange: { hoverBorder: 'hover:border-orange-400', icon: 'text-orange-400' },
+        purple: { hoverBorder: 'hover:border-purple-400', icon: 'text-purple-400' },
     };
 
     const classes = colorClasses[color];
@@ -61,14 +33,14 @@ const MenuCard = ({ title, description, onClick, icon, color, comingSoon = false
     return (
         <div 
             onClick={!comingSoon ? onClick : undefined}
-            className={`relative border border-slate-200 rounded-lg p-6 text-center transition-all transform ${comingSoon ? 'opacity-50 cursor-not-allowed' : `cursor-pointer hover:-translate-y-1 shadow-md hover:shadow-xl ${classes.hoverBg} ${classes.hoverBorder}`} ${classes.bg}`}
+            className={`relative bg-slate-800/60 backdrop-blur-sm border border-slate-700 rounded-lg p-6 text-center transition-all transform ${comingSoon ? 'opacity-50 cursor-not-allowed' : `cursor-pointer hover:-translate-y-1 shadow-lg hover:shadow-cyan-500/10 hover:bg-slate-700/80 ${classes.hoverBorder}`}`}
         >
             {comingSoon && <span className="absolute top-2 right-2 bg-yellow-500 text-slate-900 text-xs font-bold px-2 py-1 rounded">Coming Soon</span>}
             <div className={`flex justify-center items-center mb-4 ${classes.icon}`}>
                 {icon}
             </div>
-            <h3 className={`text-xl font-bold ${classes.text}`}>{title}</h3>
-            <p className={`mt-2 ${classes.subtext}`}>{description}</p>
+            <h3 className="text-xl font-bold text-slate-200">{title}</h3>
+            <p className="mt-2 text-slate-400">{description}</p>
         </div>
     );
 };
@@ -169,8 +141,8 @@ const MeetingSkillsModule: React.FC<MeetingSkillsModuleProps> = ({ user, userTyp
                 return (
                      <div className="max-w-5xl mx-auto animate-fade-in">
                         <div className="text-center mb-8">
-                            <h2 className="text-3xl font-bold text-slate-900">{menuTitle}</h2>
-                            <p className="mt-2 text-lg text-slate-600">{menuDescription}</p>
+                            <h2 className="text-3xl font-bold text-white">{menuTitle}</h2>
+                            <p className="mt-2 text-lg text-slate-300">{menuDescription}</p>
                         </div>
                         <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
                             <MenuCard 

@@ -13,10 +13,10 @@
     "react-dom/": "https://aistudiocdn.com/react-dom@^19.2.0/",
     "react/": "https://aistudiocdn.com/react@^19.2.0/",
     "@google/genai": "https://aistudiocdn.com/@google/genai@^1.23.0",
-    "firebase/app": "https://aistudiocdn.com/firebase@^9.23.0/app",
-    "firebase/auth": "https://aistudiocdn.com/firebase@^9.23.0/auth",
-    "firebase/firestore": "https://aistudiocdn.com/firebase@^9.23.0/firestore",
-    "firebase/storage": "https://aistudiocdn.com/firebase@^9.23.0/storage",
+    "firebase/app": "https://aistudiocdn.com/firebase@^12.5.0/app",
+    "firebase/auth": "https://aistudiocdn.com/firebase@^12.5.0/auth",
+    "firebase/firestore": "https://aistudiocdn.com/firebase@^12.5.0/firestore",
+    "firebase/storage": "https://aistudiocdn.com/firebase@^12.5.0/storage",
     "firebase/": "https://aistudiocdn.com/firebase@^12.5.0/"
   }
 }
@@ -32,7 +32,7 @@
     overscroll-behavior-y: contain;
   }
   body {
-    background-color: #f0f4f8; /* A light, pastel-friendly blue-gray */
+    background-color: #111827; /* slate-900 for dark theme */
     font-family: sans-serif;
     overflow-y: auto;
   }
@@ -68,7 +68,7 @@
   /* Update highlight animation for new card background */
   @keyframes highlightFade {
     from { background-color: rgba(59, 130, 246, 0.3); } /* A blue highlight */
-    to { background-color: rgba(255, 255, 255, 1); } /* New opaque card background */
+    to { background-color: #1f2937; } /* bg-slate-800 */
   }
 
   .animate-highlight-fade {
@@ -76,7 +76,7 @@
   }
 </style>
 </head>
-  <body class="text-slate-800">
+  <body class="text-slate-300">
     <div id="root"></div>
     <script type="module" src="/index.js"></script>
   </body>

@@ -1,8 +1,7 @@
-
-
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { GoogleGenAI, Chat } from '@google/genai';
 import { ComplaintScenario, ComplaintSession, Student, Lecturer } from '../../types';
+import { saveComplaintSession } from '../../services/firebaseService';
 import MicrophoneHelpModal from '../common/MicrophoneHelpModal';
 
 interface SpeechRecognitionErrorEvent extends Event {
@@ -266,8 +265,7 @@ const ComplaintSimulationScreen: React.FC<MeetingSimulationScreenProps> = ({ sce
     const handleEndSessionAndSave = async () => {
         if (user?.role === 'student') {
             const studentUser = user as Student;
-            const newSessionData: ComplaintSession = {
-                id: `complaint_${Date.now()}`,
+            const newSessionData: Omit<ComplaintSession, 'id'> = {
                 timestamp: Date.now(),
                 studentUid: studentUser.uid,
                 studentEmail: studentUser.email,
@@ -279,12 +277,9 @@ const ComplaintSimulationScreen: React.FC<MeetingSimulationScreenProps> = ({ sce
             };
 
             try {
-                const allSessions: ComplaintSession[] = JSON.parse(localStorage.getItem('complaintSessions') || '[]');
-                allSessions.push(newSessionData);
-                localStorage.setItem('complaintSessions', JSON.stringify(allSessions));
+                await saveComplaintSession(newSessionData);
             } catch (e) {
                 console.error("Failed to save complaint session:", e);
-                // Optionally notify the user of the save failure
             }
         }
         onEndSession();

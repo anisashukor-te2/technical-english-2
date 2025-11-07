@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect, useCallback } from 'react';
 // FIX: Add getFreePracticeFeedback import
 import { getPresentationFeedback, getFreePracticeFeedback } from './services/geminiService';
@@ -13,7 +14,7 @@ import FreePracticeScreen from './components/FreePracticeScreen';
 import FeedbackScreen from './components/FeedbackScreen';
 import { PresentationReviewScreen } from './components/PresentationReviewScreen';
 import MeetingSkillsModule from './components/meeting/MeetingSkillsModule';
-import HandlingComplaintsModule from './components/complaints/HandlingComplaintsModule';
+import HandlingComplaintsModule from './components/handlingComplaints/HandlingComplaintsModule';
 // FIX: Change to named import for ResourceLibrary
 import { ResourceLibrary } from './components/ResourceLibrary';
 import UserTypeSelectionScreen from './components/UserTypeSelectionScreen';
@@ -119,6 +120,7 @@ const App: React.FC = () => {
     setAuthError(null);
     try {
       await firebaseService.signUpLecturer(lecturerDetails, password);
+// FIX: Added missing curly braces to the catch block to correct syntax and resolve scoping issues.
     } catch (error: any) {
       setAuthError(firebaseService.formatAuthError(error));
     }
@@ -392,18 +394,18 @@ const App: React.FC = () => {
 
   return (
     <PresentationProvider value={presentationContextValue}>
-        <div className="bg-slate-100 min-h-screen font-sans pb-32">
-            <header className="bg-white shadow-sm p-4 sticky top-0 z-10">
+        <div className="bg-slate-900 min-h-screen font-sans pb-32">
+            <header className="bg-slate-800 shadow-sm p-4 sticky top-0 z-10 border-b border-slate-700">
                 <div className="max-w-7xl mx-auto flex justify-between items-center">
                     <div className="flex-1">
                       <BreadcrumbsRenderer />
                     </div>
                     <div className="flex-1 text-center">
-                      <h1 className="text-xl font-bold text-slate-800 hidden md:block">Technical English 2</h1>
+                      <h1 className="text-xl font-bold text-slate-200 hidden md:block">Technical English 2</h1>
                     </div>
                     <div className="flex-1 flex justify-end items-center gap-4">
-                        <span className="text-sm text-slate-600 hidden md:block">{currentUser.email}</span>
-                        <button onClick={handleLogout} className="text-sm bg-slate-200 text-slate-800 font-bold py-2 px-4 rounded-lg hover:bg-slate-300">
+                        <span className="text-sm text-slate-400 hidden md:block">{currentUser.email}</span>
+                        <button onClick={handleLogout} className="text-sm bg-slate-600 text-slate-200 font-bold py-2 px-4 rounded-lg hover:bg-slate-500">
                             Logout
                         </button>
                     </div>

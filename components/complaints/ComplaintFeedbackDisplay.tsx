@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import Card from '../Card';
 import { ComplaintFeedbackData, ComplaintEmailSession } from '../../types';
-// FIX: Add missing import from geminiService
 import { COMPLAINT_EMAIL_SCENARIO } from '../../services/geminiService';
+import { submitComplaintEmailForGrading, saveComplaintEmailLecturerFeedback } from '../../services/firebaseService';
 
 interface ComplaintFeedbackDisplayProps {
     feedback: ComplaintFeedbackData | null;
@@ -66,14 +66,7 @@ const ComplaintFeedbackDisplay: React.FC<ComplaintFeedbackDisplayProps> = ({
             return;
         }
         try {
-            const sessions: ComplaintEmailSession[] = JSON.parse(localStorage.getItem('complaintEmailSessions') || '[]');
-            const sessionIndex = sessions.findIndex(s => s.id === sessionId);
-            if (sessionIndex === -1) {
-                setStatusMessage("Error: Session not found.");
-                return;
-            }
-            sessions[sessionIndex].isSubmitted = true;
-            localStorage.setItem('complaintEmailSessions', JSON.stringify(sessions));
+            await submitComplaintEmailForGrading(sessionId);
             setIsSubmitted(true);
             setStatusMessage("Successfully submitted to lecturer!");
         } catch (error) {
@@ -92,21 +85,7 @@ const ComplaintFeedbackDisplay: React.FC<ComplaintFeedbackDisplayProps> = ({
 
         setFeedbackSaveStatus('saving');
         try {
-            const sessions: ComplaintEmailSession[] = JSON.parse(localStorage.getItem('complaintEmailSessions') || '[]');
-            const sessionIndex = sessions.findIndex(s => s.id === currentSessionId);
-            if (sessionIndex === -1) {
-                throw new Error("Session not found");
-            }
-
-            const updatedSession = {
-                ...sessions[sessionIndex],
-                grade: Number(grade),
-                lecturerFeedback: lecturerFeedback.trim()
-            };
-            sessions[sessionIndex] = updatedSession;
-
-            localStorage.setItem('complaintEmailSessions', JSON.stringify(sessions));
-            
+            await saveComplaintEmailLecturerFeedback(currentSessionId, Number(grade), lecturerFeedback.trim());
             setFeedbackSaveStatus('saved');
             setTimeout(() => setFeedbackSaveStatus('idle'), 2000);
         } catch (error) {

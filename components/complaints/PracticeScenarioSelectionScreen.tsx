@@ -47,14 +47,14 @@ const scenarios: ComplaintScenario[] = [
 const ScenarioCard: React.FC<{ scenario: ComplaintScenario; onSelect: () => void; }> = ({ scenario, onSelect }) => (
     <div
         onClick={onSelect}
-        className="bg-white border border-slate-200 rounded-lg p-6 cursor-pointer hover:bg-slate-50 hover:border-blue-500 transition-all transform hover:-translate-y-1 flex flex-col h-full shadow-md"
+        className="bg-slate-800/60 backdrop-blur-sm border border-slate-700 rounded-lg p-6 cursor-pointer hover:bg-slate-700/80 hover:border-cyan-400 transition-all transform hover:-translate-y-1 flex flex-col h-full shadow-lg"
     >
-        <div className="flex justify-center items-center mb-4 text-blue-600">{scenario.icon}</div>
-        <h3 className="text-xl font-bold text-slate-800 text-center">{scenario.title}</h3>
-        <p className="mt-2 text-slate-600 flex-grow text-center">{scenario.description}</p>
-        <div className="mt-4 pt-4 border-t border-slate-200 text-center text-sm space-y-2">
-            <p className="text-slate-600"><span className="font-semibold text-blue-600 block">Your Role:</span> {scenario.userRole}</p>
-            <p className="text-slate-600"><span className="font-semibold text-blue-600 block">AI's Role:</span> {scenario.aiRole}</p>
+        <div className="flex justify-center items-center mb-4 text-cyan-400">{scenario.icon}</div>
+        <h3 className="text-xl font-bold text-slate-200 text-center">{scenario.title}</h3>
+        <p className="mt-2 text-slate-400 flex-grow text-center">{scenario.description}</p>
+        <div className="mt-4 pt-4 border-t border-slate-700 text-center text-sm space-y-2">
+            <p className="text-slate-400"><span className="font-semibold text-cyan-400 block">Your Role:</span> {scenario.userRole}</p>
+            <p className="text-slate-400"><span className="font-semibold text-cyan-400 block">AI's Role:</span> {scenario.aiRole}</p>
         </div>
     </div>
 );
@@ -109,32 +109,32 @@ const PracticeScenarioSelectionScreen: React.FC<PracticeScenarioSelectionProps> 
     if (isCustomizing) {
         return (
             <div className="max-w-2xl mx-auto animate-fade-in">
-                <div className="bg-white border border-slate-200 rounded-lg p-6 shadow-lg">
-                    <h2 className="text-2xl font-bold text-slate-800 text-center mb-2">Create Your Own Scenario</h2>
-                    <p className="text-center text-slate-600 mb-6">Describe a complaint situation you want to practice handling. The AI will generate a starting point for the simulation.</p>
+                <div className="bg-slate-800/60 backdrop-blur-sm border border-slate-700 rounded-lg p-6 shadow-lg">
+                    <h2 className="text-2xl font-bold text-slate-200 text-center mb-2">Create Your Own Scenario</h2>
+                    <p className="text-center text-slate-400 mb-6">Describe a complaint situation you want to practice handling. The AI will generate a starting point for the simulation.</p>
                     
                     <textarea
                         value={customScenario}
                         onChange={(e) => setCustomScenario(e.target.value)}
                         placeholder="e.g., A client is unhappy because the CAD model I delivered has incorrect dimensions and they missed a deadline."
-                        className="w-full h-32 p-3 bg-white border border-slate-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition"
+                        className="w-full h-32 p-3 bg-slate-900 text-slate-200 border border-slate-600 rounded-md focus:ring-2 focus:ring-cyan-500 focus:border-cyan-500 transition"
                         disabled={isLoading}
                     />
                     
-                    {customError && <p className="text-red-500 text-sm mt-2 text-center">{customError}</p>}
+                    {customError && <p className="text-red-400 text-sm mt-2 text-center">{customError}</p>}
                     
                     <div className="mt-4 flex justify-center">
-                        <button onClick={handleGenerateScript} disabled={isLoading || !!generatedData} className="bg-blue-600 text-white font-bold py-2 px-6 rounded-lg hover:bg-blue-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed">
+                        <button onClick={handleGenerateScript} disabled={isLoading || !!generatedData} className="bg-cyan-600 text-white font-bold py-2 px-6 rounded-lg hover:bg-cyan-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed">
                             {isLoading ? 'Generating...' : 'Generate Starter Script'}
                         </button>
                     </div>
 
                     {generatedData && (
-                        <div className="mt-6 p-4 bg-slate-50 rounded-lg border border-slate-200 animate-fade-in">
-                             <h3 className="text-lg font-semibold text-blue-600 mb-2">Suggested Starter Script:</h3>
-                             <p className="text-sm text-slate-500 mb-2">The AI will play the role of <strong className="text-slate-700">"{generatedData.aiRole}"</strong> and will start the conversation by saying:</p>
-                             <blockquote className="border-l-4 border-blue-500 pl-4 py-2 bg-slate-100 rounded-r-lg">
-                                <p className="text-slate-700 italic">"{generatedData.starterScript}"</p>
+                        <div className="mt-6 p-4 bg-slate-900/50 rounded-lg border border-slate-700 animate-fade-in">
+                             <h3 className="text-lg font-semibold text-cyan-400 mb-2">Suggested Starter Script:</h3>
+                             <p className="text-sm text-slate-400 mb-2">The AI will play the role of <strong className="text-slate-200">"{generatedData.aiRole}"</strong> and will start the conversation by saying:</p>
+                             <blockquote className="border-l-4 border-cyan-500 pl-4 py-2 bg-slate-800/50 rounded-r-lg">
+                                <p className="text-slate-300 italic">"{generatedData.starterScript}"</p>
                              </blockquote>
                              <div className="mt-4 flex justify-center">
                                  <button onClick={handleStartCustomSimulation} className="bg-green-600 text-white font-bold py-2 px-6 rounded-lg hover:bg-green-700 transition-colors">
@@ -145,7 +145,7 @@ const PracticeScenarioSelectionScreen: React.FC<PracticeScenarioSelectionProps> 
                     )}
                 </div>
                  <div className="text-center mt-4">
-                    <button onClick={resetCustomizer} className="text-sm text-slate-500 hover:text-blue-600">
+                    <button onClick={resetCustomizer} className="text-sm text-slate-400 hover:text-cyan-400">
                         Back to Scenarios
                     </button>
                 </div>
@@ -156,8 +156,8 @@ const PracticeScenarioSelectionScreen: React.FC<PracticeScenarioSelectionProps> 
     return (
         <div className="max-w-6xl mx-auto">
             <div className="text-center mb-8">
-                <h2 className="text-3xl font-bold text-slate-900">Practice: Complaint Simulations</h2>
-                <p className="mt-2 text-lg text-slate-600">Select a scenario or create your own to start your practice session.</p>
+                <h2 className="text-3xl font-bold text-white">Practice: Complaint Simulations</h2>
+                <p className="mt-2 text-lg text-slate-300">Select a scenario or create your own to start your practice session.</p>
             </div>
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
                 {scenarios.map((scenario) => (
@@ -166,30 +166,30 @@ const PracticeScenarioSelectionScreen: React.FC<PracticeScenarioSelectionProps> 
 
                 <div
                     onClick={() => setIsCustomizing(true)}
-                    className="bg-slate-50 border-2 border-dashed border-slate-300 rounded-lg p-6 cursor-pointer hover:border-blue-500 hover:bg-slate-100 transition-all flex flex-col justify-center items-center h-full text-center"
+                    className="bg-slate-800/60 backdrop-blur-sm border-2 border-dashed border-slate-600 rounded-lg p-6 cursor-pointer hover:border-cyan-400 hover:bg-slate-700/80 transition-all flex flex-col justify-center items-center h-full text-center"
                 >
-                    <div className="flex justify-center items-center mb-4 text-slate-400">
+                    <div className="flex justify-center items-center mb-4 text-slate-500">
                          <svg xmlns="http://www.w3.org/2000/svg" className="h-12 w-12" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}><path strokeLinecap="round" strokeLinejoin="round" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" /></svg>
                     </div>
-                    <h3 className="text-xl font-bold text-slate-800">Create Your Own Scenario</h3>
-                    <p className="mt-2 text-slate-600">Describe a custom situation to practice a real-life challenge you're facing.</p>
+                    <h3 className="text-xl font-bold text-slate-200">Create Your Own Scenario</h3>
+                    <p className="mt-2 text-slate-400">Describe a custom situation to practice a real-life challenge you're facing.</p>
                 </div>
 
                 <div
                     onClick={onSelectEmailPractice}
-                    className="bg-white border border-slate-200 rounded-lg p-6 cursor-pointer hover:bg-slate-50 hover:border-blue-500 transition-all transform hover:-translate-y-1 flex flex-col h-full shadow-md"
+                    className="bg-slate-800/60 backdrop-blur-sm border border-slate-700 rounded-lg p-6 cursor-pointer hover:bg-slate-700/80 hover:border-cyan-400 transition-all transform hover:-translate-y-1 flex flex-col h-full shadow-lg"
                 >
-                    <div className="flex justify-center items-center mb-4 text-blue-600">
+                    <div className="flex justify-center items-center mb-4 text-cyan-400">
                         <svg xmlns="http://www.w3.org/2000/svg" className="h-12 w-12" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
                             <path strokeLinecap="round" strokeLinejoin="round" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
                         </svg>
                     </div>
-                    <h3 className="text-xl font-bold text-slate-800 text-center">Written Email Response</h3>
-                    <p className="mt-2 text-slate-600 flex-grow text-center">Practice writing a professional email to resolve a complaint and get AI feedback.</p>
+                    <h3 className="text-xl font-bold text-slate-200 text-center">Written Email Response</h3>
+                    <p className="mt-2 text-slate-400 flex-grow text-center">Practice writing a professional email to resolve a complaint and get AI feedback.</p>
                 </div>
             </div>
             <div className="text-center mt-8">
-                <button onClick={onBack} className="text-sm text-blue-600 hover:text-blue-700 flex items-center mx-auto">
+                <button onClick={onBack} className="text-sm text-cyan-400 hover:text-cyan-300 flex items-center mx-auto">
                     <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                         <path strokeLinecap="round" strokeLinejoin="round" d="M11 17l-5-5m0 0l5-5m-5 5h12" />
                     </svg>

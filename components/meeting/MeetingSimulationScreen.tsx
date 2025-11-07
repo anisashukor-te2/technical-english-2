@@ -1,9 +1,7 @@
-
-
-
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { GoogleGenAI, Chat } from '@google/genai';
 import { MeetingScenario, Student, Lecturer, MeetingSession } from '../../types';
+import { saveMeetingSession } from '../../services/firebaseService';
 import MicrophoneHelpModal from '../common/MicrophoneHelpModal';
 
 // Web Speech API types to prevent TypeScript errors
@@ -208,8 +206,7 @@ Start the conversation with a brief opening statement to set the scene and promp
     const handleEndSessionAndSave = async () => {
         if (user?.role === 'student') {
             const studentUser = user as Student;
-            const newSessionData: MeetingSession = {
-                id: `meeting_${Date.now()}`,
+            const newSessionData: Omit<MeetingSession, 'id'> = {
                 timestamp: Date.now(),
                 studentUid: studentUser.uid,
                 studentEmail: studentUser.email,
@@ -221,12 +218,9 @@ Start the conversation with a brief opening statement to set the scene and promp
             };
 
             try {
-                const allSessions: MeetingSession[] = JSON.parse(localStorage.getItem('meetingSessions') || '[]');
-                allSessions.push(newSessionData);
-                localStorage.setItem('meetingSessions', JSON.stringify(allSessions));
+                await saveMeetingSession(newSessionData);
             } catch (e) {
                 console.error("Failed to save meeting session:", e);
-                // Optionally notify user
             }
         }
         onEndSession();

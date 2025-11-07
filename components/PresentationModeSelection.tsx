@@ -9,22 +9,22 @@ interface PresentationModeSelectionProps {
 const ModeCard = ({ title, description, onClick, icon, color }: { title: string, description: string, onClick: () => void, icon: React.ReactNode, color: 'blue' | 'green' | 'purple' }) => {
     const colorClasses = {
         blue: {
-            bg: 'bg-blue-100',
-            hoverBg: 'hover:bg-blue-200',
+            bg: 'bg-slate-800/60',
+            hoverBg: 'hover:bg-slate-700/80',
             hoverBorder: 'hover:border-blue-400',
-            icon: 'text-blue-700',
+            icon: 'text-blue-400',
         },
         green: {
-            bg: 'bg-green-100',
-            hoverBg: 'hover:bg-green-200',
+            bg: 'bg-slate-800/60',
+            hoverBg: 'hover:bg-slate-700/80',
             hoverBorder: 'hover:border-green-400',
-            icon: 'text-green-700',
+            icon: 'text-green-400',
         },
         purple: {
-            bg: 'bg-purple-100',
-            hoverBg: 'hover:bg-purple-200',
+            bg: 'bg-slate-800/60',
+            hoverBg: 'hover:bg-slate-700/80',
             hoverBorder: 'hover:border-purple-400',
-            icon: 'text-purple-700',
+            icon: 'text-purple-400',
         },
     };
 
@@ -33,13 +33,13 @@ const ModeCard = ({ title, description, onClick, icon, color }: { title: string,
     return (
         <div 
             onClick={onClick}
-            className={`border border-slate-200 rounded-lg p-6 text-center cursor-pointer transition-all transform hover:-translate-y-1 shadow-md hover:shadow-xl ${classes.bg} ${classes.hoverBg} ${classes.hoverBorder}`}
+            className={`border border-slate-700 rounded-lg p-6 text-center cursor-pointer transition-all transform hover:-translate-y-1 shadow-lg hover:shadow-cyan-500/10 ${classes.bg} ${classes.hoverBg} ${classes.hoverBorder}`}
         >
             <div className={`flex justify-center items-center mb-4 ${classes.icon}`}>
                 {icon}
             </div>
-            <h3 className="text-xl font-bold text-slate-800">{title}</h3>
-            <p className="mt-2 text-slate-600">{description}</p>
+            <h3 className="text-xl font-bold text-slate-200">{title}</h3>
+            <p className="mt-2 text-slate-400">{description}</p>
         </div>
     );
 };
@@ -51,8 +51,8 @@ const PresentationModeSelection: React.FC<PresentationModeSelectionProps> = ({ u
     return (
         <div className="max-w-4xl mx-auto animate-fade-in">
             <div className="text-center mb-8">
-                <h2 className="text-3xl font-bold text-slate-900">Presentation Skills Practice</h2>
-                <p className="mt-2 text-lg text-slate-600">Select a practice mode to begin.</p>
+                <h2 className="text-3xl font-bold text-slate-100">Presentation Skills Practice</h2>
+                <p className="mt-2 text-lg text-slate-400">Select a practice mode to begin.</p>
             </div>
             <div className="grid md:grid-cols-3 gap-8">
                 <ModeCard 
