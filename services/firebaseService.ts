@@ -30,35 +30,33 @@ export const signUpStudent = async (
   details: { email: string; courseId: string; lecturerClassCode: string },
   password: string
 ) => {
-  // 1. Fetch all lecturers. This is less efficient but more robust against
-  // complex security rule failures with 'array-contains' on unauthenticated reads.
+  // 1. Query for a lecturer with the specific class code and role.
+  // This is a more efficient and secure query that is more likely to pass security rules.
   const lecturersRef = collection(db, 'users');
-  const q = query(lecturersRef, where('role', '==', 'lecturer'));
+  const q = query(
+    lecturersRef,
+    where('role', '==', 'lecturer'),
+    where('classCodes', 'array-contains', details.lecturerClassCode.toUpperCase())
+  );
+  
   const querySnapshot = await getDocs(q);
 
   if (querySnapshot.empty) {
-    throw new Error('Registration failed: No lecturers are registered in the system.');
+    throw new Error(`Registration failed: Lecturer's Class ID "${details.lecturerClassCode.toUpperCase()}" not found. Please check the code is correct.`);
   }
 
-  // 2. Filter lecturers client-side to find the correct one.
-  const allLecturers = querySnapshot.docs.map(doc => doc.data() as Lecturer);
+  // 2. It's possible multiple lecturers have the same class code (unlikely, but possible).
+  // Find the one that also matches the course code.
+  const matchingLecturerDoc = querySnapshot.docs.find(doc => {
+    const lecturer = doc.data() as Lecturer;
+    return lecturer.courseCode.toUpperCase() === details.courseId.toUpperCase();
+  });
+
+  if (!matchingLecturerDoc) {
+     throw new Error(`Registration failed: Class ID "${details.lecturerClassCode.toUpperCase()}" is valid, but not for Course ID "${details.courseId.toUpperCase()}". Please check your Course ID.`);
+  }
   
-  const matchingLecturer = allLecturers.find(lecturer => 
-    lecturer.classCodes.some(cc => cc.toUpperCase() === details.lecturerClassCode.toUpperCase()) &&
-    lecturer.courseCode.toUpperCase() === details.courseId.toUpperCase()
-  );
-
-  if (!matchingLecturer) {
-    // Provide more specific feedback
-    const lecturerWithClassCode = allLecturers.find(lecturer => 
-        lecturer.classCodes.some(cc => cc.toUpperCase() === details.lecturerClassCode.toUpperCase())
-    );
-    if (lecturerWithClassCode) {
-        throw new Error(`Registration failed: Class ID "${details.lecturerClassCode.toUpperCase()}" is valid, but not for Course ID "${details.courseId.toUpperCase()}". Please check your Course ID.`);
-    } else {
-        throw new Error(`Registration failed: Lecturer's Class ID "${details.lecturerClassCode.toUpperCase()}" not found. Please check the code is correct.`);
-    }
-  }
+  const matchingLecturer = matchingLecturerDoc.data() as Lecturer;
 
   // 3. Create user in Firebase Auth
   const userCredential = await createUserWithEmailAndPassword(auth, details.email, password);

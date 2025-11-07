@@ -253,4 +253,7 @@ export const MinuteFeedbackDisplay: React.FC<MinuteFeedbackDisplayProps> = ({ fe
             )}
         </div>
     </div>
-);
+  );
+};
+
+export default MinuteFeedbackDisplay;
