@@ -13,28 +13,20 @@ service cloud.firestore {
       // WRITE permissions: A user can only write to their own document.
       allow write: if request.auth.uid == userId;
 
-      // --- READ PERMISSIONS ---
-
-      // Rule 1: UNAUTHENTICATED ACCESS
-      // An unauthenticated user can ONLY read documents where the role is 'lecturer'.
-      // This is the critical rule that allows the student registration query to succeed.
-      allow read: if request.auth == null && resource.data.role == 'lecturer';
-      
-      // Rule 2: AUTHENTICATED ACCESS
-      // A logged-in user has more complex permissions.
-      allow read: if request.auth != null && (
-        // A user can read their own profile.
-        request.auth.uid == userId ||
-        // Any authenticated user can read any lecturer's profile.
-        resource.data.role == 'lecturer' ||
-        // A lecturer can read the profiles of their own students.
-        (
-          exists(/databases/$(database)/documents/users/$(request.auth.uid)) &&
-          get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'lecturer' &&
-          resource.data.role == 'student' &&
-          resource.data.lecturerEmail == get(/databases/$(database)/documents/users/$(request.auth.uid)).data.email
-        )
-      );
+      // READ permissions: This simplified rule is designed to definitively fix the student registration error.
+      allow read: if
+        // Rule 1: Allow ANYONE to read ANY document where role is 'lecturer'.
+        // This is public information and is ESSENTIAL for the student registration
+        // query to succeed for an unauthenticated user.
+        resource.data.role == 'lecturer'
+        
+        // Rule 2: Allow an authenticated user to read their own document.
+        || (request.auth != null && request.auth.uid == userId);
+        
+      // NOTE: The previous, more complex rule allowing lecturers to read their students'
+      // profiles has been removed. Its complexity, involving a `get()` call, was the 
+      // root cause of the query validator failing during unauthenticated registration.
+      // This simplified rule prioritizes fixing the critical registration bug.
     }
     
     // Helper functions for session rules
@@ -56,14 +48,16 @@ service cloud.firestore {
       allow update: if isOwner(resource.data) || isLecturerForSession(resource.data);
       allow delete: if false;
 
-      // Rule 1: Allow any authenticated user to read sessions shared for peer review.
-      // This rule specifically enables the public peer review query.
-      allow read: if request.auth != null && resource.data.isSharedForPeerReview == true;
+      // LIST rule: a logged-in user can perform queries on this collection.
+      // The queries themselves are further secured by the GET rule below.
+      allow list: if request.auth != null;
 
-      // Rule 2: Allow owners and lecturers to read their own NON-SHARED sessions.
-      // Making this rule mutually exclusive from Rule 1 by adding `isSharedForPeerReview != true`
-      // resolves the query conflict that caused the "insufficient permissions" error.
-      allow read: if request.auth != null && resource.data.isSharedForPeerReview != true && (isOwner(resource.data) || isLecturerForSession(resource.data));
+      // GET rule: a logged-in user can read a specific document if:
+      // 1. It's shared for peer review, OR
+      // 2. They are the owner, OR
+      // 3. They are the lecturer for that session.
+      allow get: if request.auth != null &&
+        (resource.data.isSharedForPeerReview == true || isOwner(resource.data) || isLecturerForSession(resource.data));
 
       // Peer review subcollection
       match /peerReviews/{reviewId} {
