@@ -6,7 +6,7 @@ import * as firebaseService from '../services/firebaseService';
 
 interface LecturerLoginScreenProps {
   onLogin: (email: string, password: string) => void;
-  onRegister: (lecturer: Omit<Lecturer, 'uid' | 'role' | 'password'>, password: string) => void;
+  onRegister: (lecturer: Omit<Lecturer, 'uid' | 'role'>, password: string) => void;
   onBack: () => void;
   error: string | null;
   clearError: () => void;
@@ -82,7 +82,7 @@ const LecturerLoginScreen: React.FC<LecturerLoginScreenProps> = ({ onLogin, onRe
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [courseCode, setCourseCode] = useState('');
-  const [classCode, setClassCode] = useState('');
+  const [classCodes, setClassCodes] = useState(['']);
   const [formError, setFormError] = useState<string | null>(null);
   const [isResetModalOpen, setIsResetModalOpen] = useState(false);
 
@@ -91,6 +91,24 @@ const LecturerLoginScreen: React.FC<LecturerLoginScreenProps> = ({ onLogin, onRe
     setFormError(null);
     clearError();
   };
+  
+  const handleClassCodeChange = (index: number, value: string) => {
+    const newClassCodes = [...classCodes];
+    newClassCodes[index] = value;
+    setClassCodes(newClassCodes);
+  };
+
+  const handleAddClassCode = () => {
+    setClassCodes([...classCodes, '']);
+  };
+
+  const handleRemoveClassCode = (index: number) => {
+    if (classCodes.length > 1) {
+      const newClassCodes = classCodes.filter((_, i) => i !== index);
+      setClassCodes(newClassCodes);
+    }
+  };
+
 
   const handleLoginSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -108,16 +126,16 @@ const LecturerLoginScreen: React.FC<LecturerLoginScreenProps> = ({ onLogin, onRe
     setFormError(null);
     clearError();
 
-    const trimmedClassCode = classCode.trim();
-    if (!trimmedClassCode) {
-        setFormError('Please provide a Class ID.');
+    const filteredClassCodes = classCodes.map(c => c.trim()).filter(Boolean);
+    if (filteredClassCodes.length === 0) {
+        setFormError('Please provide at least one Class ID.');
         return;
     }
 
     const lecturerDetails = {
       email: email.trim(),
       courseCode: courseCode.trim(),
-      classCodes: [trimmedClassCode],
+      classCodes: filteredClassCodes,
     };
     
     const uPassword = password.trim();
@@ -214,17 +232,40 @@ const LecturerLoginScreen: React.FC<LecturerLoginScreenProps> = ({ onLogin, onRe
               className="mt-1 block w-full bg-slate-900/70 border border-slate-600 rounded-md shadow-sm p-3 focus:ring-cyan-500 focus:border-cyan-500 text-white"
             />
           </div>
-          <div>
-            <label htmlFor="classCode" className="block text-sm font-medium text-slate-300">Class ID</label>
-            <input
-                id="classCode"
-                type="text"
-                value={classCode}
-                onChange={(e) => setClassCode(e.target.value)}
-                placeholder="e.g., DKM5A"
-                className="mt-1 block w-full bg-slate-900/70 border border-slate-600 rounded-md shadow-sm p-3 focus:ring-cyan-500 focus:border-cyan-500 text-white"
-            />
-          </div>
+          
+           <div className="space-y-2">
+                {classCodes.map((code, index) => (
+                    <div key={index} className="flex items-center gap-2">
+                        <div className="flex-grow">
+                             <label htmlFor={`classCode-${index}`} className="block text-sm font-medium text-slate-300">
+                                Class ID {classCodes.length > 1 ? `#${index + 1}`: ''}
+                            </label>
+                            <input
+                                id={`classCode-${index}`}
+                                type="text"
+                                value={code}
+                                onChange={(e) => handleClassCodeChange(index, e.target.value)}
+                                placeholder="e.g., DKM5A"
+                                className="mt-1 block w-full bg-slate-900/70 border border-slate-600 rounded-md shadow-sm p-3 focus:ring-cyan-500 focus:border-cyan-500 text-white"
+                            />
+                        </div>
+                        {classCodes.length > 1 && (
+                            <button
+                                type="button"
+                                onClick={() => handleRemoveClassCode(index)}
+                                className="mt-7 p-3 bg-red-600 text-white rounded-lg hover:bg-red-700"
+                                aria-label={`Remove Class ID #${index + 1}`}
+                            >
+                               <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path fillRule="evenodd" d="M5 10a1 1 0 011-1h8a1 1 0 110 2H6a1 1 0 01-1-1z" clipRule="evenodd" /></svg>
+                            </button>
+                        )}
+                    </div>
+                ))}
+                <button type="button" onClick={handleAddClassCode} className="text-sm font-semibold text-cyan-400 hover:underline">
+                    + Add Another Class
+                </button>
+            </div>
+
           <div>
             <label htmlFor="registerPassword" className="block text-sm font-medium text-slate-300">Password</label>
             <input

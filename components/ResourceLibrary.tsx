@@ -528,20 +528,20 @@ export const ResourceLibrary: React.FC = () => {
                 <div className="grid md:grid-cols-2 gap-6">
                     <Card title="Course References" color="blue">
                         <div className="p-4 space-y-3">
-                            <a href="https://polycc.cidos.edu.my/" target="_blank" rel="noopener noreferrer" className="w-full text-left bg-white/75 hover:bg-white/90 text-blue-800 font-semibold py-2 px-4 rounded-lg transition-colors flex items-center shadow-sm">
-                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="h-5 w-5 mr-3 flex-shrink-0 text-blue-800">
+                            <a href="https://polycc.cidos.edu.my/" target="_blank" rel="noopener noreferrer" className="w-full text-left bg-white/50 hover:bg-white/70 text-blue-400 font-semibold py-2 px-4 rounded-lg transition-colors flex items-center shadow-sm">
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="h-5 w-5 mr-3 flex-shrink-0 text-blue-400">
                                   <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 6H5.25A2.25 2.25 0 003 8.25v10.5A2.25 2.25 0 005.25 21h10.5A2.25 2.25 0 0018 18.75V10.5M15 3h6m0 0v6m0-6l-7.5 7.5" />
                                 </svg>
                                 Politeknik Malaysia CIDOS E-Learning Portal
                             </a>
-                            <a href="https://www.toastmasters.org/resources/public-speaking-tips" target="_blank" rel="noopener noreferrer" className="w-full text-left bg-white/75 hover:bg-white/90 text-blue-800 font-semibold py-2 px-4 rounded-lg transition-colors flex items-center shadow-sm">
-                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="h-5 w-5 mr-3 flex-shrink-0 text-blue-800">
+                            <a href="https://www.toastmasters.org/resources/public-speaking-tips" target="_blank" rel="noopener noreferrer" className="w-full text-left bg-white/50 hover:bg-white/70 text-blue-400 font-semibold py-2 px-4 rounded-lg transition-colors flex items-center shadow-sm">
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="h-5 w-5 mr-3 flex-shrink-0 text-blue-400">
                                   <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 6H5.25A2.25 2.25 0 003 8.25v10.5A2.25 2.25 0 005.25 21h10.5A2.25 2.25 0 0018 18.75V10.5M15 3h6m0 0v6m0-6l-7.5 7.5" />
                                 </svg>
                                 Toastmasters International: Public Speaking Tips
                             </a>
-                            <a href="https://www.robertsrules.com/" target="_blank" rel="noopener noreferrer" className="w-full text-left bg-white/75 hover:bg-white/90 text-blue-800 font-semibold py-2 px-4 rounded-lg transition-colors flex items-center shadow-sm">
-                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="h-5 w-5 mr-3 flex-shrink-0 text-blue-800">
+                            <a href="https://www.robertsrules.com/" target="_blank" rel="noopener noreferrer" className="w-full text-left bg-white/50 hover:bg-white/70 text-blue-400 font-semibold py-2 px-4 rounded-lg transition-colors flex items-center shadow-sm">
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="h-5 w-5 mr-3 flex-shrink-0 text-blue-400">
                                   <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 6H5.25A2.25 2.25 0 003 8.25v10.5A2.25 2.25 0 005.25 21h10.5A2.25 2.25 0 0018 18.75V10.5M15 3h6m0 0v6m0-6l-7.5 7.5" />
                                 </svg>
                                 Robert's Rules of Order (Meeting Protocols)

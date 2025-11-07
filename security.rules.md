@@ -9,25 +9,32 @@ service cloud.firestore {
   match /databases/{database}/documents {
 
     // --- USER PROFILES ---
-    // This re-architected rule resolves the persistent "Missing or insufficient permissions"
-    // error during student registration by combining all read logic into a single block.
     match /users/{userId} {
-      // WRITE permissions are simple: a user can only write to their own document.
+      // WRITE permissions: A user can only write to their own document.
       allow write: if request.auth.uid == userId;
 
-      // READ permissions are combined to avoid evaluation conflicts:
-      allow read: if
-        // 1. Anyone can read a lecturer's profile. This is CRITICAL for registration.
+      // --- READ PERMISSIONS ---
+
+      // Rule 1: UNAUTHENTICATED ACCESS
+      // An unauthenticated user can ONLY read documents where the role is 'lecturer'.
+      // This is the critical rule that allows the student registration query to succeed.
+      allow read: if request.auth == null && resource.data.role == 'lecturer';
+      
+      // Rule 2: AUTHENTICATED ACCESS
+      // A logged-in user has more complex permissions.
+      allow read: if request.auth != null && (
+        // A user can read their own profile.
+        request.auth.uid == userId ||
+        // Any authenticated user can read any lecturer's profile.
         resource.data.role == 'lecturer' ||
-        // 2. An authenticated user can read their own profile.
-        (request.auth != null && request.auth.uid == userId) ||
-        // 3. A lecturer can read the profiles of their own students.
+        // A lecturer can read the profiles of their own students.
         (
-          request.auth != null &&
+          exists(/databases/$(database)/documents/users/$(request.auth.uid)) &&
           get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'lecturer' &&
           resource.data.role == 'student' &&
           resource.data.lecturerEmail == get(/databases/$(database)/documents/users/$(request.auth.uid)).data.email
-        );
+        )
+      );
     }
     
     // Helper functions for session rules
@@ -43,32 +50,34 @@ service cloud.firestore {
       return lecturerProfile.role == 'lecturer' && docData.lecturerEmail == lecturerProfile.email;
     }
 
-    // --- SESSIONS ---
-    // This rule is updated to fix the "Peer Review" loading error.
-    match /(practiceSessions|meetingSessions|minuteTakingSessions|complaintSessions|complaintEmailSessions)/{sessionId} {
-      // CREATE: A student can create their own session.
+    // --- PRACTICE SESSIONS (PRESENTATION) ---
+    match /practiceSessions/{sessionId} {
       allow create: if isOwner(request.resource.data);
-      
-      // READ: Who can read/query sessions.
-      allow read: if request.auth != null && (
-        // 1. The student who owns the session.
-        isOwner(resource.data) ||
-        // 2. The student's lecturer.
-        isLecturerForSession(resource.data) ||
-        // 3. Any authenticated user can read a session shared for peer review.
-        resource.data.isSharedForPeerReview == true
-      );
-
-      // UPDATE: Who can update sessions. Note this is more restrictive than read.
       allow update: if isOwner(resource.data) || isLecturerForSession(resource.data);
-      
       allow delete: if false;
+
+      // Rule 1: Allow any authenticated user to read sessions shared for peer review.
+      // This rule specifically enables the public peer review query.
+      allow read: if request.auth != null && resource.data.isSharedForPeerReview == true;
+
+      // Rule 2: Allow owners and lecturers to read their own NON-SHARED sessions.
+      // Making this rule mutually exclusive from Rule 1 by adding `isSharedForPeerReview != true`
+      // resolves the query conflict that caused the "insufficient permissions" error.
+      allow read: if request.auth != null && resource.data.isSharedForPeerReview != true && (isOwner(resource.data) || isLecturerForSession(resource.data));
 
       // Peer review subcollection
       match /peerReviews/{reviewId} {
         allow read, create: if request.auth.uid != null;
         allow update, delete: if false;
       }
+    }
+
+    // --- OTHER SESSION TYPES ---
+    // These have simpler privacy rules: only the student and their lecturer can access.
+    match /(meetingSessions|minuteTakingSessions|complaintSessions|complaintEmailSessions)/{sessionId} {
+      allow create: if isOwner(request.resource.data);
+      allow read, update: if request.auth != null && (isOwner(resource.data) || isLecturerForSession(resource.data));
+      allow delete: if false;
     }
   }
 }

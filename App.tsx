@@ -1,4 +1,5 @@
 
+
 import React, { useState, useEffect, useCallback } from 'react';
 // FIX: Add getFreePracticeFeedback import
 import { getPresentationFeedback, getFreePracticeFeedback } from './services/geminiService';
@@ -22,6 +23,7 @@ import StudentLoginScreen from './components/StudentLoginScreen';
 import LecturerLoginScreen from './components/LecturerLoginScreen';
 import Breadcrumbs from './components/common/Breadcrumbs';
 import Modal from './components/common/Modal';
+import ManageClassesModal from './components/common/ManageClassesModal';
 import { PresentationProvider, usePresentation } from './contexts/PresentationContext';
 import { Student, Lecturer, ActiveModule, PresentationMode, PracticeView, FeedbackData, Slide, PracticeSession, UserProfile } from './types';
 
@@ -405,6 +407,11 @@ const App: React.FC = () => {
                     </div>
                     <div className="flex-1 flex justify-end items-center gap-4">
                         <span className="text-sm text-slate-400 hidden md:block">{currentUser.email}</span>
+                        {currentUser.role === 'lecturer' && (
+                            <button onClick={() => setIsManageClassesModalOpen(true)} className="text-sm bg-slate-700 text-slate-200 font-bold py-2 px-4 rounded-lg hover:bg-slate-600">
+                                Manage Classes
+                            </button>
+                        )}
                         <button onClick={handleLogout} className="text-sm bg-slate-600 text-slate-200 font-bold py-2 px-4 rounded-lg hover:bg-slate-500">
                             Logout
                         </button>
@@ -415,6 +422,14 @@ const App: React.FC = () => {
                 <ActiveModuleRenderer />
             </main>
             <BottomNavBar activeModule={activeModule} setActiveModule={handleModuleChange} userType={userType!} onNavigate={() => {}} />
+            {currentUser.role === 'lecturer' && (
+                <ManageClassesModal
+                    isOpen={isManageClassesModalOpen}
+                    onClose={() => setIsManageClassesModalOpen(false)}
+                    currentClasses={(currentUser as Lecturer).classCodes}
+                    onSave={handleUpdateLecturerClasses}
+                />
+            )}
         </div>
     </PresentationProvider>
   );
