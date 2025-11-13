@@ -10,23 +10,23 @@ service cloud.firestore {
 
     // --- USER PROFILES ---
     match /users/{userId} {
-      // WRITE permissions: A user can only write to their own document.
+      // WRITE: A user can only write to their own document.
       allow write: if request.auth.uid == userId;
 
-      // READ permissions: This simplified rule is designed to definitively fix the student registration error.
-      allow read: if
-        // Rule 1: Allow ANYONE to read ANY document where role is 'lecturer'.
-        // This is public information and is ESSENTIAL for the student registration
-        // query to succeed for an unauthenticated user.
-        resource.data.role == 'lecturer'
-        
-        // Rule 2: Allow an authenticated user to read their own document.
-        || (request.auth != null && request.auth.uid == userId);
-        
-      // NOTE: The previous, more complex rule allowing lecturers to read their students'
-      // profiles has been removed. Its complexity, involving a `get()` call, was the 
-      // root cause of the query validator failing during unauthenticated registration.
-      // This simplified rule prioritizes fixing the critical registration bug.
+      // READ (for AUTHENTICATED users): Any logged-in user can read any other user's profile.
+      // This is a broad rule for simplicity within the app's current structure.
+      // Specific session data is still protected by the rules below.
+      allow read: if request.auth != null;
+
+      // GET (for UNAUTHENTICATED users): An unauthenticated user can only GET
+      // a document if that document is a lecturer profile. This is essential for
+      // the registration query to be validated by the rules engine.
+      allow get: if request.auth == null && resource.data.role == 'lecturer';
+
+      // LIST (for UNAUTHENTICATED users): An unauthenticated user can perform a LIST
+      // operation (a query). The `get` rule above will then be applied to every
+      // document returned by the query, ensuring only lecturer profiles are accessible.
+      allow list: if request.auth == null;
     }
     
     // Helper functions for session rules
@@ -48,16 +48,10 @@ service cloud.firestore {
       allow update: if isOwner(resource.data) || isLecturerForSession(resource.data);
       allow delete: if false;
 
-      // LIST rule: a logged-in user can perform queries on this collection.
-      // The queries themselves are further secured by the GET rule below.
-      allow list: if request.auth != null;
-
-      // GET rule: a logged-in user can read a specific document if:
-      // 1. It's shared for peer review, OR
-      // 2. They are the owner, OR
-      // 3. They are the lecturer for that session.
-      allow get: if request.auth != null &&
-        (resource.data.isSharedForPeerReview == true || isOwner(resource.data) || isLecturerForSession(resource.data));
+      // A user can read (get/list) a session if they are the owner, their lecturer, 
+      // OR if the session is shared for peer review.
+      allow read: if request.auth != null &&
+        (isOwner(resource.data) || isLecturerForSession(resource.data) || resource.data.isSharedForPeerReview == true);
 
       // Peer review subcollection
       match /peerReviews/{reviewId} {

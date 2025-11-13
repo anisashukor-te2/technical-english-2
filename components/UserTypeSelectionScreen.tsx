@@ -7,9 +7,9 @@ interface UserTypeSelectionScreenProps {
 const UserTypeCard = ({ title, description, onClick, icon }: { title: string, description: string, onClick: () => void, icon: React.ReactNode }) => (
     <div 
         onClick={onClick}
-        className="bg-slate-800/60 backdrop-blur-sm border border-slate-700 rounded-lg p-8 text-center cursor-pointer hover:bg-slate-700/80 hover:border-cyan-400 transition-all transform hover:-translate-y-2 shadow-lg hover:shadow-2xl"
+        className="bg-slate-800/60 backdrop-blur-sm border border-slate-700 rounded-lg p-8 text-center cursor-pointer hover:bg-slate-700/80 hover:border-cyan-600 transition-all transform hover:-translate-y-2 shadow-lg hover:shadow-2xl"
     >
-        <div className="flex justify-center items-center mb-4 text-cyan-400">
+        <div className="flex justify-center items-center mb-4 text-cyan-600">
             {icon}
         </div>
         <h3 className="text-2xl font-bold text-slate-200">{title}</h3>

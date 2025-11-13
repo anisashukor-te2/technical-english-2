@@ -183,7 +183,7 @@ const downloadTextFile = (content: string, filename: string) => {
 const PresentationChecklistContent = () => (
     <div className="space-y-4 text-slate-300">
         <div>
-            <h4 className="font-bold text-cyan-400">1. Content & Structure (The "What")</h4>
+            <h4 className="font-bold text-cyan-600">1. Content & Structure (The "What")</h4>
             <ul className="list-disc list-inside mt-1 text-sm space-y-1">
                 <li>Define your core objective: What's the key takeaway for your audience?</li>
                 <li>Analyze your audience: Who are they and what do they already know?</li>
@@ -193,7 +193,7 @@ const PresentationChecklistContent = () => (
             </ul>
         </div>
         <div>
-            <h4 className="font-bold text-cyan-400">2. Slide Design (The "Visuals")</h4>
+            <h4 className="font-bold text-cyan-600">2. Slide Design (The "Visuals")</h4>
             <ul className="list-disc list-inside mt-1 text-sm space-y-1">
                 <li>Keep it simple: One main idea per slide. Avoid clutter.</li>
                 <li>Use high-quality, relevant images and graphics.</li>
@@ -203,7 +203,7 @@ const PresentationChecklistContent = () => (
             </ul>
         </div>
         <div>
-            <h4 className="font-bold text-cyan-400">3. Delivery Practice (The "How")</h4>
+            <h4 className="font-bold text-cyan-600">3. Delivery Practice (The "How")</h4>
             <ul className="list-disc list-inside mt-1 text-sm space-y-1">
                 <li>Rehearse out loud multiple times, not just in your head.</li>
                 <li>Time yourself to ensure you respect the time limit.</li>
@@ -213,7 +213,7 @@ const PresentationChecklistContent = () => (
             </ul>
         </div>
         <div>
-            <h4 className="font-bold text-cyan-400">4. Final Checks (The "Day Of")</h4>
+            <h4 className="font-bold text-cyan-600">4. Final Checks (The "Day Of")</h4>
             <ul className="list-disc list-inside mt-1 text-sm space-y-1">
                 <li>Test all equipment: projector, laptop, clicker, and microphone.</li>
                 <li>Have a backup of your presentation on a USB drive and in the cloud.</li>
@@ -228,25 +228,25 @@ const LASTGuideContent = () => (
     <div className="space-y-4 text-slate-300">
         <p className="text-sm">The L.A.S.T. method is a simple, effective framework for handling complaints. It provides a clear, four-step process to de-escalate tension and find a resolution.</p>
         <div>
-            <h4 className="text-xl font-bold text-cyan-400">L - Listen</h4>
+            <h4 className="text-xl font-bold text-cyan-600">L - Listen</h4>
             <p className="mt-1 pl-4 border-l-2 border-slate-600 text-sm">
                 Give the person your complete, uninterrupted attention. Let them explain their issue fully. Focus on understanding their perspective, not on preparing your defense. Use active listening cues like nodding and confirming you understand.
             </p>
         </div>
         <div>
-            <h4 className="text-xl font-bold text-cyan-400">A - Acknowledge & Apologize</h4>
+            <h4 className="text-xl font-bold text-cyan-600">A - Acknowledge & Apologize</h4>
             <p className="mt-1 pl-4 border-l-2 border-slate-600 text-sm">
                 Validate their feelings by acknowledging their frustration or disappointment. A sincere, simple apology can be very powerful. Say "I'm sorry this happened" or "I understand why you're upset." This is not about admitting fault, but about showing empathy for their experience.
             </p>
         </div>
         <div>
-            <h4 className="text-xl font-bold text-cyan-400">S - Solve</h4>
+            <h4 className="text-xl font-bold text-cyan-600">S - Solve</h4>
             <p className="mt-1 pl-4 border-l-2 border-slate-600 text-sm">
                 Take ownership of finding a solution. Ask, "What would be an ideal outcome for you?" If you can, offer a concrete solution immediately. If not, clearly explain the next steps you will take to resolve the issue and provide a timeline.
             </p>
         </div>
         <div>
-            <h4 className="text-xl font-bold text-cyan-400">T - Thank</h4>
+            <h4 className="text-xl font-bold text-cyan-600">T - Thank</h4>
             <p className="mt-1 pl-4 border-l-2 border-slate-600 text-sm">
                 Thank the person for bringing the issue to your attention. Their feedback is valuable, even if it's hard to hear. This final step helps to rebuild the relationship and shows that you see their complaint as an opportunity to improve.
             </p>
@@ -318,11 +318,11 @@ const PeerReviewModal: React.FC<{
                             <div className="flex justify-around text-center">
                                 <div>
                                     <p className="text-slate-400 text-sm">Score</p>
-                                    <p className="text-2xl font-bold text-cyan-400">{feedbackData.overallScore}</p>
+                                    <p className="text-2xl font-bold text-cyan-600">{feedbackData.overallScore}</p>
                                 </div>
                                 <div>
                                     <p className="text-slate-400 text-sm">Pacing</p>
-                                    <p className="text-2xl font-bold text-cyan-400">{feedbackData.pacing.wpm} WPM</p>
+                                    <p className="text-2xl font-bold text-cyan-600">{feedbackData.pacing.wpm} WPM</p>
                                 </div>
                             </div>
                          </div>
@@ -388,11 +388,11 @@ const PeerReviewModal: React.FC<{
                                     value={comment}
                                     onChange={e => setComment(e.target.value)}
                                     placeholder="Provide one piece of positive feedback and one suggestion for improvement."
-                                    className="w-full h-32 p-2 bg-slate-900 border border-slate-600 rounded-md focus:ring-2 focus:ring-cyan-500 text-white"
+                                    className="w-full h-32 p-2 bg-slate-900 border border-slate-600 rounded-md focus:ring-2 focus:ring-cyan-700 text-white"
                                     required
                                 />
                              </div>
-                             <button type="submit" disabled={isSubmitting} className="w-full bg-cyan-600 text-white font-bold py-2 px-4 rounded-lg hover:bg-cyan-700 disabled:opacity-50">
+                             <button type="submit" disabled={isSubmitting} className="w-full bg-cyan-800 text-white font-bold py-2 px-4 rounded-lg hover:bg-cyan-900 disabled:opacity-50">
                                 {isSubmitting ? 'Submitting...' : 'Submit Feedback'}
                             </button>
                          </form>
@@ -478,15 +478,15 @@ const PeerReviewSystem = () => {
                                 <div className="flex justify-around text-center my-3 py-2 border-y border-slate-700">
                                     <div>
                                         <p className="text-xs text-slate-400">Score</p>
-                                        <p className="font-bold text-cyan-400">{session.feedbackData.overallScore}</p>
+                                        <p className="font-bold text-cyan-600">{session.feedbackData.overallScore}</p>
                                     </div>
                                     <div>
                                         <p className="text-xs text-slate-400">Pacing</p>
-                                        <p className="font-bold text-cyan-400">{session.feedbackData.pacing.wpm} WPM</p>
+                                        <p className="font-bold text-cyan-600">{session.feedbackData.pacing.wpm} WPM</p>
                                     </div>
                                     <div>
                                         <p className="text-xs text-slate-400">Reviews</p>
-                                        <p className="font-bold text-cyan-400">{session.peerReviews.length}</p>
+                                        <p className="font-bold text-cyan-600">{session.peerReviews.length}</p>
                                     </div>
                                 </div>
                             </div>
@@ -528,20 +528,20 @@ export const ResourceLibrary: React.FC = () => {
                 <div className="grid md:grid-cols-2 gap-6">
                     <Card title="Course References" color="blue">
                         <div className="p-4 space-y-3">
-                            <a href="https://polycc.cidos.edu.my/" target="_blank" rel="noopener noreferrer" className="w-full text-left bg-white/50 hover:bg-white/70 text-blue-400 font-semibold py-2 px-4 rounded-lg transition-colors flex items-center shadow-sm">
-                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="h-5 w-5 mr-3 flex-shrink-0 text-blue-400">
+                            <a href="https://polycc.cidos.edu.my/" target="_blank" rel="noopener noreferrer" className="w-full text-left bg-white/25 hover:bg-white/40 text-blue-700 font-semibold py-2 px-4 rounded-lg transition-colors flex items-center shadow-sm">
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="h-5 w-5 mr-3 flex-shrink-0 text-blue-700">
                                   <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 6H5.25A2.25 2.25 0 003 8.25v10.5A2.25 2.25 0 005.25 21h10.5A2.25 2.25 0 0018 18.75V10.5M15 3h6m0 0v6m0-6l-7.5 7.5" />
                                 </svg>
                                 Politeknik Malaysia CIDOS E-Learning Portal
                             </a>
-                            <a href="https://www.toastmasters.org/resources/public-speaking-tips" target="_blank" rel="noopener noreferrer" className="w-full text-left bg-white/50 hover:bg-white/70 text-blue-400 font-semibold py-2 px-4 rounded-lg transition-colors flex items-center shadow-sm">
-                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="h-5 w-5 mr-3 flex-shrink-0 text-blue-400">
+                            <a href="https://www.toastmasters.org/resources/public-speaking-tips" target="_blank" rel="noopener noreferrer" className="w-full text-left bg-white/25 hover:bg-white/40 text-blue-700 font-semibold py-2 px-4 rounded-lg transition-colors flex items-center shadow-sm">
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="h-5 w-5 mr-3 flex-shrink-0 text-blue-700">
                                   <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 6H5.25A2.25 2.25 0 003 8.25v10.5A2.25 2.25 0 005.25 21h10.5A2.25 2.25 0 0018 18.75V10.5M15 3h6m0 0v6m0-6l-7.5 7.5" />
                                 </svg>
                                 Toastmasters International: Public Speaking Tips
                             </a>
-                            <a href="https://www.robertsrules.com/" target="_blank" rel="noopener noreferrer" className="w-full text-left bg-white/50 hover:bg-white/70 text-blue-400 font-semibold py-2 px-4 rounded-lg transition-colors flex items-center shadow-sm">
-                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="h-5 w-5 mr-3 flex-shrink-0 text-blue-400">
+                            <a href="https://www.robertsrules.com/" target="_blank" rel="noopener noreferrer" className="w-full text-left bg-white/25 hover:bg-white/40 text-blue-700 font-semibold py-2 px-4 rounded-lg transition-colors flex items-center shadow-sm">
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="h-5 w-5 mr-3 flex-shrink-0 text-blue-700">
                                   <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 6H5.25A2.25 2.25 0 003 8.25v10.5A2.25 2.25 0 005.25 21h10.5A2.25 2.25 0 0018 18.75V10.5M15 3h6m0 0v6m0-6l-7.5 7.5" />
                                 </svg>
                                 Robert's Rules of Order (Meeting Protocols)

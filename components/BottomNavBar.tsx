@@ -75,8 +75,8 @@ const BottomNavBar: React.FC<BottomNavBarProps> = ({ activeModule, setActiveModu
           module="PRESENTATION"
           isActive={activeModule === 'PRESENTATION'}
           onClick={handleNavClick}
-          activeColor="bg-blue-900/50 text-blue-300 font-bold"
-          focusRingColor="focus:ring-blue-500/50"
+          activeColor="bg-blue-950/50 text-blue-500 font-bold"
+          focusRingColor="focus:ring-blue-700/50"
         >
           <PresentationIcon />
         </NavItem>

@@ -26,12 +26,12 @@ const QuizResultScreen: React.FC<{
     return (
       <div className="relative flex items-center justify-center w-36 h-36 mx-auto">
         <svg className="w-full h-full transform -rotate-90" viewBox="0 0 120 120">
-          <circle className="text-slate-200" strokeWidth="8" stroke="currentColor" fill="transparent" r={radius} cx="60" cy="60" />
+          <circle className="text-slate-700" strokeWidth="8" stroke="currentColor" fill="transparent" r={radius} cx="60" cy="60" />
           <circle className={colorClass} strokeWidth="8" strokeDasharray={circumference} strokeDashoffset={offset} strokeLinecap="round" stroke="currentColor" fill="transparent" r={radius} cx="60" cy="60" />
         </svg>
         <div className="absolute flex flex-col items-center">
-          <span className={`text-4xl font-bold ${colorClass.replace('text-green-500', 'text-green-600').replace('text-yellow-500', 'text-yellow-600').replace('text-red-500', 'text-red-600')}`}>{percentage}%</span>
-          <span className="font-semibold text-slate-600">{score}/{questions.length} Correct</span>
+          <span className={`text-4xl font-bold ${colorClass.replace('text-green-500', 'text-green-400').replace('text-yellow-500', 'text-yellow-400').replace('text-red-500', 'text-red-400')}`}>{percentage}%</span>
+          <span className="font-semibold text-slate-400">{score}/{questions.length} Correct</span>
         </div>
       </div>
     );
@@ -40,13 +40,13 @@ const QuizResultScreen: React.FC<{
   return (
     <div className="max-w-4xl mx-auto animate-fade-in space-y-6">
         <div className="text-center">
-            <h2 className="text-3xl font-bold text-slate-900">Quiz Results</h2>
+            <h2 className="text-3xl font-bold text-white">Quiz Results</h2>
         </div>
 
         <Card title="Your Score">
             <div className="p-6 flex flex-col items-center">
                 <ScoreCircle />
-                <p className="mt-4 text-lg text-slate-600 text-center">
+                <p className="mt-4 text-lg text-slate-300 text-center">
                     {percentage >= 80 ? "Excellent work! You have a strong grasp of the material." : percentage >= 50 ? "Good job! A few points to review, but a solid understanding." : "A good start. Review the explanations below to improve your understanding."}
                 </p>
             </div>
@@ -58,15 +58,15 @@ const QuizResultScreen: React.FC<{
                     const userAnswer = userAnswers[index];
                     const isCorrect = userAnswer === q.correctAnswerIndex;
                     return (
-                        <div key={index} className="p-3 bg-slate-50 border border-slate-200 rounded-lg">
-                            <p className="font-semibold text-slate-800">{index + 1}. {q.question}</p>
+                        <div key={index} className="p-3 bg-slate-900/50 border border-slate-700 rounded-lg">
+                            <p className="font-semibold text-slate-200">{index + 1}. {q.question}</p>
                             <div className="mt-2 space-y-1">
                                 {q.options.map((option, optIndex) => {
                                     const isSelected = userAnswer === optIndex;
                                     const isCorrectAnswer = q.correctAnswerIndex === optIndex;
-                                    let colorClass = 'text-slate-600';
-                                    if (isSelected && !isCorrect) colorClass = 'text-red-600 font-semibold';
-                                    if (isCorrectAnswer) colorClass = 'text-green-600 font-semibold';
+                                    let colorClass = 'text-slate-400';
+                                    if (isSelected && !isCorrect) colorClass = 'text-red-400 font-semibold';
+                                    if (isCorrectAnswer) colorClass = 'text-green-400 font-semibold';
                                     
                                     return (
                                         <div key={optIndex} className={`flex items-start text-sm ${colorClass}`}>
@@ -77,7 +77,7 @@ const QuizResultScreen: React.FC<{
                                 })}
                             </div>
                             {!isCorrect && (
-                                <div className="mt-2 p-2 bg-yellow-100/70 border-l-4 border-yellow-500 text-sm text-yellow-800">
+                                <div className="mt-2 p-2 bg-yellow-900/30 border-l-4 border-yellow-500 text-sm text-yellow-300">
                                     <strong>Explanation:</strong> {q.explanation}
                                 </div>
                             )}
@@ -88,10 +88,10 @@ const QuizResultScreen: React.FC<{
         </Card>
         
         <div className="flex justify-center gap-4 pt-4">
-            <button onClick={onRetake} className="bg-blue-600 text-white font-bold py-2 px-6 rounded-lg hover:bg-blue-700">
+            <button onClick={onRetake} className="bg-cyan-600 text-white font-bold py-2 px-6 rounded-lg hover:bg-cyan-700">
                 Retake Quiz
             </button>
-             <button onClick={onBack} className="bg-slate-200 text-slate-800 font-bold py-2 px-6 rounded-lg hover:bg-slate-300">
+             <button onClick={onBack} className="bg-slate-600 text-slate-200 font-bold py-2 px-6 rounded-lg hover:bg-slate-500">
                 Back to Menu
             </button>
         </div>
@@ -134,22 +134,22 @@ const QuizScreen: React.FC<QuizScreenProps> = ({ onBack }) => {
     return (
         <div className="max-w-4xl mx-auto animate-fade-in">
             <div className="text-center mb-6">
-                <h2 className="text-3xl font-bold text-slate-900">Meeting Skills Quiz</h2>
-                <p className="mt-1 text-slate-500">Question {currentQuestionIndex + 1} of {meetingQuizQuestions.length}</p>
+                <h2 className="text-3xl font-bold text-white">Meeting Skills Quiz</h2>
+                <p className="mt-1 text-slate-400">Question {currentQuestionIndex + 1} of {meetingQuizQuestions.length}</p>
             </div>
 
             <Card title={`Question ${currentQuestionIndex + 1}`}>
                 <div className="p-6">
-                    <p className="text-lg font-semibold text-slate-800 mb-6 min-h-[60px]">{currentQuestion.question}</p>
+                    <p className="text-lg font-semibold text-slate-200 mb-6 min-h-[60px]">{currentQuestion.question}</p>
                     <div className="space-y-3">
                         {currentQuestion.options.map((option, index) => (
                             <button
                                 key={index}
                                 onClick={() => handleAnswerSelect(index)}
-                                className={`w-full text-left p-4 border-2 rounded-lg transition-colors ${
+                                className={`w-full text-left p-4 border-2 rounded-lg transition-colors text-slate-300 ${
                                     selectedAnswer === index
-                                        ? 'bg-blue-100 border-blue-500'
-                                        : 'bg-white border-slate-200 hover:bg-slate-50'
+                                        ? 'bg-cyan-900/50 border-cyan-500'
+                                        : 'bg-slate-900/50 border-slate-700 hover:bg-slate-700/80'
                                 }`}
                             >
                                 {option}
@@ -160,13 +160,13 @@ const QuizScreen: React.FC<QuizScreenProps> = ({ onBack }) => {
             </Card>
 
             <div className="mt-6 flex justify-between items-center">
-                <button onClick={onBack} className="text-sm text-blue-600 hover:text-blue-700">
+                <button onClick={onBack} className="text-sm text-cyan-400 hover:text-cyan-300">
                     Back to Menu
                 </button>
                 <button
                     onClick={handleNext}
                     disabled={selectedAnswer === null}
-                    className="bg-blue-600 text-white font-bold py-2 px-8 rounded-lg hover:bg-blue-700 disabled:bg-slate-400"
+                    className="bg-cyan-600 text-white font-bold py-2 px-8 rounded-lg hover:bg-cyan-700 disabled:bg-slate-600"
                 >
                     {currentQuestionIndex < meetingQuizQuestions.length - 1 ? 'Next' : 'Finish'}
                 </button>

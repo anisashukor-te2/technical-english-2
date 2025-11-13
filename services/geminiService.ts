@@ -12,6 +12,19 @@ const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
 const handleGeminiError = (error: any, context: string): never => {
     console.error(`Error during Gemini API call for ${context}:`, error);
     let message = `Failed to get feedback from the AI model for ${context}. Please try again.`;
+    
+    // Check if error is the JSON string from the user's screenshot
+    if (typeof error.message === 'string' && error.message.includes('Rpc failed due to xhr error')) {
+        try {
+            const parsedError = JSON.parse(error.message);
+            if (parsedError?.error?.message) {
+                 message = `A network error occurred while contacting the AI model. Please check your connection and try again. Details: ${parsedError.error.message}`;
+            }
+        } catch(e) {
+            // Not a JSON string, proceed with other checks
+        }
+    }
+
     const errorMessage = error.toString().toLowerCase();
 
     if (errorMessage.includes('api key not valid') || errorMessage.includes('api_key')) {
@@ -20,8 +33,6 @@ const handleGeminiError = (error: any, context: string): never => {
         message = "Configuration Error: Billing is not enabled for the associated Google Cloud project. The Gemini API requires a project with an active billing account.";
     } else if (errorMessage.includes('api is not enabled') || errorMessage.includes('service has been disabled')) {
         message = "Configuration Error: The 'generativelanguage.googleapis.com' API is not enabled on your Google Cloud project. Please visit your cloud console to enable it.";
-    } else if (error.message && !error.message.includes('Failed to get feedback')) {
-        message = error.message; // Use the specific error message if it's not the generic one we're replacing.
     }
     
     throw new Error(message);
@@ -158,7 +169,7 @@ const feedbackDataSchema = {
 const callGeminiWithFeedbackSchema = async (prompt: string, mediaPart: {inlineData: {data: string, mimeType: string}}): Promise<FeedbackData> => {
      try {
         const response = await ai.models.generateContent({
-            model: "gemini-2.5-pro",
+            model: "gemini-2.5-flash",
             contents: { parts: [{ text: prompt }, mediaPart] },
             config: {
                 responseMimeType: "application/json",
@@ -170,7 +181,7 @@ const callGeminiWithFeedbackSchema = async (prompt: string, mediaPart: {inlineDa
         return JSON.parse(jsonText) as FeedbackData;
     } catch (error) {
         // FIX: The function must return a value on all code paths. Re-throwing the error ensures the promise is rejected.
-        return handleGeminiError(error, 'presentation feedback');
+        throw handleGeminiError(error, 'presentation feedback');
     }
 };
 
@@ -314,7 +325,7 @@ export const getMinuteTakingFeedback = async (userMinutes: string): Promise<Minu
 
     try {
         const response = await ai.models.generateContent({
-            model: "gemini-2.5-pro",
+            model: "gemini-2.5-flash",
             contents: { parts: [{text: prompt}] },
             config: {
                 responseMimeType: "application/json",
@@ -325,7 +336,7 @@ export const getMinuteTakingFeedback = async (userMinutes: string): Promise<Minu
         const jsonText = response.text.trim();
         return JSON.parse(jsonText) as MinuteFeedbackData;
     } catch (error) {
-        return handleGeminiError(error, 'minute-taking feedback');
+        throw handleGeminiError(error, 'minute-taking feedback');
     }
 };
 
@@ -376,7 +387,7 @@ export const getComplaintEmailFeedback = async (userEmail: string): Promise<Comp
 
     try {
         const response = await ai.models.generateContent({
-            model: "gemini-2.5-pro",
+            model: "gemini-2.5-flash",
             contents: { parts: [{text: prompt}] },
             config: {
                 responseMimeType: "application/json",
@@ -387,7 +398,7 @@ export const getComplaintEmailFeedback = async (userEmail: string): Promise<Comp
         const jsonText = response.text.trim();
         return JSON.parse(jsonText) as ComplaintFeedbackData;
     } catch (error) {
-        return handleGeminiError(error, 'complaint email feedback');
+        throw handleGeminiError(error, 'complaint email feedback');
     }
 };
 
@@ -438,6 +449,6 @@ export const generateComplaintStarterScript = async (customScenario: string): Pr
         const jsonText = response.text.trim();
         return JSON.parse(jsonText);
     } catch (error) {
-        return handleGeminiError(error, 'generating custom complaint script');
+        throw handleGeminiError(error, 'generating custom complaint script');
     }
 };

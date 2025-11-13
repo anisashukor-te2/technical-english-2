@@ -2,7 +2,8 @@ import React, { useState } from 'react';
 import LearnScreen from './LearnScreen';
 import PracticeScenarioSelectionScreen from './PracticeScenarioSelectionScreen';
 import ReviewScreen from './ReviewScreen';
-import ComplaintSimulationScreen from './ComplaintSimulationScreen';
+// FIX: Changed import to a named import to resolve module resolution error.
+import { ComplaintSimulationScreen } from './ComplaintSimulationScreen';
 import { Lecturer, Student, ComplaintScenario, ComplaintFeedbackData, ComplaintEmailSession } from '../../types';
 import Loader from '../Loader';
 import Card from '../Card';
@@ -21,7 +22,7 @@ interface HandlingComplaintsModuleProps {
 
 const MenuCard = ({ title, description, onClick, icon, color, comingSoon = false }: { title: string, description: string, onClick: () => void, icon: React.ReactNode, color: 'blue' | 'green' | 'purple', comingSoon?: boolean }) => {
     const colorClasses = {
-        blue: { hoverBorder: 'hover:border-blue-400', icon: 'text-blue-400' },
+        blue: { hoverBorder: 'hover:border-blue-500', icon: 'text-blue-500' },
         green: { hoverBorder: 'hover:border-green-400', icon: 'text-green-400' },
         purple: { hoverBorder: 'hover:border-purple-400', icon: 'text-purple-400' },
     };
@@ -31,7 +32,7 @@ const MenuCard = ({ title, description, onClick, icon, color, comingSoon = false
     return (
         <div 
             onClick={!comingSoon ? onClick : undefined}
-            className={`relative bg-slate-800/60 backdrop-blur-sm border border-slate-700 rounded-lg p-6 text-center transition-all transform ${comingSoon ? 'opacity-50 cursor-not-allowed' : `cursor-pointer hover:-translate-y-1 shadow-lg hover:shadow-cyan-500/10 hover:bg-slate-700/80 ${classes.hoverBorder}`}`}
+            className={`relative bg-slate-800/60 backdrop-blur-sm border border-slate-700 rounded-lg p-6 text-center transition-all transform ${comingSoon ? 'opacity-50 cursor-not-allowed' : `cursor-pointer hover:-translate-y-1 shadow-lg hover:shadow-cyan-600/10 hover:bg-slate-700/80 ${classes.hoverBorder}`}`}
         >
             {comingSoon && <span className="absolute top-2 right-2 bg-yellow-500 text-slate-900 text-xs font-bold px-2 py-1 rounded">Coming Soon</span>}
             <div className={`flex justify-center items-center mb-4 ${classes.icon}`}>
@@ -43,7 +44,8 @@ const MenuCard = ({ title, description, onClick, icon, color, comingSoon = false
     );
 };
 
-const HandlingComplaintsModule: React.FC<HandlingComplaintsModuleProps> = ({ user, userType, selectedClass }) => {
+// FIX: Changed to a named export and added a return statement to resolve component type errors.
+export const HandlingComplaintsModule: React.FC<HandlingComplaintsModuleProps> = ({ user, userType, selectedClass }) => {
     const [view, setView] = useState<ComplaintView>('MENU');
     const [selectedScenario, setSelectedScenario] = useState<ComplaintScenario | null>(null);
     const [isEmailPractice, setIsEmailPractice] = useState(false);
@@ -85,7 +87,7 @@ const HandlingComplaintsModule: React.FC<HandlingComplaintsModuleProps> = ({ use
     };
 
     const handleSaveAndGetFeedback = async () => {
-        if (!userEmail.trim() || !user || user.role !== 'student') {
+        if (!userEmail.trim() || !user) {
             return;
         }
 
@@ -94,22 +96,30 @@ const HandlingComplaintsModule: React.FC<HandlingComplaintsModuleProps> = ({ use
         
         try {
             const feedbackData = await getComplaintEmailFeedback(userEmail);
-            const studentUser = user as Student;
+            
+            if (user.role === 'student') {
+                const studentUser = user as Student;
 
-            const newSession: Omit<ComplaintEmailSession, 'id'> = {
-                timestamp: Date.now(),
-                studentUid: studentUser.uid,
-                studentEmail: studentUser.email,
-                lecturerEmail: studentUser.lecturerEmail,
-                classCode: studentUser.classCode,
-                scenario: COMPLAINT_EMAIL_SCENARIO,
-                userEmail: userEmail,
-                feedbackData: feedbackData,
-            };
+                const newSession: Omit<ComplaintEmailSession, 'id'> = {
+                    timestamp: Date.now(),
+                    studentUid: studentUser.uid,
+                    studentEmail: studentUser.email,
+                    lecturerEmail: studentUser.lecturerEmail,
+                    classCode: studentUser.classCode,
+                    scenario: COMPLAINT_EMAIL_SCENARIO,
+                    userEmail: userEmail,
+                    feedbackData: feedbackData,
+                };
 
-            const newSessionId = await saveComplaintEmailSession(newSession);
-            setEmailSessionId(newSessionId);
-            setEmailFeedback(feedbackData);
+                const newSessionId = await saveComplaintEmailSession(newSession);
+                setEmailSessionId(newSessionId);
+                setEmailFeedback(feedbackData);
+            } else {
+                // For lecturers, don't save. Just set a null session ID and show feedback.
+                setEmailSessionId(null);
+                setEmailFeedback(feedbackData);
+            }
+
         } catch (e: any) {
             setEmailError(e.message || 'Failed to get feedback from the AI. Please try again.');
             console.error(e);
@@ -165,7 +175,7 @@ const HandlingComplaintsModule: React.FC<HandlingComplaintsModuleProps> = ({ use
                                             value={userEmail}
                                             onChange={(e) => setUserEmail(e.target.value)}
                                             placeholder="Dear [Client Name], ..."
-                                            className="w-full h-[calc(60vh-80px)] p-3 bg-slate-900 border border-slate-600 rounded-md focus:ring-2 focus:ring-cyan-500 focus:border-cyan-500 transition text-slate-200"
+                                            className="w-full h-[calc(60vh-80px)] p-3 bg-slate-900 border border-slate-600 rounded-md focus:ring-2 focus:ring-cyan-600 focus:border-cyan-600 transition text-slate-200"
                                         />
                                     </div>
                                 </Card>
@@ -174,7 +184,7 @@ const HandlingComplaintsModule: React.FC<HandlingComplaintsModuleProps> = ({ use
                                     <button
                                         onClick={handleSaveAndGetFeedback}
                                         disabled={!userEmail.trim()}
-                                        className="w-full bg-cyan-600 text-white font-bold py-3 px-4 rounded-lg hover:bg-cyan-700 transition-colors focus:outline-none focus:ring-4 focus:ring-cyan-500/50 disabled:bg-slate-500 disabled:cursor-not-allowed"
+                                        className="w-full bg-cyan-700 text-white font-bold py-3 px-4 rounded-lg hover:bg-cyan-800 transition-colors focus:outline-none focus:ring-4 focus:ring-cyan-600/50 disabled:bg-slate-500 disabled:cursor-not-allowed"
                                     >
                                         Submit for Feedback
                                     </button>
@@ -182,7 +192,7 @@ const HandlingComplaintsModule: React.FC<HandlingComplaintsModuleProps> = ({ use
                             </div>
                           </div>
                           <div className="text-center pt-4">
-                            <button onClick={handleBackToPracticeSelection} className="text-sm text-cyan-400 hover:text-cyan-300 flex items-center mx-auto">
+                            <button onClick={handleBackToPracticeSelection} className="text-sm text-cyan-500 hover:text-cyan-400 flex items-center mx-auto">
                                 <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                                     <path strokeLinecap="round" strokeLinejoin="round" d="M11 17l-5-5m0 0l5-5m-5 5h12" />
                                 </svg>
@@ -265,5 +275,3 @@ const HandlingComplaintsModule: React.FC<HandlingComplaintsModuleProps> = ({ use
         </div>
     );
 };
-
-export default HandlingComplaintsModule;

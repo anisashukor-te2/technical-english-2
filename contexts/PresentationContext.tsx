@@ -11,7 +11,6 @@ export interface PresentationContextType {
   loadingMessage: string;
   error: string | null;
   recordingUrl: string;
-  // FIX: Add missing properties to the context type.
   recordingBase64: string | null;
   recordingMimeType: string | null;
 

@@ -11,8 +11,8 @@ const ModeCard = ({ title, description, onClick, icon, color }: { title: string,
         blue: {
             bg: 'bg-slate-800/60',
             hoverBg: 'hover:bg-slate-700/80',
-            hoverBorder: 'hover:border-blue-400',
-            icon: 'text-blue-400',
+            hoverBorder: 'hover:border-blue-600',
+            icon: 'text-blue-600',
         },
         green: {
             bg: 'bg-slate-800/60',
@@ -33,7 +33,7 @@ const ModeCard = ({ title, description, onClick, icon, color }: { title: string,
     return (
         <div 
             onClick={onClick}
-            className={`border border-slate-700 rounded-lg p-6 text-center cursor-pointer transition-all transform hover:-translate-y-1 shadow-lg hover:shadow-cyan-500/10 ${classes.bg} ${classes.hoverBg} ${classes.hoverBorder}`}
+            className={`border border-slate-700 rounded-lg p-6 text-center cursor-pointer transition-all transform hover:-translate-y-1 shadow-lg hover:shadow-cyan-700/10 ${classes.bg} ${classes.hoverBg} ${classes.hoverBorder}`}
         >
             <div className={`flex justify-center items-center mb-4 ${classes.icon}`}>
                 {icon}

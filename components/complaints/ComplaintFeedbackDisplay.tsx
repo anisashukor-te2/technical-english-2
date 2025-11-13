@@ -134,13 +134,13 @@ const ComplaintFeedbackDisplay: React.FC<ComplaintFeedbackDisplayProps> = ({
                 <Card title="AI Analysis & Suggestions">
                     <div className="p-4 space-y-4">
                         <div>
-                            <h4 className="font-semibold text-cyan-400 mb-2">L.A.S.T. Method Adherence</h4>
+                            <h4 className="font-semibold text-cyan-600 mb-2">L.A.S.T. Method Adherence</h4>
                             <ul className="list-disc list-inside text-slate-300 text-sm space-y-1">
                                 {feedback.lastMethodAdherence.map((item, i) => <li key={i}>{item}</li>)}
                             </ul>
                         </div>
                         <div>
-                            <h4 className="font-semibold text-cyan-400 mb-2">Suggestions for Improvement</h4>
+                            <h4 className="font-semibold text-cyan-600 mb-2">Suggestions for Improvement</h4>
                             <ul className="list-disc list-inside text-slate-300 text-sm space-y-1">
                                 {feedback.suggestions.map((item, i) => <li key={i}>{item}</li>)}
                             </ul>
@@ -162,7 +162,7 @@ const ComplaintFeedbackDisplay: React.FC<ComplaintFeedbackDisplayProps> = ({
                                min="0"
                                max="100"
                                placeholder="Enter a score from 0 to 100"
-                               className="mt-1 w-full p-2 bg-slate-900 border border-slate-600 rounded-md focus:ring-2 focus:ring-cyan-500"
+                               className="mt-1 w-full p-2 bg-slate-900 border border-slate-600 rounded-md focus:ring-2 focus:ring-cyan-700"
                            />
                        </div>
                        <div>
@@ -173,7 +173,7 @@ const ComplaintFeedbackDisplay: React.FC<ComplaintFeedbackDisplayProps> = ({
                                onChange={(e) => setLecturerFeedback(e.target.value)}
                                rows={4}
                                placeholder="Provide constructive feedback..."
-                               className="mt-1 w-full p-2 bg-slate-900 border border-slate-600 rounded-md focus:ring-2 focus:ring-cyan-500"
+                               className="mt-1 w-full p-2 bg-slate-900 border border-slate-600 rounded-md focus:ring-2 focus:ring-cyan-700"
                            />
                        </div>
                        <button
@@ -195,21 +195,21 @@ const ComplaintFeedbackDisplay: React.FC<ComplaintFeedbackDisplayProps> = ({
                         </p>
                     )}
                     <div className="flex flex-wrap items-center justify-center gap-4">
-                        <button onClick={onPracticeAgain} className="bg-cyan-600 text-white font-bold py-2 px-4 rounded-lg hover:bg-cyan-700 transition-colors focus:outline-none focus:ring-4 focus:ring-cyan-500/50 text-sm">
+                        <button onClick={onPracticeAgain} className="bg-cyan-800 text-white font-bold py-2 px-4 rounded-lg hover:bg-cyan-900 transition-colors focus:outline-none focus:ring-4 focus:ring-cyan-700/50 text-sm">
                             Practice Again
                         </button>
                         {isStudent && (
                             <button
                                 onClick={handleSubmitToLecturer}
                                 disabled={isSubmitted}
-                                className="bg-blue-600 text-white font-bold py-2 px-4 rounded-lg hover:bg-blue-700 transition-colors focus:outline-none focus:ring-4 focus:ring-blue-500/50 text-sm disabled:bg-slate-500 disabled:cursor-not-allowed"
+                                className="bg-blue-800 text-white font-bold py-2 px-4 rounded-lg hover:bg-blue-900 transition-colors focus:outline-none focus:ring-4 focus:ring-blue-700/50 text-sm disabled:bg-slate-500 disabled:cursor-not-allowed"
                             >
                                 {isSubmitted ? 'Submitted!' : 'Submit to Lecturer'}
                             </button>
                         )}
                     </div>
                     {onBack && (
-                        <button onClick={onBack} className="text-sm text-cyan-400 hover:text-cyan-300 flex items-center mx-auto mt-4">
+                        <button onClick={onBack} className="text-sm text-cyan-600 hover:text-cyan-500 flex items-center mx-auto mt-4">
                             <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                                 <path strokeLinecap="round" strokeLinejoin="round" d="M11 17l-5-5m0 0l5-5m-5 5h12" />
                             </svg>

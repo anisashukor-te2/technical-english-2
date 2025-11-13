@@ -110,7 +110,7 @@ Keep your responses concise and conversational.
 Do not act as a generic assistant. Only speak as the characters you are assigned.
 Start the conversation with a brief opening statement to set the scene and prompt the user to begin. For example: "Okay everyone, thanks for joining. The floor is yours, ${userRole}."`;
 
-            const chatSession = ai.chats.create({ model: 'gemini-2.5-pro', config: { systemInstruction } });
+            const chatSession = ai.chats.create({ model: 'gemini-2.5-flash', config: { systemInstruction } });
             setChat(chatSession);
 
             setIsLoading(true);
@@ -246,23 +246,23 @@ Start the conversation with a brief opening statement to set the scene and promp
     };
     
     const getPlaceholderText = () => {
-        if (micError) return <span className="text-yellow-600 text-sm">{micError}</span>;
-        if (isRecording) return currentTranscript || <span className="italic text-slate-500">Listening...</span>;
-        if (isAISpeaking) return <span className="italic text-slate-500">AI is speaking...</span>;
-        if (isLoading) return <span className="italic text-slate-500">AI is thinking...</span>;
-        return <span className="italic text-slate-500">Press the mic to speak...</span>;
+        if (micError) return <span className="text-yellow-400 text-sm">{micError}</span>;
+        if (isRecording) return currentTranscript || <span className="italic text-slate-400">Listening...</span>;
+        if (isAISpeaking) return <span className="italic text-slate-400">AI is speaking...</span>;
+        if (isLoading) return <span className="italic text-slate-400">AI is thinking...</span>;
+        return <span className="italic text-slate-400">Press the mic to speak...</span>;
     }
 
     return (
         <div className="max-w-4xl mx-auto flex flex-col h-[calc(100vh-200px)] animate-fade-in">
             <MicrophoneHelpModal isOpen={isHelpModalOpen} onClose={() => setIsHelpModalOpen(false)} />
             
-            <div className="bg-white border border-slate-200 rounded-t-lg p-4 flex justify-between items-center shadow-sm">
+            <div className="bg-slate-800/60 border border-slate-700 rounded-t-lg p-4 flex justify-between items-center shadow-sm">
                 <div>
-                    <h2 className="text-xl font-bold text-blue-700">{scenario.title}</h2>
-                    <p className="text-sm text-slate-600">Your Role: <span className="font-semibold text-slate-800">{userRole}</span></p>
+                    <h2 className="text-xl font-bold text-cyan-400">{scenario.title}</h2>
+                    <p className="text-sm text-slate-300">Your Role: <span className="font-semibold text-white">{userRole}</span></p>
                 </div>
-                 <button onClick={handleEndSessionAndSave} className="text-sm text-blue-600 hover:text-blue-700 inline-flex items-center p-2 bg-slate-100 rounded-lg hover:bg-slate-200">
+                 <button onClick={handleEndSessionAndSave} className="text-sm text-cyan-400 hover:text-cyan-300 inline-flex items-center p-2 bg-slate-700 rounded-lg hover:bg-slate-600">
                     <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                       <path strokeLinecap="round" strokeLinejoin="round" d="M11 17l-5-5m0 0l5-5m-5 5h12" />
                     </svg>
@@ -270,18 +270,18 @@ Start the conversation with a brief opening statement to set the scene and promp
                 </button>
             </div>
             
-            <div ref={chatContainerRef} className="flex-grow bg-slate-50 p-4 overflow-y-auto border-x border-slate-200">
+            <div ref={chatContainerRef} className="flex-grow bg-slate-900 p-4 overflow-y-auto border-x border-slate-700">
                  <div className="space-y-4">
                     {messages.map((item, index) => (
                         <div key={index} className={`flex items-end gap-2 ${item.speaker === 'You' ? 'justify-end' : 'justify-start'}`}>
-                           <div className={`p-3 rounded-lg max-w-lg ${item.speaker === 'You' ? 'bg-blue-600 text-white' : 'bg-slate-200 text-slate-800'}`}>
+                           <div className={`p-3 rounded-lg max-w-lg ${item.speaker === 'You' ? 'bg-cyan-600 text-white' : 'bg-slate-700 text-slate-200'}`}>
                                 {item.text}
                             </div>
                         </div>
                     ))}
                     {isLoading && messages[messages.length-1]?.speaker === 'You' && (
                          <div className="flex items-end gap-2 justify-start">
-                             <div className="max-w-lg p-3 rounded-lg bg-slate-200">
+                             <div className="max-w-lg p-3 rounded-lg bg-slate-700">
                                  <div className="flex items-center space-x-2">
                                      <div className="w-2 h-2 bg-slate-400 rounded-full animate-pulse delay-75"></div>
                                      <div className="w-2 h-2 bg-slate-400 rounded-full animate-pulse delay-150"></div>
@@ -293,16 +293,16 @@ Start the conversation with a brief opening statement to set the scene and promp
                 </div>
             </div>
             
-             <div className="bg-white border border-slate-200 rounded-b-lg p-4 shadow-sm">
-                {error && <p className="text-red-500 text-sm text-center mb-2">{error}</p>}
+             <div className="bg-slate-800/60 border border-t-0 border-slate-700 rounded-b-lg p-4 shadow-sm">
+                {error && <p className="text-red-400 text-sm text-center mb-2">{error}</p>}
                 <div className="flex items-center space-x-4">
-                    <div className={`flex-grow bg-white border rounded-lg p-3 h-14 flex items-center overflow-y-auto ${isRecording ? 'border-blue-500' : 'border-slate-300'}`}>
-                       <p className="text-slate-700 w-full">{getPlaceholderText()}</p>
+                    <div className={`flex-grow bg-slate-900 border rounded-lg p-3 h-14 flex items-center overflow-y-auto ${isRecording ? 'border-cyan-500' : 'border-slate-600'}`}>
+                       <p className="text-slate-300 w-full">{getPlaceholderText()}</p>
                     </div>
                     <button 
                         onClick={handleMicClick} 
                         disabled={isLoading || isAISpeaking || !isUserTurn}
-                        className={`flex-shrink-0 w-14 h-14 rounded-full flex items-center justify-center text-white ${isRecording ? 'bg-red-500' : isUserTurn ? 'bg-blue-600' : 'bg-slate-400'} disabled:opacity-70`}
+                        className={`flex-shrink-0 w-14 h-14 rounded-full flex items-center justify-center text-white ${isRecording ? 'bg-red-500' : isUserTurn ? 'bg-cyan-600' : 'bg-slate-600'} disabled:opacity-70`}
                     >
                         <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                             <path strokeLinecap="round" strokeLinejoin="round" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z" />

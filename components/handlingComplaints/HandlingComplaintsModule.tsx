@@ -2,7 +2,8 @@ import React, { useState } from 'react';
 import LearnScreen from '../complaints/LearnScreen';
 import PracticeScenarioSelectionScreen from '../complaints/PracticeScenarioSelectionScreen';
 import ReviewScreen from '../complaints/ReviewScreen';
-import ComplaintSimulationScreen from '../complaints/ComplaintSimulationScreen';
+// FIX: Changed import to a named import to resolve module resolution error.
+import { ComplaintSimulationScreen } from '../complaints/ComplaintSimulationScreen';
 import { Lecturer, Student, ComplaintScenario, ComplaintFeedbackData, ComplaintEmailSession } from '../../types';
 import Loader from '../Loader';
 import Card from '../Card';
@@ -37,13 +38,14 @@ const MenuCard = ({ title, description, onClick, icon, color, comingSoon = false
             <div className={`flex justify-center items-center mb-4 ${classes.icon}`}>
                 {icon}
             </div>
-            <h3 className="text-xl font-bold text-slate-200">{title}</h3>
-            <p className="mt-2 text-slate-400">{description}</p>
+            <h3 className="text-xl font-bold text-white">{title}</h3>
+            <p className="mt-2 text-slate-300">{description}</p>
         </div>
     );
 };
 
-const HandlingComplaintsModule: React.FC<HandlingComplaintsModuleProps> = ({ user, userType, selectedClass }) => {
+// FIX: Changed to a named export and added a return statement to resolve component type errors.
+export const HandlingComplaintsModule: React.FC<HandlingComplaintsModuleProps> = ({ user, userType, selectedClass }) => {
     const [view, setView] = useState<ComplaintView>('MENU');
     const [selectedScenario, setSelectedScenario] = useState<ComplaintScenario | null>(null);
     const [isEmailPractice, setIsEmailPractice] = useState(false);
@@ -65,59 +67,65 @@ const HandlingComplaintsModule: React.FC<HandlingComplaintsModuleProps> = ({ use
     const handleSelectScenario = (scenario: ComplaintScenario) => {
         setSelectedScenario(scenario);
     };
-    
-    const handleEndSimulation = () => {
-        setSelectedScenario(null);
-    };
 
     const handleSelectEmailPractice = () => {
         setIsEmailPractice(true);
     };
 
-    const handleBackToPracticeSelection = () => {
-        setIsEmailPractice(false);
-        setSelectedScenario(null);
-        handlePracticeEmailAgain();
-    };
-
-    const handleSubmitEmail = async () => {
-        if (!userEmail.trim() || !user || user.role !== 'student') {
-            setEmailError("Please write an email before submitting.");
-            return;
-        }
-        setIsLoadingEmail(true);
-        setEmailError(null);
-        try {
-          const feedbackData = await getComplaintEmailFeedback(userEmail);
-
-          const studentUser = user as Student;
-          const newSession: Omit<ComplaintEmailSession, 'id'> = {
-              timestamp: Date.now(),
-              studentUid: studentUser.uid,
-              studentEmail: studentUser.email,
-              lecturerEmail: studentUser.lecturerEmail,
-              classCode: studentUser.classCode,
-              scenario: COMPLAINT_EMAIL_SCENARIO,
-              userEmail: userEmail,
-              feedbackData: feedbackData,
-          };
-          
-          const newSessionId = await saveComplaintEmailSession(newSession);
-          setEmailSessionId(newSessionId);
-          setEmailFeedback(feedbackData);
-        } catch (e: any) {
-          setEmailError(e.message || 'Failed to get feedback from the AI. Please try again.');
-          console.error(e);
-        } finally {
-          setIsLoadingEmail(false);
-        }
-    };
-    
     const handlePracticeEmailAgain = () => {
         setUserEmail('');
         setEmailFeedback(null);
         setEmailError(null);
         setEmailSessionId(null);
+        setIsLoadingEmail(false);
+    };
+
+    const handleBackToPracticeSelection = () => {
+        setIsEmailPractice(false);
+        setSelectedScenario(null);
+        handlePracticeEmailAgain(); // Also reset email state
+    };
+
+    const handleSaveAndGetFeedback = async () => {
+        if (!userEmail.trim() || !user) {
+            return;
+        }
+
+        setIsLoadingEmail(true);
+        setEmailError(null);
+        
+        try {
+            const feedbackData = await getComplaintEmailFeedback(userEmail);
+            
+            if (user.role === 'student') {
+                const studentUser = user as Student;
+
+                const newSession: Omit<ComplaintEmailSession, 'id'> = {
+                    timestamp: Date.now(),
+                    studentUid: studentUser.uid,
+                    studentEmail: studentUser.email,
+                    lecturerEmail: studentUser.lecturerEmail,
+                    classCode: studentUser.classCode,
+                    scenario: COMPLAINT_EMAIL_SCENARIO,
+                    userEmail: userEmail,
+                    feedbackData: feedbackData,
+                };
+
+                const newSessionId = await saveComplaintEmailSession(newSession);
+                setEmailSessionId(newSessionId);
+                setEmailFeedback(feedbackData);
+            } else {
+                // For lecturers, don't save. Just set a null session ID and show feedback.
+                setEmailSessionId(null);
+                setEmailFeedback(feedbackData);
+            }
+
+        } catch (e: any) {
+            setEmailError(e.message || 'Failed to get feedback from the AI. Please try again.');
+            console.error(e);
+        } finally {
+            setIsLoadingEmail(false);
+        }
     };
 
 
@@ -138,9 +146,9 @@ const HandlingComplaintsModule: React.FC<HandlingComplaintsModuleProps> = ({ use
                                     feedback={emailFeedback}
                                     userEmail={userEmail}
                                     onPracticeAgain={handlePracticeEmailAgain}
+                                    onBack={handleBackToPracticeSelection}
                                     sessionId={emailSessionId}
                                     isStudent={user?.role === 'student'}
-                                    onBack={handleBackToPracticeSelection}
                                 />
                             </div>
                         );
@@ -148,14 +156,14 @@ const HandlingComplaintsModule: React.FC<HandlingComplaintsModuleProps> = ({ use
                     return (
                         <div className="max-w-5xl mx-auto animate-fade-in space-y-6 pb-24">
                           <div className="text-center">
-                            <h2 className="text-3xl font-bold text-slate-100">Practice: Written Email Response</h2>
-                            <p className="mt-2 text-lg text-slate-400">Read the scenario, then write a professional email to resolve the complaint.</p>
+                            <h2 className="text-3xl font-bold text-white">Practice: Written Email Response</h2>
+                            <p className="mt-2 text-lg text-slate-300">Read the scenario, then write a professional email to resolve the complaint.</p>
                           </div>
                           
                           <div className="grid lg:grid-cols-2 gap-6">
                             <Card title="Complaint Scenario">
                                 <div className="p-4 h-[60vh] overflow-y-auto">
-                                    <p className="text-sm text-slate-300">
+                                    <p className="text-sm text-white">
                                         {COMPLAINT_EMAIL_SCENARIO}
                                     </p>
                                 </div>
@@ -167,14 +175,14 @@ const HandlingComplaintsModule: React.FC<HandlingComplaintsModuleProps> = ({ use
                                             value={userEmail}
                                             onChange={(e) => setUserEmail(e.target.value)}
                                             placeholder="Dear [Client Name], ..."
-                                            className="w-full h-[calc(60vh-80px)] p-3 bg-slate-900 border border-slate-600 rounded-md focus:ring-2 focus:ring-cyan-500 focus:border-cyan-500 transition text-slate-200"
+                                            className="w-full h-[calc(60vh-80px)] p-3 bg-slate-900 border border-slate-600 rounded-md focus:ring-2 focus:ring-cyan-500 focus:border-cyan-500 transition text-white"
                                         />
                                     </div>
                                 </Card>
                                 <div className="bg-slate-800/60 p-4 rounded-lg border border-slate-700 space-y-3">
                                     {emailError && <p className="text-red-400 text-center text-sm mb-2">{emailError}</p>}
                                     <button
-                                        onClick={handleSubmitEmail}
+                                        onClick={handleSaveAndGetFeedback}
                                         disabled={!userEmail.trim()}
                                         className="w-full bg-cyan-600 text-white font-bold py-3 px-4 rounded-lg hover:bg-cyan-700 transition-colors focus:outline-none focus:ring-4 focus:ring-cyan-500/50 disabled:bg-slate-500 disabled:cursor-not-allowed"
                                     >
@@ -213,15 +221,13 @@ const HandlingComplaintsModule: React.FC<HandlingComplaintsModuleProps> = ({ use
                 return <ReviewScreen onBack={handleBackToMenu} user={user} userType={userType} selectedClass={selectedClass} />;
             case 'MENU':
             default:
-                const menuTitle = userType === 'student' ? "Module 3: Handling Complaints" : "Handling Complaints - Lecturer View";
-                const menuDescription = userType === 'student'
-                    ? "Learn to propose appropriate responses to workplace complaints, both verbally and in writing."
-                    : "Review learning materials, try practice modules, or evaluate student submissions.";
+                const menuTitle = "Module 3: Handling Complaints";
+                const menuDescription = "Learn to propose appropriate responses to workplace complaints, both verbally and in writing.";
                 return (
                      <div className="max-w-4xl mx-auto animate-fade-in">
                         <div className="text-center mb-8">
-                            <h2 className="text-3xl font-bold text-slate-100">{menuTitle}</h2>
-                            <p className="mt-2 text-lg text-slate-400">{menuDescription}</p>
+                            <h2 className="text-3xl font-bold text-white">{menuTitle}</h2>
+                            <p className="mt-2 text-lg text-slate-300">{menuDescription}</p>
                         </div>
                         <div className="grid md:grid-cols-3 gap-8">
                             <MenuCard 
@@ -247,8 +253,8 @@ const HandlingComplaintsModule: React.FC<HandlingComplaintsModuleProps> = ({ use
                                 }
                             />
                              <MenuCard 
-                                title={userType === 'student' ? "Review" : "Review Submissions"}
-                                description={userType === 'student' ? "Analyze your performance and track your progress over time." : "Evaluate student submissions and grade assessments."}
+                                title={"Review"}
+                                description={"Analyze your performance and track your progress over time."}
                                 onClick={() => setView('REVIEW')}
                                 color="purple"
                                 icon={
@@ -269,5 +275,3 @@ const HandlingComplaintsModule: React.FC<HandlingComplaintsModuleProps> = ({ use
         </div>
     );
 };
-
-export default HandlingComplaintsModule;

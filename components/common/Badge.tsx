@@ -10,8 +10,8 @@ interface BadgeProps {
 const Badge: React.FC<BadgeProps> = ({ title, description, icon, unlocked }) => {
   return (
     <div className={`p-4 text-center bg-slate-900/50 rounded-lg border border-slate-700 ${!unlocked ? 'opacity-50' : ''}`}>
-      <div className={`mx-auto w-16 h-16 rounded-full flex items-center justify-center mb-2 ${unlocked ? 'bg-cyan-800' : 'bg-slate-700'}`}>
-        <div className={`text-3xl ${unlocked ? 'text-cyan-400' : 'text-slate-500'}`}>
+      <div className={`mx-auto w-16 h-16 rounded-full flex items-center justify-center mb-2 ${unlocked ? 'bg-cyan-900' : 'bg-slate-700'}`}>
+        <div className={`text-3xl ${unlocked ? 'text-cyan-600' : 'text-slate-500'}`}>
             {icon}
         </div>
       </div>

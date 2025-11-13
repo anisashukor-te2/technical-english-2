@@ -9,9 +9,9 @@ interface CardProps {
 const Card: React.FC<CardProps> = ({ title, children, color }) => {
   const colorClasses = {
     blue: {
-      bg: 'bg-blue-900/20',
-      titleColor: 'text-blue-300',
-      borderColor: 'border-blue-800/50'
+      bg: 'bg-blue-950/20',
+      titleColor: 'text-blue-500',
+      borderColor: 'border-blue-900/50'
     },
     green: {
       bg: 'bg-green-900/20',
@@ -30,7 +30,7 @@ const Card: React.FC<CardProps> = ({ title, children, color }) => {
     },
     default: {
       bg: 'bg-slate-800/60',
-      titleColor: 'text-cyan-400',
+      titleColor: 'text-cyan-600',
       borderColor: 'border-slate-700'
     }
   };

@@ -4,7 +4,8 @@ import React, { useState, useEffect, useCallback } from 'react';
 // FIX: Add getFreePracticeFeedback import
 import { getPresentationFeedback, getFreePracticeFeedback } from './services/geminiService';
 import { auth } from './firebase';
-import { onAuthStateChanged } from 'firebase/auth';
+// FIX: Switched to namespaced auth API call to align with compat library fix.
+// import { onAuthStateChanged } from 'firebase/auth';
 import * as firebaseService from './services/firebaseService';
 
 import BottomNavBar from './components/BottomNavBar';
@@ -15,7 +16,8 @@ import FreePracticeScreen from './components/FreePracticeScreen';
 import FeedbackScreen from './components/FeedbackScreen';
 import { PresentationReviewScreen } from './components/PresentationReviewScreen';
 import MeetingSkillsModule from './components/meeting/MeetingSkillsModule';
-import HandlingComplaintsModule from './components/handlingComplaints/HandlingComplaintsModule';
+// FIX: Changed import to a named import for HandlingComplaintsModule.
+import { HandlingComplaintsModule } from './components/complaints/HandlingComplaintsModule';
 // FIX: Change to named import for ResourceLibrary
 import { ResourceLibrary } from './components/ResourceLibrary';
 import UserTypeSelectionScreen from './components/UserTypeSelectionScreen';
@@ -61,7 +63,8 @@ const App: React.FC = () => {
 
   // Listen for auth state changes
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, async (user) => {
+    // FIX: Updated to use the namespaced `auth.onAuthStateChanged` method from the compat library.
+    const unsubscribe = auth.onAuthStateChanged(async (user) => {
       if (user) {
         try {
           const userProfile = await firebaseService.getUserProfile(user.uid);
@@ -114,7 +117,12 @@ const App: React.FC = () => {
     try {
         await firebaseService.signUpStudent(studentDetails, password);
     } catch (error: any) {
-        setAuthError(firebaseService.formatAuthError(error));
+        // Handle both Firebase Auth errors (with a .code) and custom errors (with a .message)
+        if (error.code) {
+            setAuthError(firebaseService.formatAuthError(error));
+        } else {
+            setAuthError(error.message || 'An unknown registration error occurred.');
+        }
     }
   };
   
@@ -122,9 +130,13 @@ const App: React.FC = () => {
     setAuthError(null);
     try {
       await firebaseService.signUpLecturer(lecturerDetails, password);
-// FIX: Added missing curly braces to the catch block to correct syntax and resolve scoping issues.
     } catch (error: any) {
-      setAuthError(firebaseService.formatAuthError(error));
+        // Handle both Firebase Auth errors (with a .code) and custom errors (with a .message)
+        if (error.code) {
+            setAuthError(firebaseService.formatAuthError(error));
+        } else {
+            setAuthError(error.message || 'An unknown registration error occurred.');
+        }
     }
   };
 

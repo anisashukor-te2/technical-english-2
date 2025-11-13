@@ -27,7 +27,7 @@ const Breadcrumbs: React.FC<BreadcrumbsProps> = ({ items }) => {
             {item.onClick && index < items.length - 1 ? (
               <button
                 onClick={item.onClick}
-                className="hover:text-cyan-400 hover:underline focus:outline-none focus:ring-2 focus:ring-cyan-500 rounded"
+                className="hover:text-cyan-600 hover:underline focus:outline-none focus:ring-2 focus:ring-cyan-700 rounded"
               >
                 {item.label}
               </button>

@@ -5,7 +5,6 @@ import ReviewScreen from './ReviewScreen';
 import MeetingSimulationScreen from './MeetingSimulationScreen';
 import PracticeSelectionScreen from './PracticeSelectionScreen';
 import MinuteTakingPracticeScreen from './MinuteTakingPracticeScreen';
-// FIX: The error indicates no default export, but we will add one in QuizScreen.tsx
 import QuizScreen from './QuizScreen'; // Import the new QuizScreen component
 import RoleSelectionScreen from './RoleSelectionScreen';
 import { Lecturer, Student, MeetingScenario } from '../../types';

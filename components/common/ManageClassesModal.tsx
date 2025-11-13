@@ -58,7 +58,7 @@ const ManageClassesModal: React.FC<ManageClassesModalProps> = ({ isOpen, onClose
                 value={code}
                 onChange={(e) => handleClassCodeChange(index, e.target.value)}
                 placeholder={`e.g., DKM5A`}
-                className="w-full bg-slate-700 border border-slate-600 rounded-md shadow-sm p-3 focus:ring-cyan-500 focus:border-cyan-500 text-white"
+                className="w-full bg-slate-700 border border-slate-600 rounded-md shadow-sm p-3 focus:ring-cyan-700 focus:border-cyan-700 text-white"
               />
             </div>
             {classCodes.length > 1 && (
@@ -72,13 +72,13 @@ const ManageClassesModal: React.FC<ManageClassesModalProps> = ({ isOpen, onClose
             )}
           </div>
         ))}
-        <button onClick={handleAddClassCode} className="text-sm font-semibold text-cyan-400 hover:underline">
+        <button onClick={handleAddClassCode} className="text-sm font-semibold text-cyan-600 hover:underline">
           + Add Another Class
         </button>
       </div>
       <div className="flex justify-end gap-3 pt-6 border-t border-slate-700 mt-6">
         <button type="button" onClick={onClose} className="bg-slate-600 text-slate-200 font-bold py-2 px-4 rounded-lg hover:bg-slate-500">Cancel</button>
-        <button type="button" onClick={handleSave} className="bg-cyan-600 text-white font-bold py-2 px-4 rounded-lg hover:bg-cyan-700">
+        <button type="button" onClick={handleSave} className="bg-cyan-800 text-white font-bold py-2 px-4 rounded-lg hover:bg-cyan-900">
           Save Changes
         </button>
       </div>

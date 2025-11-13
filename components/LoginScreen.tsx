@@ -1,11 +1,8 @@
-
-
 import React, { useState } from 'react';
 
 interface LoginScreenProps {
-  onLogin: (email: string, password: string) => boolean;
-  // Fix: Changed onRegister prop to match the object being passed, as Lecturer type does not include password.
-  onRegister: (details: { email: string; password: string }) => boolean;
+  onLogin: (email: string, password: string) => void;
+  onRegister: (details: { email: string; password: string }) => void;
 }
 
 const LoginScreen: React.FC<LoginScreenProps> = ({ onLogin, onRegister }) => {
@@ -21,10 +18,7 @@ const LoginScreen: React.FC<LoginScreenProps> = ({ onLogin, onRegister }) => {
       setError('Email and password are required.');
       return;
     }
-    const success = onLogin(email.trim(), password.trim());
-    if (!success) {
-      setError('Login failed. Please check your credentials or register.');
-    }
+    onLogin(email.trim(), password.trim());
   };
 
   const handleRegisterSubmit = (e: React.FormEvent) => {
@@ -37,11 +31,8 @@ const LoginScreen: React.FC<LoginScreenProps> = ({ onLogin, onRegister }) => {
       setError('Please fill in all fields with valid information.');
       return;
     }
-
-    const success = onRegister({ email: uEmail, password: uPassword });
-    if (!success) {
-      setError('Registration failed. This email might already be taken.');
-    }
+    
+    onRegister({ email: uEmail, password: uPassword });
   };
 
   const renderLoginForm = () => (
