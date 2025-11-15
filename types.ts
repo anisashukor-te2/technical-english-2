@@ -24,7 +24,7 @@ export interface FeedbackData {
   languageFeedback: string;
   pacing: Pacing;
   voiceModulation: {
-      feedback: string;
+    feedback: string;
   };
   sessionSummary: string;
 }
@@ -50,14 +50,14 @@ export type PracticeView = 'PRACTICE' | 'PROCESSING' | 'FEEDBACK';
 export type PresentationMode = 'SELECTION' | 'GUIDED' | 'FREE' | 'REVIEW';
 
 export interface Slide {
-    id: number;
-    title: string;
-    script: string;
-    media?: {
-      url: string; // data URL for image, object URL for video
-      type: 'image' | 'video';
-    };
-    transition?: 'fade' | 'slide' | 'none';
+  id: number;
+  title: string;
+  script: string;
+  media?: {
+    url: string; // data URL for image, object URL for video
+    type: 'image' | 'video';
+  };
+  transition?: 'fade' | 'slide' | 'none';
 }
 
 export interface PeerFeedback {
@@ -69,10 +69,10 @@ export interface PeerFeedback {
 }
 
 export interface PracticeSession {
-  id: string; 
-  timestamp: number; 
+  id: string;
+  timestamp: number;
   feedbackData: FeedbackData;
-  recordingUrl: string; 
+  recordingUrl: string;
   recordingMimeType: string;
   peerReviews: PeerFeedback[];
   selfReflection?: string;
@@ -96,12 +96,12 @@ export interface Lecturer {
 }
 
 export interface Student {
-    uid: string;
-    email: string;
-    role: 'student';
-    courseId: string;
-    classCode: string;
-    lecturerEmail: string;
+  uid: string;
+  email: string;
+  role: 'student';
+  courseCode: string;   // ✅ updated from courseId → courseCode
+  classCode: string;
+  lecturerEmail: string;
 }
 
 // --- App-level Types ---
@@ -112,8 +112,8 @@ export type UserProfile = Student | Lecturer;
 // --- Meeting & Complaint Session Types ---
 
 export interface MeetingMessage {
-    speaker: 'You' | 'AI';
-    text: string;
+  speaker: 'You' | 'AI';
+  text: string;
 }
 
 export interface MeetingScenario {
@@ -124,37 +124,37 @@ export interface MeetingScenario {
 }
 
 export interface MeetingSession {
-    id: string;
-    timestamp: number; 
-    studentUid: string;
-    studentEmail: string;
-    lecturerEmail: string;
-    classCode: string; // For filtering
-    scenarioTitle: string;
-    userRole: string;
-    messages: MeetingMessage[];
-    isSubmitted?: boolean;
-    grade?: number;
-    lecturerFeedback?: string;
+  id: string;
+  timestamp: number;
+  studentUid: string;
+  studentEmail: string;
+  lecturerEmail: string;
+  classCode: string; // For filtering
+  scenarioTitle: string;
+  userRole: string;
+  messages: MeetingMessage[];
+  isSubmitted?: boolean;
+  grade?: number;
+  lecturerFeedback?: string;
 }
 
 export interface MinuteTakingSession {
-    id: string;
-    timestamp: number; 
-    studentUid: string;
-    studentEmail: string;
-    lecturerEmail: string;
-    classCode: string;
-    userMinutes: string;
-    feedbackData: MinuteFeedbackData;
-    isSubmitted?: boolean;
-    grade?: number;
-    lecturerFeedback?: string;
+  id: string;
+  timestamp: number;
+  studentUid: string;
+  studentEmail: string;
+  lecturerEmail: string;
+  classCode: string;
+  userMinutes: string;
+  feedbackData: MinuteFeedbackData;
+  isSubmitted?: boolean;
+  grade?: number;
+  lecturerFeedback?: string;
 }
 
 export interface ComplaintMessage {
-    speaker: 'You' | 'AI';
-    text: string;
+  speaker: 'You' | 'AI';
+  text: string;
 }
 
 export interface ComplaintScenario {
@@ -167,28 +167,28 @@ export interface ComplaintScenario {
 }
 
 export interface ComplaintSession {
-    id: string;
-    timestamp: number; 
-    studentUid: string;
-    studentEmail: string;
-    lecturerEmail: string;
-    classCode: string; // For filtering
-    scenarioTitle: string;
-    userRole: string;
-    messages: ComplaintMessage[];
+  id: string;
+  timestamp: number;
+  studentUid: string;
+  studentEmail: string;
+  lecturerEmail: string;
+  classCode: string; // For filtering
+  scenarioTitle: string;
+  userRole: string;
+  messages: ComplaintMessage[];
 }
 
 export interface ComplaintEmailSession {
-    id: string;
-    timestamp: number;
-    studentUid: string;
-    studentEmail: string;
-    lecturerEmail: string;
-    classCode: string;
-    scenario: string;
-    userEmail: string;
-    feedbackData: ComplaintFeedbackData | null;
-    isSubmitted?: boolean;
-    grade?: number;
-    lecturerFeedback?: string;
+  id: string;
+  timestamp: number;
+  studentUid: string;
+  studentEmail: string;
+  lecturerEmail: string;
+  classCode: string;
+  scenario: string;
+  userEmail: string;
+  feedbackData: ComplaintFeedbackData | null;
+  isSubmitted?: boolean;
+  grade?: number;
+  lecturerFeedback?: string;
 }

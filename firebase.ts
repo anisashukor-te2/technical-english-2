@@ -1,7 +1,7 @@
-import { initializeApp } from 'firebase/app';
-import { getAuth } from 'firebase/auth';
-import { getFirestore } from 'firebase/firestore';
-import { getStorage } from 'firebase/storage';
+import firebase from 'firebase/app-compat';
+import 'firebase/auth-compat';
+import 'firebase/firestore-compat';
+import 'firebase/storage-compat';
 
 // =================================================================
 // IMPORTANT: PASTE YOUR FIREBASE CONFIGURATION HERE
@@ -21,11 +21,11 @@ const firebaseConfig = {
 
 
 // Initialize Firebase
-const app = initializeApp(firebaseConfig);
+const app = firebase.initializeApp(firebaseConfig);
 
-// Get instances of Firebase services
-const auth = getAuth(app);
-const db = getFirestore(app);
-const storage = getStorage(app);
+// Get instances of Firebase services using the compat library
+const auth = firebase.auth();
+const db = firebase.firestore();
+const storage = firebase.storage();
 
 export { app, auth, db, storage };
