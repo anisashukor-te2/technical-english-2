@@ -35,11 +35,9 @@ const PasswordResetModal: React.FC<{
     try {
       await firebaseService.sendPasswordReset(resetEmail);
     } catch (error) {
-      console.error('Password reset error:', error);
+      console.error("Password reset error:", error);
     } finally {
-      setMessage(
-        'If an account exists for this email, a password reset link has been sent. Please check your inbox and spam folder.'
-      );
+      setMessage('If an account exists for this email, a password reset link has been sent.');
       setIsSending(false);
     }
   };
@@ -48,28 +46,26 @@ const PasswordResetModal: React.FC<{
     <Modal isOpen={isOpen} onClose={handleClose} title="Reset Your Password">
       <form onSubmit={handleSendResetLink} className="space-y-4">
         <p className="text-sm text-slate-400">
-          Enter the email address associated with your account, and we'll send you a link to reset your password.
+          Enter your email to receive a password reset link.
         </p>
-        <div>
-          <label htmlFor="reset-email" className="block text-sm font-medium text-slate-300">
-            Email Address
-          </label>
-          <input
-            id="reset-email"
-            type="email"
-            value={resetEmail}
-            onChange={(e) => setResetEmail(e.target.value)}
-            placeholder="your.email@example.com"
-            className="mt-1 block w-full bg-slate-700 border border-slate-600 rounded-md shadow-sm p-3 text-white"
-            required
-          />
-        </div>
+
+        <input
+          type="email"
+          value={resetEmail}
+          onChange={(e) => setResetEmail(e.target.value)}
+          placeholder="your.email@example.com"
+          className="w-full p-3 bg-slate-700 text-white rounded"
+          required
+        />
+
         {message && <p className="text-green-400 text-sm text-center">{message}</p>}
+
         <div className="flex justify-end gap-3 pt-4">
-          <button type="button" onClick={handleClose} className="bg-slate-600 text-slate-200 py-2 px-4 rounded-lg hover:bg-slate-500">
+          <button onClick={handleClose} type="button" className="px-4 py-2 bg-gray-600 text-white rounded">
             Cancel
           </button>
-          <button type="submit" disabled={isSending || !!message} className="bg-cyan-800 text-white py-2 px-4 rounded-lg hover:bg-cyan-900 disabled:opacity-50">
+
+          <button type="submit" disabled={isSending || !!message} className="px-4 py-2 bg-blue-700 text-white rounded disabled:opacity-50">
             {isSending ? 'Sending...' : 'Send Reset Link'}
           </button>
         </div>
@@ -78,13 +74,7 @@ const PasswordResetModal: React.FC<{
   );
 };
 
-const StudentLoginScreen: React.FC<StudentLoginScreenProps> = ({
-  onLogin,
-  onRegister,
-  onBack,
-  error: authError,
-  clearError,
-}) => {
+const StudentLoginScreen: React.FC<StudentLoginScreenProps> = ({ onLogin, onRegister, onBack, error: authError, clearError }) => {
   const [view, setView] = useState<'LOGIN' | 'REGISTER'>('LOGIN');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -101,14 +91,13 @@ const StudentLoginScreen: React.FC<StudentLoginScreenProps> = ({
     if (newView === 'LOGIN') {
       setCourseCode('');
       setClassCode('');
-      setConfirmPassword('');
     }
   };
 
   const handleLoginSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    setFormError(null);
     clearError();
+    setFormError(null);
 
     if (!email.trim() || !password.trim()) {
       setFormError('Email and password are required.');
@@ -120,34 +109,32 @@ const StudentLoginScreen: React.FC<StudentLoginScreenProps> = ({
 
   const handleRegisterSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    setFormError(null);
     clearError();
+    setFormError(null);
 
-    const studentDetails = {
-      email: email.trim(),
-      courseCode: courseCode.trim(),
-      classCode: classCode.trim(),
-    };
-
-    const uPassword = password.trim();
-    const uConfirmPassword = confirmPassword.trim();
-
-    if (!studentDetails.email || !uPassword || !uConfirmPassword || !studentDetails.classCode || !studentDetails.courseCode) {
-      setFormError('Please fill in all fields.');
+    if (!email || !password || !classCode || !courseCode) {
+      setFormError('All fields are required.');
       return;
     }
 
-    if (uPassword.length < 6) {
-      setFormError('Password must be at least 6 characters long.');
+    if (password.length < 6) {
+      setFormError('Password must be at least 6 characters.');
       return;
     }
 
-    if (uPassword !== uConfirmPassword) {
+    if (password !== confirmPassword) {
       setFormError('Passwords do not match.');
       return;
     }
 
-    onRegister(studentDetails, uPassword);
+    onRegister(
+      {
+        email: email.trim(),
+        courseCode: courseCode.trim(),
+        classCode: classCode.trim(),
+      },
+      password.trim()
+    );
   };
 
   const displayError = authError || formError;
@@ -155,164 +142,117 @@ const StudentLoginScreen: React.FC<StudentLoginScreenProps> = ({
   return (
     <div className="min-h-screen flex flex-col bg-slate-900">
       <main className="flex-grow flex items-center justify-center p-4">
-        <div className="w-full max-w-md">
-          <div className="text-center mb-8">
-            <h1 className="text-3xl font-bold text-cyan-600">Technical English 2</h1>
-            <p className="text-slate-400">Student Access</p>
-          </div>
+        <div className="w-full max-w-md bg-slate-800 p-8 rounded-lg shadow-lg">
+          
+          <h1 className="text-center text-3xl font-bold text-cyan-500 mb-2">Technical English 2</h1>
+          <p className="text-center text-slate-400 mb-6">Student Access</p>
 
-          <div className="bg-slate-800/60 backdrop-blur-lg border border-slate-700 rounded-lg shadow-xl p-8">
-            {displayError && <p className="text-red-400 text-center text-sm mb-4">{displayError}</p>}
+          {displayError && <p className="text-red-400 text-center mb-4">{displayError}</p>}
 
-            {view === 'LOGIN' ? (
-              <>
-                <h2 className="text-xl font-bold text-center text-slate-200 mb-4">Student Login</h2>
-                <form onSubmit={handleLoginSubmit} className="space-y-4">
-                  <div>
-                    <label htmlFor="email" className="block text-sm font-medium text-slate-300">
-                      Email Address
-                    </label>
-                    <input
-                      id="email"
-                      type="email"
-                      value={email}
-                      onChange={(e) => setEmail(e.target.value)}
-                      placeholder="e.g., student@example.com"
-                      className="mt-1 block w-full bg-slate-900 border border-slate-600 rounded-md p-3 text-white"
-                    />
-                  </div>
+          {view === 'LOGIN' ? (
+            <>
+              <h2 className="text-xl text-white text-center mb-4">Login</h2>
 
-                  <div>
-                    <div className="flex justify-between items-baseline">
-                      <label htmlFor="password" className="block text-sm font-medium text-slate-300">
-                        Password
-                      </label>
-                      <button onClick={() => setIsResetModalOpen(true)} type="button" className="text-sm font-semibold text-cyan-600 hover:underline">
-                        Forgot Password?
-                      </button>
-                    </div>
-                    <input
-                      id="password"
-                      type="password"
-                      value={password}
-                      onChange={(e) => setPassword(e.target.value)}
-                      placeholder="••••••••"
-                      className="mt-1 block w-full bg-slate-900 border border-slate-600 rounded-md p-3 text-white"
-                    />
-                  </div>
+              <form onSubmit={handleLoginSubmit} className="space-y-4">
+                <input
+                  type="email"
+                  placeholder="Email"
+                  className="w-full p-3 bg-slate-700 rounded text-white"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                />
 
-                  <button type="submit" className="w-full bg-cyan-800 text-white py-3 px-4 rounded-lg hover:bg-cyan-900">
-                    Login
-                  </button>
-                </form>
+                <input
+                  type="password"
+                  placeholder="Password"
+                  className="w-full p-3 bg-slate-700 rounded text-white"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                />
 
-                <p className="text-center text-sm text-slate-400 mt-6">
-                  Don't have an account?{' '}
-                  <button onClick={() => switchView('REGISTER')} className="font-semibold text-cyan-600 hover:underline">
-                    Register here
-                  </button>
-                </p>
-              </>
-            ) : (
-              <>
-                <h2 className="text-xl font-bold text-center text-slate-200 mb-4">Student Registration</h2>
-                <form onSubmit={handleRegisterSubmit} className="space-y-4">
-                  <div>
-                    <label htmlFor="registerEmail" className="block text-sm font-medium text-slate-300">
-                      Email Address
-                    </label>
-                    <input
-                      id="registerEmail"
-                      type="email"
-                      value={email}
-                      onChange={(e) => setEmail(e.target.value)}
-                      placeholder="Enter your email address"
-                      className="mt-1 block w-full bg-slate-900 border border-slate-600 rounded-md p-3 text-white"
-                    />
-                  </div>
+                <button className="w-full bg-cyan-700 text-white py-3 rounded">Login</button>
+              </form>
 
-                  <div>
-                    <label htmlFor="courseCode" className="block text-sm font-medium text-slate-300">
-                      Course ID
-                    </label>
-                    <input
-                      id="courseCode"
-                      type="text"
-                      value={courseCode}
-                      onChange={(e) => setCourseCode(e.target.value)}
-                      placeholder="e.g., DUE30072"
-                      className="mt-1 block w-full bg-slate-900 border border-slate-600 rounded-md p-3 text-white"
-                    />
-                  </div>
-
-                  <div>
-                    <label htmlFor="classCode" className="block text-sm font-medium text-slate-300">
-                      Lecturer's Class ID
-                    </label>
-                    <input
-                      id="classCode"
-                      type="text"
-                      value={classCode}
-                      onChange={(e) => setClassCode(e.target.value)}
-                      placeholder="e.g., DKM5A (Case-sensitive)"
-                      className="mt-1 block w-full bg-slate-900 border border-slate-600 rounded-md p-3 text-white"
-                    />
-                  </div>
-
-                  <div>
-                    <label htmlFor="registerPassword" className="block text-sm font-medium text-slate-300">
-                      Password
-                    </label>
-                    <input
-                      id="registerPassword"
-                      type="password"
-                      value={password}
-                      onChange={(e) => setPassword(e.target.value)}
-                      placeholder="At least 6 characters"
-                      className="mt-1 block w-full bg-slate-900 border border-slate-600 rounded-md p-3 text-white"
-                    />
-                  </div>
-
-                  <div>
-                    <label htmlFor="confirmPassword" className="block text-sm font-medium text-slate-300">
-                      Confirm Password
-                    </label>
-                    <input
-                      id="confirmPassword"
-                      type="password"
-                      value={confirmPassword}
-                      onChange={(e) => setConfirmPassword(e.target.value)}
-                      placeholder="••••••••"
-                      className="mt-1 block w-full bg-slate-900 border border-slate-600 rounded-md p-3 text-white"
-                    />
-                  </div>
-
-                  <button type="submit" className="w-full bg-cyan-800 text-white py-3 px-4 rounded-lg hover:bg-cyan-900">
-                    Register
-                  </button>
-                </form>
-
-                <p className="text-center text-sm text-slate-400 mt-6">
-                  Already have an account?{' '}
-                  <button onClick={() => switchView('LOGIN')} className="font-semibold text-cyan-600 hover:underline">
-                    Login here
-                  </button>
-                </p>
-              </>
-            )}
-
-            <div className="text-center mt-6 border-t border-slate-700 pt-4">
-              <button onClick={onBack} className="text-sm text-slate-500 hover:text-cyan-600">
-                Not a student? Go back to main page.
+              <button onClick={() => setIsResetModalOpen(true)} className="text-sm text-cyan-400 mt-3 block text-center">
+                Forgot Password?
               </button>
-            </div>
-          </div>
 
-          <PasswordResetModal isOpen={isResetModalOpen} onClose={() => setIsResetModalOpen(false)} />
+              <p className="text-center text-sm text-slate-400 mt-6">
+                No account?{" "}
+                <button onClick={() => switchView('REGISTER')} className="text-cyan-400">
+                  Register here
+                </button>
+              </p>
+            </>
+          ) : (
+            <>
+              <h2 className="text-xl text-white text-center mb-4">Registration</h2>
+
+              <form onSubmit={handleRegisterSubmit} className="space-y-4">
+                
+                <input
+                  type="email"
+                  placeholder="Email"
+                  className="w-full p-3 bg-slate-700 rounded text-white"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                />
+
+                <input
+                  type="text"
+                  placeholder="Course Code (e.g., DUE30072)"
+                  className="w-full p-3 bg-slate-700 rounded text-white"
+                  value={courseCode}
+                  onChange={(e) => setCourseCode(e.target.value)}
+                />
+
+                <input
+                  type="text"
+                  placeholder="Class Code (e.g., DKM5A)"
+                  className="w-full p-3 bg-slate-700 rounded text-white"
+                  value={classCode}
+                  onChange={(e) => setClassCode(e.target.value)}
+                />
+
+                <input
+                  type="password"
+                  placeholder="Password"
+                  className="w-full p-3 bg-slate-700 rounded text-white"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                />
+
+                <input
+                  type="password"
+                  placeholder="Confirm Password"
+                  className="w-full p-3 bg-slate-700 rounded text-white"
+                  value={confirmPassword}
+                  onChange={(e) => setConfirmPassword(e.target.value)}
+                />
+
+                <button className="w-full bg-cyan-700 text-white py-3 rounded">Register</button>
+              </form>
+
+              <p className="text-center text-sm text-slate-400 mt-6">
+                Already registered?{" "}
+                <button onClick={() => switchView('LOGIN')} className="text-cyan-400">
+                  Login here
+                </button>
+              </p>
+            </>
+          )}
+
+          <button onClick={onBack} className="text-sm text-gray-400 mt-6 block text-center hover:text-cyan-400">
+            Back to main
+          </button>
         </div>
       </main>
 
-      <footer className="w-full text-left p-4 text-xs text-slate-500">© Developed by Anis Abd Shukor</footer>
+      <PasswordResetModal isOpen={isResetModalOpen} onClose={() => setIsResetModalOpen(false)} />
+
+      <footer className="text-center p-4 text-xs text-gray-500">
+        © Developed by Anis Abd Shukor
+      </footer>
     </div>
   );
 };
