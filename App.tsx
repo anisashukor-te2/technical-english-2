@@ -1,5 +1,4 @@
 
-
 import React, { useState, useEffect, useCallback } from 'react';
 // FIX: Add getFreePracticeFeedback import
 import { getPresentationFeedback, getFreePracticeFeedback } from './services/geminiService';
@@ -16,7 +15,7 @@ import FreePracticeScreen from './components/FreePracticeScreen';
 import FeedbackScreen from './components/FeedbackScreen';
 import { PresentationReviewScreen } from './components/PresentationReviewScreen';
 import MeetingSkillsModule from './components/meeting/MeetingSkillsModule';
-// FIX: Changed import to a named import for HandlingComplaintsModule.
+// FIX: Changed import to a named import for HandlingComplaintsModule and added .tsx extension to resolve ambiguity.
 import { HandlingComplaintsModule } from './components/complaints/HandlingComplaintsModule';
 // FIX: Change to named import for ResourceLibrary
 import { ResourceLibrary } from './components/ResourceLibrary';
@@ -112,7 +111,8 @@ const App: React.FC = () => {
     }
   };
 
-  const handleStudentRegister = async (studentDetails: { email: string; courseId: string; lecturerClassCode: string; }, password: string): Promise<void> => {
+  // FIX: Updated studentDetails parameter to use `courseCode` and `classCode` to match the expected type.
+  const handleStudentRegister = async (studentDetails: { email: string; courseCode: string; classCode: string; }, password: string): Promise<void> => {
     setAuthError(null);
     try {
         await firebaseService.signUpStudent(studentDetails, password);

@@ -1,7 +1,7 @@
-import firebase from 'firebase/app-compat';
-import 'firebase/auth-compat';
-import 'firebase/firestore-compat';
-import 'firebase/storage-compat';
+import { initializeApp } from "firebase/app";
+import { getAuth } from "firebase/auth";
+import { getFirestore } from "firebase/firestore";
+import { getStorage } from "firebase/storage";
 
 // =================================================================
 // IMPORTANT: PASTE YOUR FIREBASE CONFIGURATION HERE
@@ -14,18 +14,18 @@ const firebaseConfig = {
   apiKey: "AIzaSyCaUDH4MgOpjrcCcfWUrGjXYqmrDMkAUQg",
   authDomain: "due37002.firebaseapp.com",
   projectId: "due37002",
-  storageBucket: "due37002.firebasestorage.app",
+  storageBucket: "due37002.appspot.com",
   messagingSenderId: "403739265801",
   appId: "1:403739265801:web:1fcf441152563aba2e21d8"
 };
 
 
 // Initialize Firebase
-const app = firebase.initializeApp(firebaseConfig);
+const app = initializeApp(firebaseConfig);
 
 // Get instances of Firebase services using the compat library
-const auth = firebase.auth();
-const db = firebase.firestore();
-const storage = firebase.storage();
+export const auth = getAuth(app);
+export const db = getFirestore(app);
+export const storage = getStorage(app);
 
-export { app, auth, db, storage };
+export default app;

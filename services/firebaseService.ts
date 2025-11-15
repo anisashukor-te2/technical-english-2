@@ -1,23 +1,4 @@
-import {
-  createUserWithEmailAndPassword,
-  signInWithEmailAndPassword,
-  signOut,
-  sendPasswordResetEmail,
-} from 'firebase/auth';
-import {
-  doc,
-  setDoc,
-  getDoc,
-  collection,
-  query,
-  where,
-  getDocs,
-  updateDoc,
-  addDoc,
-  orderBy,
-  limit,
-} from 'firebase/firestore';
-import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
+import firebase from 'firebase/app-compat';
 import { auth, db, storage } from '../firebase';
 
 import {
@@ -39,14 +20,12 @@ export const signUpStudent = async (
 ) => {
 
   // Search lecturer by classCode
-  const lecturersRef = collection(db, 'users');
-  const q = query(
-    lecturersRef,
-    where('role', '==', 'lecturer'),
-    where('classCodes', 'array-contains', details.classCode.toUpperCase())
-  );
+  const lecturersRef = db.collection('users');
+  const q = lecturersRef
+    .where('role', '==', 'lecturer')
+    .where('classCodes', 'array-contains', details.classCode.toUpperCase());
   
-  const querySnapshot = await getDocs(q);
+  const querySnapshot = await q.get();
 
   if (querySnapshot.empty) {
     throw new Error(
@@ -69,8 +48,11 @@ export const signUpStudent = async (
   const matchingLecturer = matchingLecturerDoc.data() as Lecturer;
 
   // Create Firebase Auth User
-  const userCredential = await createUserWithEmailAndPassword(auth, details.email, password);
+  const userCredential = await auth.createUserWithEmailAndPassword(details.email, password);
   const { user } = userCredential;
+  if (!user) {
+    throw new Error('User creation failed.');
+  }
 
   // Create student record in Firestore using NEW naming
   const newStudent: Student = {
@@ -82,7 +64,7 @@ export const signUpStudent = async (
     lecturerEmail: matchingLecturer.email
   };
 
-  await setDoc(doc(db, 'users', user.uid), newStudent);
+  await db.collection('users').doc(user.uid).set(newStudent);
 
   return newStudent;
 };
@@ -90,8 +72,11 @@ export const signUpStudent = async (
 
 export const signUpLecturer = async (details: Omit<Lecturer, 'uid' | 'role'>, password: string) => {
 
-  const userCredential = await createUserWithEmailAndPassword(auth, details.email, password);
+  const userCredential = await auth.createUserWithEmailAndPassword(details.email, password);
   const { user } = userCredential;
+  if (!user) {
+    throw new Error('User creation failed.');
+  }
 
   const upperClassCodes = details.classCodes.map(c => c.toUpperCase().trim()).filter(Boolean);
 
@@ -103,20 +88,20 @@ export const signUpLecturer = async (details: Omit<Lecturer, 'uid' | 'role'>, pa
     courseCode: details.courseCode.toUpperCase(),
   };
 
-  await setDoc(doc(db, 'users', user.uid), newLecturer);
+  await db.collection('users').doc(user.uid).set(newLecturer);
   return newLecturer;
 };
 
 export const signInUser = (email: string, password: string) => {
-  return signInWithEmailAndPassword(auth, email, password);
+  return auth.signInWithEmailAndPassword(email, password);
 };
 
 export const signOutUser = () => {
-  return signOut(auth);
+  return auth.signOut();
 };
 
 export const sendPasswordReset = (email: string) => {
-  return sendPasswordResetEmail(auth, email);
+  return auth.sendPasswordResetEmail(email);
 };
 
 
@@ -142,23 +127,23 @@ export const formatAuthError = (error: any): string => {
 // --- USER PROFILE ---
 
 export const getUserProfile = async (uid: string): Promise<UserProfile | null> => {
-  const userDoc = await getDoc(doc(db, 'users', uid));
-  return userDoc.exists() ? (userDoc.data() as UserProfile) : null;
+  const userDoc = await db.collection('users').doc(uid).get();
+  return userDoc.exists ? (userDoc.data() as UserProfile) : null;
 };
 
 export const updateUser = async (uid: string, data: Partial<UserProfile>) => {
-  return updateDoc(doc(db, 'users', uid), data);
+  return db.collection('users').doc(uid).update(data);
 };
 
 export const getUsersForLecturer = async (lecturerEmail: string): Promise<UserProfile[]> => {
-  const usersRef = collection(db, 'users');
+  const usersRef = db.collection('users');
 
-  const studentQuery = query(usersRef, where('role', '==', 'student'), where('lecturerEmail', '==', lecturerEmail));
-  const lecturerQuery = query(usersRef, where('role', '==', 'lecturer'), where('email', '==', lecturerEmail));
+  const studentQuery = usersRef.where('role', '==', 'student').where('lecturerEmail', '==', lecturerEmail);
+  const lecturerQuery = usersRef.where('role', '==', 'lecturer').where('email', '==', lecturerEmail);
 
   const [studentSnapshot, lecturerSnapshot] = await Promise.all([
-    getDocs(studentQuery),
-    getDocs(lecturerQuery),
+    studentQuery.get(),
+    lecturerQuery.get(),
   ]);
 
   const students = studentSnapshot.docs.map(doc => doc.data() as Student);
@@ -173,8 +158,9 @@ export const getUsersForLecturer = async (lecturerEmail: string): Promise<UserPr
 export const uploadRecording = async (blob: Blob, userId: string, sessionId: string): Promise<string> => {
   const extension = blob.type.split('/')[1] || 'webm';
   const storagePath = `recordings/${userId}/${sessionId}.${extension}`;
-  const snapshot = await uploadBytes(ref(storage, storagePath), blob);
-  return getDownloadURL(snapshot.ref);
+  const storageRef = storage.ref(storagePath);
+  const snapshot = await storageRef.put(blob);
+  return snapshot.ref.getDownloadURL();
 };
 
 export const blobToBase64 = (blob: Blob): Promise<string> =>
@@ -189,17 +175,16 @@ export const blobToBase64 = (blob: Blob): Promise<string> =>
 // --- FIRESTORE DATA HELPERS ---
 
 export const saveSession = async (collectionName: string, id: string, data: object) => {
-  await setDoc(doc(db, collectionName, id), data);
+  await db.collection(collectionName).doc(id).set(data);
 };
 
 export const addSession = async (collectionName: string, data: object) => {
-  const refCol = collection(db, collectionName);
-  const docRef = await addDoc(refCol, data);
+  const docRef = await db.collection(collectionName).add(data);
   return docRef.id;
 };
 
 export const updateSession = async (collectionName: string, id: string, data: object) => {
-  await updateDoc(doc(db, collectionName, id), data);
+  await db.collection(collectionName).doc(id).update(data);
 };
 
 
@@ -208,25 +193,22 @@ export const getSessions = async <T extends Record<string, any>>(
   user: UserProfile,
   selectedClass: string = 'ALL'
 ): Promise<T[]> => {
-
-  const sessionsRef = collection(db, collectionName);
-  let q;
+  const sessionsRef = db.collection(collectionName);
+  let q: firebase.firestore.Query;
 
   if (user.role === 'student') {
-    q = query(sessionsRef, where('studentUid', '==', user.uid), orderBy('timestamp', 'desc'));
+    q = sessionsRef.where('studentUid', '==', user.uid).orderBy('timestamp', 'desc');
   } else {
     q =
       selectedClass === 'ALL'
-        ? query(sessionsRef, where('lecturerEmail', '==', user.email), orderBy('timestamp', 'desc'))
-        : query(
-            sessionsRef,
-            where('lecturerEmail', '==', user.email),
-            where('classCode', '==', selectedClass),
-            orderBy('timestamp', 'desc')
-          );
+        ? sessionsRef.where('lecturerEmail', '==', user.email).orderBy('timestamp', 'desc')
+        : sessionsRef
+            .where('lecturerEmail', '==', user.email)
+            .where('classCode', '==', selectedClass)
+            .orderBy('timestamp', 'desc');
   }
 
-  const snapshot = await getDocs(q);
+  const snapshot = await q.get();
   return snapshot.docs.map(doc => ({ id: doc.id, ...(doc.data() as any) }) as T);
 };
 
@@ -234,20 +216,17 @@ export const getSessions = async <T extends Record<string, any>>(
 // --- PEER REVIEW & EMAIL SESSIONS ---
 
 export const getPeerReviewSessions = async (): Promise<PracticeSession[]> => {
-  const sessionsRef = collection(db, 'practiceSessions');
-  const q = query(
-    sessionsRef,
-    where('isSharedForPeerReview', '==', true),
-    orderBy('timestamp', 'desc'),
-    limit(20)
-  );
-  const snapshot = await getDocs(q);
+  const sessionsRef = db.collection('practiceSessions');
+  const q = sessionsRef
+    .where('isSharedForPeerReview', '==', true)
+    .orderBy('timestamp', 'desc')
+    .limit(20);
+  const snapshot = await q.get();
   return snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as PracticeSession));
 };
 
 export const addPeerReviewFeedback = async (sessionId: string, data: object) => {
-  const refCol = collection(db, 'practiceSessions', sessionId, 'peerReviews');
-  await addDoc(refCol, data);
+  await db.collection('practiceSessions').doc(sessionId).collection('peerReviews').add(data);
 };
 
 
@@ -287,4 +266,3 @@ export const submitComplaintEmailForGrading = (id: string) =>
 
 export const saveComplaintEmailLecturerFeedback = (id: string, grade: number, fb: string) =>
   updateSession('complaintEmailSessions', id, { grade, lecturerFeedback: fb });
-

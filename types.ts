@@ -99,7 +99,7 @@ export interface Student {
   uid: string;
   email: string;
   role: 'student';
-  courseCode: string;   // ✅ updated from courseId → courseCode
+  courseCode: string;   // ✅ updated from courseCode → courseCode
   classCode: string;
   lecturerEmail: string;
 }
