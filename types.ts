@@ -1,3 +1,5 @@
+
+
 import React from 'react';
 
 export interface FillerWord {
@@ -99,7 +101,7 @@ export interface Student {
   uid: string;
   email: string;
   role: 'student';
-  courseCode: string;   // ✅ updated from courseCode → courseCode
+  courseCode: string;
   classCode: string;
   lecturerEmail: string;
 }

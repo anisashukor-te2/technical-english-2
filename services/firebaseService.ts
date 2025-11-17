@@ -1,4 +1,27 @@
-import firebase from 'firebase/app-compat';
+
+
+import {
+  createUserWithEmailAndPassword,
+  signInWithEmailAndPassword,
+  signOut,
+  sendPasswordResetEmail,
+} from 'firebase/auth';
+
+import {
+  doc,
+  setDoc,
+  getDoc,
+  collection,
+  query,
+  where,
+  getDocs,
+  updateDoc,
+  addDoc,
+  orderBy,
+  limit,
+} from 'firebase/firestore';
+
+import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 import { auth, db, storage } from '../firebase';
 
 import {
@@ -9,103 +32,113 @@ import {
   MeetingSession,
   MinuteTakingSession,
   ComplaintSession,
-  ComplaintEmailSession
+  ComplaintEmailSession,
 } from '../types';
 
-// --- AUTHENTICATION ---
+/* ---------------------- AUTH (FINAL STABLE VERSION) ---------------------- */
 
 export const signUpStudent = async (
   details: { email: string; courseCode: string; classCode: string },
   password: string
 ) => {
 
-  // Search lecturer by classCode
-  const lecturersRef = db.collection('users');
-  const q = lecturersRef
-    .where('role', '==', 'lecturer')
-    .where('classCodes', 'array-contains', details.classCode.toUpperCase());
-  
-  const querySnapshot = await q.get();
+  const course = details.courseCode.trim().toUpperCase();
+  const classCode = details.classCode.trim().toUpperCase();
 
-  if (querySnapshot.empty) {
-    throw new Error(
-      `Registration failed: Class ID "${details.classCode.toUpperCase()}" was not found. Please verify it.`
-    );
+  const lecturersRef = collection(db, 'users');
+  const q = query(
+    lecturersRef,
+    where('role', '==', 'lecturer'),
+    where('courseCode', '==', course)
+  );
+
+  const courseSnapshot = await getDocs(q);
+
+  if (courseSnapshot.empty) {
+    throw new Error(`Course ID "${course}" does not exist.`);
   }
 
-  // Additional match: verify courseCode matches lecturer stored data
-  const matchingLecturerDoc = querySnapshot.docs.find(doc => {
-    const lecturer = doc.data() as Lecturer;
-    return lecturer.courseCode.toUpperCase() === details.courseCode.toUpperCase();
+  let matchedLecturer: Lecturer | null = null;
+
+  courseSnapshot.forEach(docSnap => {
+    const data = docSnap.data() as Lecturer;
+    if (data.classCodes?.includes(classCode)) matchedLecturer = data;
   });
 
-  if (!matchingLecturerDoc) {
-    throw new Error(
-      `Class code found, but it does NOT match Course Code "${details.courseCode.toUpperCase()}".`
-    );
+  if (!matchedLecturer) {
+    throw new Error(`Class ID "${classCode}" is not registered under Course "${course}".`);
   }
 
-  const matchingLecturer = matchingLecturerDoc.data() as Lecturer;
-
-  // Create Firebase Auth User
-  const userCredential = await auth.createUserWithEmailAndPassword(details.email, password);
+  const userCredential = await createUserWithEmailAndPassword(auth, details.email, password);
   const { user } = userCredential;
-  if (!user) {
-    throw new Error('User creation failed.');
-  }
 
-  // Create student record in Firestore using NEW naming
   const newStudent: Student = {
     uid: user.uid,
-    email: details.email,
+    email: details.email.trim(),
     role: 'student',
-    courseCode: details.courseCode.toUpperCase(),
-    classCode: details.classCode.toUpperCase(),
-    lecturerEmail: matchingLecturer.email
+    courseCode: course,
+    classCode: classCode,
+    lecturerEmail: matchedLecturer.email,
   };
 
-  await db.collection('users').doc(user.uid).set(newStudent);
+  await setDoc(doc(db, 'users', user.uid), newStudent, { merge: false });
 
   return newStudent;
 };
 
 
-export const signUpLecturer = async (details: Omit<Lecturer, 'uid' | 'role'>, password: string) => {
+export const signUpLecturer = async (
+  details: Omit<Lecturer, 'uid' | 'role'>,
+  password: string
+) => {
 
-  const userCredential = await auth.createUserWithEmailAndPassword(details.email, password);
+  const userCredential = await createUserWithEmailAndPassword(auth, details.email, password);
   const { user } = userCredential;
-  if (!user) {
-    throw new Error('User creation failed.');
-  }
 
-  const upperClassCodes = details.classCodes.map(c => c.toUpperCase().trim()).filter(Boolean);
+  const upperClassCodes = details.classCodes
+    .map(code => code.trim().toUpperCase())
+    .filter(Boolean);
 
   const newLecturer: Lecturer = {
-    ...details,
     uid: user.uid,
     role: 'lecturer',
+    email: details.email.trim(),
+    courseCode: details.courseCode.trim().toUpperCase(),
     classCodes: upperClassCodes,
-    courseCode: details.courseCode.toUpperCase(),
   };
 
-  await db.collection('users').doc(user.uid).set(newLecturer);
+  await setDoc(doc(db, 'users', user.uid), newLecturer, { merge: false });
+
   return newLecturer;
 };
 
-export const signInUser = (email: string, password: string) => {
-  return auth.signInWithEmailAndPassword(email, password);
+
+/* ---------------------- SIGN-IN & ACCOUNT CONTROL ---------------------- */
+
+export const signInUser = async (email: string, password: string) => {
+  const userCredential = await signInWithEmailAndPassword(auth, email, password);
+  const { user } = userCredential;
+
+  const userDoc = await getDoc(doc(db, 'users', user.uid));
+
+  if (!userDoc.exists()) {
+    await signOut(auth);
+    throw new Error(
+      'Login blocked: Your account exists in auth but not in the system. Register again.'
+    );
+  }
+
+  return userCredential;
 };
 
-export const signOutUser = () => {
-  return auth.signOut();
+export const signOutUser = () => signOut(auth);
+
+export const sendPasswordReset = async (email: string) => {
+  return sendPasswordResetEmail(auth, email);
 };
 
-export const sendPasswordReset = (email: string) => {
-  return auth.sendPasswordResetEmail(email);
-};
 
-
-// --- ERROR HANDLING ---
+/* ---------------------- ERROR HANDLING ---------------------- */
 
 export const formatAuthError = (error: any): string => {
   switch (error.code) {
@@ -124,26 +157,26 @@ export const formatAuthError = (error: any): string => {
 };
 
 
-// --- USER PROFILE ---
+/* ---------------------- USER PROFILE ---------------------- */
 
 export const getUserProfile = async (uid: string): Promise<UserProfile | null> => {
-  const userDoc = await db.collection('users').doc(uid).get();
-  return userDoc.exists ? (userDoc.data() as UserProfile) : null;
+  const userDoc = await getDoc(doc(db, 'users', uid));
+  return userDoc.exists() ? (userDoc.data() as UserProfile) : null;
 };
 
 export const updateUser = async (uid: string, data: Partial<UserProfile>) => {
-  return db.collection('users').doc(uid).update(data);
+  return updateDoc(doc(db, 'users', uid), data);
 };
 
 export const getUsersForLecturer = async (lecturerEmail: string): Promise<UserProfile[]> => {
-  const usersRef = db.collection('users');
+  const usersRef = collection(db, 'users');
 
-  const studentQuery = usersRef.where('role', '==', 'student').where('lecturerEmail', '==', lecturerEmail);
-  const lecturerQuery = usersRef.where('role', '==', 'lecturer').where('email', '==', lecturerEmail);
+  const studentQuery = query(usersRef, where('role', '==', 'student'), where('lecturerEmail', '==', lecturerEmail));
+  const lecturerQuery = query(usersRef, where('role', '==', 'lecturer'), where('email', '==', lecturerEmail));
 
   const [studentSnapshot, lecturerSnapshot] = await Promise.all([
-    studentQuery.get(),
-    lecturerQuery.get(),
+    getDocs(studentQuery),
+    getDocs(lecturerQuery),
   ]);
 
   const students = studentSnapshot.docs.map(doc => doc.data() as Student);
@@ -153,14 +186,13 @@ export const getUsersForLecturer = async (lecturerEmail: string): Promise<UserPr
 };
 
 
-// --- STORAGE ---
+/* ---------------------- STORAGE ---------------------- */
 
 export const uploadRecording = async (blob: Blob, userId: string, sessionId: string): Promise<string> => {
   const extension = blob.type.split('/')[1] || 'webm';
   const storagePath = `recordings/${userId}/${sessionId}.${extension}`;
-  const storageRef = storage.ref(storagePath);
-  const snapshot = await storageRef.put(blob);
-  return snapshot.ref.getDownloadURL();
+  const snapshot = await uploadBytes(ref(storage, storagePath), blob);
+  return getDownloadURL(snapshot.ref);
 };
 
 export const blobToBase64 = (blob: Blob): Promise<string> =>
@@ -172,92 +204,105 @@ export const blobToBase64 = (blob: Blob): Promise<string> =>
   });
 
 
-// --- FIRESTORE DATA HELPERS ---
+/* ---------------------- FIRESTORE DATA ---------------------- */
 
 export const saveSession = async (collectionName: string, id: string, data: object) => {
-  await db.collection(collectionName).doc(id).set(data);
+  await setDoc(doc(db, collectionName, id), data);
 };
 
 export const addSession = async (collectionName: string, data: object) => {
-  const docRef = await db.collection(collectionName).add(data);
+  const refCol = collection(db, collectionName);
+  const docRef = await addDoc(refCol, data);
   return docRef.id;
 };
 
 export const updateSession = async (collectionName: string, id: string, data: object) => {
-  await db.collection(collectionName).doc(id).update(data);
+  await updateDoc(doc(db, collectionName, id), data);
 };
-
 
 export const getSessions = async <T extends Record<string, any>>(
   collectionName: string,
   user: UserProfile,
   selectedClass: string = 'ALL'
 ): Promise<T[]> => {
-  const sessionsRef = db.collection(collectionName);
-  let q: firebase.firestore.Query;
+
+  const sessionsRef = collection(db, collectionName);
+  let q;
 
   if (user.role === 'student') {
-    q = sessionsRef.where('studentUid', '==', user.uid).orderBy('timestamp', 'desc');
+    q = query(sessionsRef, where('studentUid', '==', user.uid), orderBy('timestamp', 'desc'));
   } else {
     q =
       selectedClass === 'ALL'
-        ? sessionsRef.where('lecturerEmail', '==', user.email).orderBy('timestamp', 'desc')
-        : sessionsRef
-            .where('lecturerEmail', '==', user.email)
-            .where('classCode', '==', selectedClass)
-            .orderBy('timestamp', 'desc');
+        ? query(sessionsRef, where('lecturerEmail', '==', user.email), orderBy('timestamp', 'desc'))
+        : query(
+            sessionsRef,
+            where('lecturerEmail', '==', user.email),
+            where('classCode', '==', selectedClass),
+            orderBy('timestamp', 'desc')
+          );
   }
 
-  const snapshot = await q.get();
+  const snapshot = await getDocs(q);
   return snapshot.docs.map(doc => ({ id: doc.id, ...(doc.data() as any) }) as T);
 };
 
 
-// --- PEER REVIEW & EMAIL SESSIONS ---
+/* ---------------------- PEER REVIEW ---------------------- */
 
 export const getPeerReviewSessions = async (): Promise<PracticeSession[]> => {
-  const sessionsRef = db.collection('practiceSessions');
-  const q = sessionsRef
-    .where('isSharedForPeerReview', '==', true)
-    .orderBy('timestamp', 'desc')
-    .limit(20);
-  const snapshot = await q.get();
+  const sessionsRef = collection(db, 'practiceSessions');
+  const q = query(
+    sessionsRef,
+    where('isSharedForPeerReview', '==', true),
+    orderBy('timestamp', 'desc'),
+    limit(20)
+  );
+  const snapshot = await getDocs(q);
   return snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as PracticeSession));
 };
 
 export const addPeerReviewFeedback = async (sessionId: string, data: object) => {
-  await db.collection('practiceSessions').doc(sessionId).collection('peerReviews').add(data);
+  const refCol = collection(db, 'practiceSessions', sessionId, 'peerReviews');
+  await addDoc(refCol, data);
 };
 
 
-// --- MEETING SESSIONS ---
+/* ---------------------- MEETING MODULE ---------------------- */
 
-export const saveMeetingSession = (data: Omit<MeetingSession, 'id'>) => addSession('meetingSessions', data);
-export const getMeetingSessions = (u: UserProfile, c = 'ALL') => getSessions<MeetingSession>('meetingSessions', u, c);
+export const saveMeetingSession = (data: Omit<MeetingSession, 'id'>) =>
+  addSession('meetingSessions', data);
+
+export const getMeetingSessions = (u: UserProfile, c = 'ALL') =>
+  getSessions<MeetingSession>('meetingSessions', u, c);
+
 export const saveMeetingLecturerFeedback = (id: string, grade: number, feedback: string) =>
   updateSession('meetingSessions', id, { grade, lecturerFeedback: feedback, isGraded: true });
 
 
-// --- MINUTE TAKING SESSIONS ---
+/* ---------------------- MINUTE TAKER ---------------------- */
 
 export const saveMinuteTakingSession = (data: Omit<MinuteTakingSession, 'id'>) =>
   addSession('minuteTakingSessions', data);
+
 export const getMinuteTakingSessions = (u: UserProfile, c = 'ALL') =>
   getSessions<MinuteTakingSession>('minuteTakingSessions', u, c);
+
 export const saveMinuteTakingLecturerFeedback = (id: string, grade: number, fb: string) =>
   updateSession('minuteTakingSessions', id, { grade, lecturerFeedback: fb, isGraded: true });
 
 
-// --- COMPLAINT HANDLING SESSIONS ---
+/* ---------------------- COMPLAINT SESSIONS ---------------------- */
 
 export const saveComplaintSession = (data: Omit<ComplaintSession, 'id'>) =>
   addSession('complaintSessions', data);
+
 export const getComplaintSessions = (u: UserProfile, c = 'ALL') =>
   getSessions<ComplaintSession>('complaintSessions', u, c);
 
-
 export const saveComplaintEmailSession = (data: Omit<ComplaintEmailSession, 'id'>) =>
   addSession('complaintEmailSessions', data);
+
 export const getComplaintEmailSessions = (u: UserProfile, c = 'ALL') =>
   getSessions<ComplaintEmailSession>('complaintEmailSessions', u, c);
 

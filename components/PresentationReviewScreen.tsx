@@ -123,7 +123,6 @@ export const PresentationReviewScreen: React.FC<PresentationReviewScreenProps> =
                         sessionId={selectedSession.id}
                         studentEmail={selectedSession.studentEmail}
                         isLecturerView={true}
-                        isStudent={false}
                         sessionData={selectedSession}
                     />
                 </Modal>
@@ -254,7 +253,6 @@ export const PresentationReviewScreen: React.FC<PresentationReviewScreenProps> =
                     slides={selectedSession.slides}
                     sessionId={selectedSession.id}
                     studentEmail={selectedSession.studentEmail}
-                    isStudent={true}
                     sessionData={selectedSession}
                 />
             </Modal>

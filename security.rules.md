@@ -1,3 +1,4 @@
+
 ## Firestore Security Rules
 
 These rules provide a robust level of security for the application's data, enabling registration while protecting student privacy.
@@ -79,12 +80,18 @@ These rules ensure that only authenticated users can upload files, and that they
 rules_version = '2';
 service firebase.storage {
   match /b/{bucket}/o {
-    match /recordings/{userId}/{sessionId} {
-      // Only the authenticated user can upload a recording to their own folder.
-      allow create: if request.auth.uid == userId;
-      // Any authenticated user can read recordings (for playback).
+    // Match any file in the 'recordings' folder
+    match /recordings/{userId}/{fileName} {
+      // Allow file creation (upload) if the user is authenticated
+      // and the `userId` in the path matches their own UID.
+      allow create: if request.auth != null && request.auth.uid == userId;
+
+      // Allow file reads for any authenticated user. This enables lecturers
+      // to review student work and for the peer-review system to function.
       allow read: if request.auth != null;
-      // Disallow updates and deletes to prevent overwriting/losing data.
+
+      // Disallow updates and deletes from the client to protect recordings.
+      // Deletions should be handled by a trusted server environment if needed.
       allow update, delete: if false;
     }
   }

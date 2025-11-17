@@ -13,7 +13,6 @@ interface FeedbackScreenProps {
   sessionId: string | null;
   studentEmail: string;
   isLecturerView?: boolean;
-  isStudent?: boolean;
   sessionData?: PracticeSession;
 }
 
@@ -124,7 +123,7 @@ const SlidesViewer: React.FC<{ slides: Slide[] }> = ({ slides }) => {
 };
 
 
-const FeedbackScreen: React.FC<FeedbackScreenProps> = ({ feedback, onPracticeAgain, onBackToMenu, recordingUrl, slides, sessionId, studentEmail, isLecturerView = false, isStudent = true, sessionData }) => {
+const FeedbackScreen: React.FC<FeedbackScreenProps> = ({ feedback, onPracticeAgain, onBackToMenu, recordingUrl, slides, sessionId, studentEmail, isLecturerView = false, sessionData }) => {
     const [selfReflection, setSelfReflection] = useState('');
     const [isShared, setIsShared] = useState(sessionData?.isSharedForPeerReview || false);
     const [saveStatusMessage, setSaveStatusMessage] = useState<string | null>(isLecturerView ? null : 'Session auto-saved! Add your reflections below.');
@@ -365,7 +364,7 @@ const FeedbackScreen: React.FC<FeedbackScreenProps> = ({ feedback, onPracticeAga
                 <Card title={isLecturerView ? "Student's Self-Reflection" : "Actions & Self-Reflection"}>
                     {!isLecturerView ? (
                         <>
-                             {isStudent && (
+                             {sessionId && (
                                 <div className="p-4">
                                     {saveStatusMessage && (
                                         <p className={`text-center mb-3 text-xs transition-opacity duration-500 ${messageIsVisible ? 'opacity-100' : 'opacity-0'} ${statusMessageType === 'success' ? 'text-green-500' : 'text-red-500'}`}>
@@ -397,7 +396,16 @@ const FeedbackScreen: React.FC<FeedbackScreenProps> = ({ feedback, onPracticeAga
                                     >
                                         Try Again
                                     </button>
-                                    {isStudent && (
+                                    <button
+                                        onClick={onBackToMenu}
+                                        className="bg-slate-600 text-white font-bold py-2 px-4 rounded-lg hover:bg-slate-500 transition-colors focus:outline-none focus:ring-4 focus:ring-slate-400/50 text-sm flex items-center justify-center gap-2"
+                                    >
+                                        <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                                            <path strokeLinecap="round" strokeLinejoin="round" d="M11 17l-5-5m0 0l5-5m-5 5h12" />
+                                        </svg>
+                                        Back to Menu
+                                    </button>
+                                    {sessionId && (
                                         <>
                                             <button
                                                 onClick={handleSubmitToLecturer}
@@ -416,15 +424,6 @@ const FeedbackScreen: React.FC<FeedbackScreenProps> = ({ feedback, onPracticeAga
                                             </button>
                                         </>
                                     )}
-                                     <button
-                                        onClick={onBackToMenu}
-                                        className="bg-slate-600 text-white font-bold py-2 px-4 rounded-lg hover:bg-slate-500 transition-colors focus:outline-none focus:ring-4 focus:ring-slate-400/50 text-sm flex items-center justify-center gap-2"
-                                    >
-                                        <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                                            <path strokeLinecap="round" strokeLinejoin="round" d="M11 17l-5-5m0 0l5-5m-5 5h12" />
-                                        </svg>
-                                        Back to Menu
-                                    </button>
                                 </div>
                             </div>
                         </>

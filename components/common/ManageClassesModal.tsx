@@ -9,61 +9,61 @@ interface ManageClassesModalProps {
 }
 
 const ManageClassesModal: React.FC<ManageClassesModalProps> = ({ isOpen, onClose, currentClasses, onSave }) => {
-  const [classCodes, setClassCodes] = useState(currentClasses);
+  const [classIds, setClassIds] = useState(currentClasses);
 
   useEffect(() => {
     // Reset state if modal is reopened with different props
     if (isOpen) {
-      setClassCodes(currentClasses.length > 0 ? currentClasses : ['']);
+      setClassIds(currentClasses.length > 0 ? currentClasses : ['']);
     }
   }, [isOpen, currentClasses]);
 
-  const handleClassCodeChange = (index: number, value: string) => {
-    const newClassCodes = [...classCodes];
-    newClassCodes[index] = value;
-    setClassCodes(newClassCodes);
+  const handleClassIdChange = (index: number, value: string) => {
+    const newClassIds = [...classIds];
+    newClassIds[index] = value;
+    setClassIds(newClassIds);
   };
 
-  const handleAddClassCode = () => {
-    setClassCodes([...classCodes, '']);
+  const handleAddClassId = () => {
+    setClassIds([...classIds, '']);
   };
 
-  const handleRemoveClassCode = (index: number) => {
-    if (classCodes.length > 1) {
-      const newClassCodes = classCodes.filter((_, i) => i !== index);
-      setClassCodes(newClassCodes);
+  const handleRemoveClassId = (index: number) => {
+    if (classIds.length > 1) {
+      const newClassIds = classIds.filter((_, i) => i !== index);
+      setClassIds(newClassIds);
     }
   };
   
   const handleSave = () => {
-    const filteredCodes = classCodes.map(c => c.trim().toUpperCase()).filter(Boolean);
-    if (filteredCodes.length === 0) {
+    const filteredIds = classIds.map(c => c.trim().toUpperCase()).filter(Boolean);
+    if (filteredIds.length === 0) {
         alert("You must have at least one class ID.");
         return;
     }
-    onSave(filteredCodes);
+    onSave(filteredIds);
   };
 
   return (
     <Modal isOpen={isOpen} onClose={onClose} title="Manage Your Classes">
       <div className="space-y-4">
         <p className="text-sm text-slate-400">Add or remove the Class IDs you are responsible for. Students will use these codes to register under you.</p>
-        {classCodes.map((code, index) => (
+        {classIds.map((code, index) => (
           <div key={index} className="flex items-center gap-3">
             <div className="flex-grow">
-              <label htmlFor={`class-code-${index}`} className="sr-only">Class ID #{index + 1}</label>
+              <label htmlFor={`class-id-${index}`} className="sr-only">Class ID #{index + 1}</label>
               <input
-                id={`class-code-${index}`}
+                id={`class-id-${index}`}
                 type="text"
                 value={code}
-                onChange={(e) => handleClassCodeChange(index, e.target.value)}
+                onChange={(e) => handleClassIdChange(index, e.target.value)}
                 placeholder={`e.g., DKM5A`}
                 className="w-full bg-slate-700 border border-slate-600 rounded-md shadow-sm p-3 focus:ring-cyan-700 focus:border-cyan-700 text-white"
               />
             </div>
-            {classCodes.length > 1 && (
+            {classIds.length > 1 && (
               <button
-                onClick={() => handleRemoveClassCode(index)}
+                onClick={() => handleRemoveClassId(index)}
                 className="p-3 bg-red-600 text-white rounded-lg hover:bg-red-700"
                 aria-label={`Remove Class ID #${index + 1}`}
               >
@@ -72,7 +72,7 @@ const ManageClassesModal: React.FC<ManageClassesModalProps> = ({ isOpen, onClose
             )}
           </div>
         ))}
-        <button onClick={handleAddClassCode} className="text-sm font-semibold text-cyan-600 hover:underline">
+        <button onClick={handleAddClassId} className="text-sm font-semibold text-cyan-600 hover:underline">
           + Add Another Class
         </button>
       </div>

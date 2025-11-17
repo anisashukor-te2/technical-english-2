@@ -1,4 +1,5 @@
 
+
 import React, { useState, useEffect, useCallback } from 'react';
 // FIX: Add getFreePracticeFeedback import
 import { getPresentationFeedback, getFreePracticeFeedback } from './services/geminiService';
@@ -111,7 +112,6 @@ const App: React.FC = () => {
     }
   };
 
-  // FIX: Updated studentDetails parameter to use `courseCode` and `classCode` to match the expected type.
   const handleStudentRegister = async (studentDetails: { email: string; courseCode: string; classCode: string; }, password: string): Promise<void> => {
     setAuthError(null);
     try {
@@ -193,6 +193,7 @@ const App: React.FC = () => {
     setRecordingUrl('');
     setSlides(null);
     setSessionId(null);
+    setPresentationError(null);
   };
 
   const handlePracticeAgain = () => {
@@ -201,6 +202,7 @@ const App: React.FC = () => {
     setRecordingUrl('');
     setSlides(null);
     setSessionId(null);
+    setPresentationError(null);
   };
 
   const handleRecordingComplete = useCallback(async (
@@ -301,8 +303,6 @@ const App: React.FC = () => {
         handlePracticeAgain
     } = usePresentation();
     
-    const isStudent = currentUser?.role === 'student';
-
     switch (activeModule) {
         case 'PRESENTATION':
             switch (presentationMode) {
@@ -311,12 +311,12 @@ const App: React.FC = () => {
                 case 'GUIDED':
                     if (practiceView === 'PRACTICE') return <PracticeScreen />;
                     if (practiceView === 'PROCESSING') return <Loader message={loadingMessage} />;
-                    if (practiceView === 'FEEDBACK' && feedbackData) return <FeedbackScreen feedback={feedbackData} onPracticeAgain={handlePracticeAgain} onBackToMenu={handleBackToSelection} recordingUrl={recordingUrl} slides={slides} sessionId={sessionId} studentEmail={currentUser!.email} isStudent={isStudent} />;
+                    if (practiceView === 'FEEDBACK' && feedbackData) return <FeedbackScreen feedback={feedbackData} onPracticeAgain={handlePracticeAgain} onBackToMenu={handleBackToSelection} recordingUrl={recordingUrl} slides={slides} sessionId={sessionId} studentEmail={currentUser!.email} />;
                     return <Loader message="Loading..." />;
                 case 'FREE':
                     if (practiceView === 'PRACTICE') return <FreePracticeScreen userType={userType!} />;
                     if (practiceView === 'PROCESSING') return <Loader message={loadingMessage} />;
-                    if (practiceView === 'FEEDBACK' && feedbackData) return <FeedbackScreen feedback={feedbackData} onPracticeAgain={handlePracticeAgain} onBackToMenu={handleBackToSelection} recordingUrl={recordingUrl} slides={slides} sessionId={sessionId} studentEmail={currentUser!.email} isStudent={isStudent} />;
+                    if (practiceView === 'FEEDBACK' && feedbackData) return <FeedbackScreen feedback={feedbackData} onPracticeAgain={handlePracticeAgain} onBackToMenu={handleBackToSelection} recordingUrl={recordingUrl} slides={slides} sessionId={sessionId} studentEmail={currentUser!.email} />;
                     return <Loader message="Loading..." />;
                 case 'REVIEW':
                     return <PresentationReviewScreen user={currentUser!} userType={userType!} selectedClass={selectedClass} />;
