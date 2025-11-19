@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { PresentationMode } from '../types';
 import { usePresentation } from '../contexts/PresentationContext';
@@ -67,7 +68,7 @@ const PresentationModeSelection: React.FC<PresentationModeSelectionProps> = ({ u
                     }
                 />
                 <ModeCard 
-                    title="Free Practice"
+                    title="Practice"
                     description="Bring your own presentation and script to get personalized feedback."
                     onClick={() => handleSelectPresentationMode('FREE')}
                     color="green"
@@ -78,7 +79,7 @@ const PresentationModeSelection: React.FC<PresentationModeSelectionProps> = ({ u
                     }
                 />
                  <ModeCard 
-                    title={isLecturer ? "Review Submissions" : "Review Performance"}
+                    title={isLecturer ? "Review Submissions" : "Review"}
                     description={isLecturer ? "Evaluate student submissions and provide grades and feedback." : "View your past performance, track progress, and see feedback."}
                     onClick={() => handleSelectPresentationMode('REVIEW')}
                     color="purple"

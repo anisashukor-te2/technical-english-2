@@ -1,5 +1,4 @@
 
-
 import React, { useState, useRef, useEffect, useCallback } from 'react';
 import { Slide } from '../types';
 import { usePresentation } from '../contexts/PresentationContext';
@@ -313,7 +312,7 @@ const FreePracticeScreen: React.FC<FreePracticeScreenProps> = ({ userType }) => 
     const renderEditingView = () => (
          <>
             <div className="bg-slate-800/60 p-6 rounded-lg border border-slate-700 mb-6 shadow-lg">
-                <h2 className="text-xl font-bold text-cyan-600 mb-3">Free Practice</h2>
+                <h2 className="text-xl font-bold text-cyan-600 mb-3">Practice</h2>
                 <p className="text-slate-300">Build your presentation below. When ready, press "Start Presenting" to practice.</p>
             </div>
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">

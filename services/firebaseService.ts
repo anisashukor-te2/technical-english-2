@@ -273,8 +273,10 @@ export const getUsersForLecturer = async (lecturerEmail: string): Promise<UserPr
 export const uploadRecording = async (blob: Blob, userId: string, sessionId: string): Promise<string> => {
   const extension = blob.type.split('/')[1] || 'webm';
   const storagePath = `recordings/${userId}/${sessionId}.${extension}`;
-  const snapshot = await uploadBytes(ref(storage, storagePath), blob);
-  return getDownloadURL(snapshot.ref);
+  const fileRef = ref(storage, storagePath);        // explicit reference
+  await uploadBytes(fileRef, blob);                // upload file
+  const url = await getDownloadURL(fileRef);       // get download URL
+  return url;
 };
 
 export const blobToBase64 = (blob: Blob): Promise<string> =>
@@ -288,18 +290,29 @@ export const blobToBase64 = (blob: Blob): Promise<string> =>
 
 /* ---------------------- FIRESTORE DATA ---------------------- */
 
-export const saveSession = async (collectionName: string, id: string, data: object) => {
+export const saveSession = async (collectionName: string, id: string, data: any) => {
+  // Force studentUid to be current auth user if not matching, prevents permission errors
+  if (auth.currentUser && data.studentUid && auth.currentUser.uid !== data.studentUid) {
+      console.warn("Correcting studentUid mismatch during save.");
+      data.studentUid = auth.currentUser.uid;
+  }
   await setDoc(doc(db, collectionName, id), data, { merge: true });
 };
 
-export const addSession = async (collectionName: string, data: object) => {
+export const addSession = async (collectionName: string, data: any) => {
+  // Force studentUid to be current auth user if not matching, prevents permission errors
+  if (auth.currentUser && data.studentUid && auth.currentUser.uid !== data.studentUid) {
+       console.warn("Correcting studentUid mismatch during add.");
+       data.studentUid = auth.currentUser.uid;
+  }
+  
   const refCol = collection(db, collectionName);
   const docRef = await addDoc(refCol, data);
   return docRef.id;
 };
 
 export const updateSession = async (collectionName: string, id: string, data: object) => {
-  await saveSession(collectionName, id, data);
+  await setDoc(doc(db, collectionName, id), data, { merge: true });
 };
 
 export const getSessions = async <T extends Record<string, any>>(
@@ -311,22 +324,31 @@ export const getSessions = async <T extends Record<string, any>>(
   const sessionsRef = collection(db, collectionName);
   let q;
 
+  // NOTE: Removed orderBy('timestamp', 'desc') from Firestore queries to avoid
+  // "FAILED_PRECONDITION: The query requires an index" errors.
+  // Sorting is now done client-side below.
   if (user.role === 'student') {
-    q = query(sessionsRef, where('studentUid', '==', user.uid), orderBy('timestamp', 'desc'));
+    q = query(sessionsRef, where('studentUid', '==', user.uid));
   } else {
     q =
       selectedClass === 'ALL'
-        ? query(sessionsRef, where('lecturerEmail', '==', user.email), orderBy('timestamp', 'desc'))
+        ? query(sessionsRef, where('lecturerEmail', '==', user.email))
         : query(
             sessionsRef,
             where('lecturerEmail', '==', user.email),
-            where('classCode', '==', selectedClass),
-            orderBy('timestamp', 'desc')
+            where('classCode', '==', selectedClass)
           );
   }
 
   const snapshot = await getDocs(q);
-  return snapshot.docs.map(doc => ({ id: doc.id, ...(doc.data() as any) }) as T);
+  const results = snapshot.docs.map(doc => ({ id: doc.id, ...(doc.data() as any) }) as T);
+  
+  // Client-side sort (newest first)
+  return results.sort((a, b) => {
+    const timeA = a.timestamp || 0;
+    const timeB = b.timestamp || 0;
+    return timeB - timeA;
+  });
 };
 
 
@@ -334,14 +356,20 @@ export const getSessions = async <T extends Record<string, any>>(
 
 export const getPeerReviewSessions = async (): Promise<PracticeSession[]> => {
   const sessionsRef = collection(db, 'practiceSessions');
+  // Removed orderBy from query to prevent missing index errors.
+  // Using limit(50) to grab a pool of sessions, then sorting client-side.
   const q = query(
     sessionsRef,
     where('isSharedForPeerReview', '==', true),
-    orderBy('timestamp', 'desc'),
-    limit(20)
+    limit(50)
   );
   const snapshot = await getDocs(q);
-  return snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as PracticeSession));
+  const results = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as PracticeSession));
+  
+  // Sort by timestamp desc and take top 20
+  return results
+    .sort((a, b) => b.timestamp - a.timestamp)
+    .slice(0, 20);
 };
 
 export const addPeerReviewFeedback = async (sessionId: string, data: object) => {

@@ -1,12 +1,9 @@
 
-
-
 import React, { useState, useEffect, useCallback } from 'react';
 // FIX: Add getFreePracticeFeedback import
 import { getPresentationFeedback, getFreePracticeFeedback } from './services/geminiService';
 import { auth } from './firebase';
-// FIX: Switched to namespaced auth API call to align with compat library fix.
-// import { onAuthStateChanged } from 'firebase/auth';
+import { onAuthStateChanged } from 'firebase/auth';
 import * as firebaseService from './services/firebaseService';
 
 import BottomNavBar from './components/BottomNavBar';
@@ -63,8 +60,8 @@ const App: React.FC = () => {
 
   // Listen for auth state changes
   useEffect(() => {
-    // FIX: Updated to use the namespaced `auth.onAuthStateChanged` method from the compat library.
-    const unsubscribe = auth.onAuthStateChanged(async (user) => {
+    // FIX: Use the modular onAuthStateChanged correctly.
+    const unsubscribe = onAuthStateChanged(auth, async (user) => {
       if (user) {
         try {
           const userProfile = await firebaseService.getUserProfile(user.uid);
@@ -256,40 +253,57 @@ const App: React.FC = () => {
         setSlides(presentationSlides || null);
         setPracticeView('FEEDBACK');
         
-        // --- Perform upload and save in the background (fire-and-forget) ---
+        // --- CRITICAL UPDATE: Save Session Metadata FIRST ---
+        // We generate the ID and save the metadata immediately to ensure the Firestore document exists.
+        // This prevents "Missing Permissions" errors when user clicks "Save Notes" or "Submit"
+        // if the video upload (which happens next) fails or takes too long.
         const newSessionId = `session_${Date.now()}`;
         setSessionId(newSessionId);
 
+        let sessionData: Omit<PracticeSession, 'id'> = {
+            timestamp: Date.now(),
+            studentUid: currentUser.uid,
+            studentEmail: currentUser.email,
+            feedbackData: feedback,
+            recordingUrl: '', // Placeholder, will update after upload
+            recordingMimeType: mimeType,
+            slides: presentationSlides || [],
+            isSubmitted: isSubmission,
+            peerReviews: [],
+            lecturerEmail: '',
+            classCode: '',
+        };
+        
+        if (currentUser.role === 'student') {
+            sessionData.lecturerEmail = (currentUser as Student).lecturerEmail;
+            sessionData.classCode = (currentUser as Student).classCode;
+        } else if (currentUser.role === 'lecturer') {
+            sessionData.lecturerEmail = currentUser.email;
+        }
+
+        // Await the metadata save. This is fast.
+        try {
+             await firebaseService.saveSession('practiceSessions', newSessionId, sessionData);
+        } catch (metadataError) {
+             console.error("Failed to save initial session metadata:", metadataError);
+             // We continue to try the upload, but warn.
+        }
+        
+        // --- Perform upload in the background ---
         (async () => {
             try {
-                // The user is already viewing feedback, this happens in the background.
                 const downloadURL = await firebaseService.uploadRecording(recordingBlob, currentUser.uid, newSessionId);
                 
-                let sessionData: Omit<PracticeSession, 'id'> = {
-                    timestamp: Date.now(),
-                    studentUid: currentUser.uid,
-                    studentEmail: currentUser.email,
-                    feedbackData: feedback,
-                    recordingUrl: downloadURL, // The permanent URL
-                    recordingMimeType: mimeType,
-                    slides: presentationSlides || [],
-                    isSubmitted: isSubmission,
-                    peerReviews: [],
-                    lecturerEmail: '',
-                    classCode: '',
-                };
-                
-                if (currentUser.role === 'student') {
-                    sessionData.lecturerEmail = (currentUser as Student).lecturerEmail;
-                    sessionData.classCode = (currentUser as Student).classCode;
-                } else if (currentUser.role === 'lecturer') {
-                    sessionData.lecturerEmail = currentUser.email;
-                }
-        
-                await firebaseService.saveSession('practiceSessions', newSessionId, sessionData);
+                // Update the session with the real recording URL
+                await firebaseService.updateSession('practiceSessions', newSessionId, { recordingUrl: downloadURL });
 
-            } catch (backgroundError) {
-                console.error("Background task failed: Could not upload recording or save session.", backgroundError);
+            } catch (backgroundError: any) {
+                console.error("Background upload task failed:", backgroundError);
+                // Notify user via console or toast if needed, but don't break the flow.
+                // The session exists (from the metadata save), but the video link will remain empty or local-only.
+                if (backgroundError?.message?.includes('network')) {
+                   console.warn("Network error during video upload. Video might not be saved remotely.");
+                }
             }
         })();
 
@@ -362,7 +376,7 @@ const App: React.FC = () => {
               items.push({ label: 'Presentation Skills', onClick: presentationMode !== 'SELECTION' ? handleBackToSelection : undefined });
               
               if (presentationMode === 'GUIDED' || presentationMode === 'FREE') {
-                  const modeLabel = presentationMode === 'GUIDED' ? 'Guided Practice' : 'Free Practice';
+                  const modeLabel = presentationMode === 'GUIDED' ? 'Guided Practice' : 'Practice';
                   if (practiceView === 'FEEDBACK') {
                       items.push({ label: modeLabel, onClick: handlePracticeAgain });
                       items.push({ label: 'Feedback Report' });
@@ -370,7 +384,7 @@ const App: React.FC = () => {
                       items.push({ label: modeLabel });
                   }
               } else if (presentationMode === 'REVIEW') {
-                  items.push({ label: 'Review Performance' });
+                  items.push({ label: 'Review' });
               }
               break;
           case 'MEETING':

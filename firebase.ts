@@ -1,15 +1,13 @@
+// firebase.ts
 import { initializeApp } from "firebase/app";
 import { getAuth } from "firebase/auth";
 import { getFirestore } from "firebase/firestore";
 import { getStorage } from "firebase/storage";
 
 // =================================================================
-// IMPORTANT: PASTE YOUR FIREBASE CONFIGURATION HERE
+// Firebase configuration
+// Get these from your Firebase console: Project Settings > Your apps > Web app
 // =================================================================
-// You can get this from your Firebase project console.
-// Go to Project Settings (gear icon) > General > Your apps > Web app.
-// Click on "SDK setup and configuration" and select "Config".
-// Copy the configuration object and paste it below.
 const firebaseConfig = {
   apiKey: "AIzaSyCaUDH4MgOpjrcCcfWUrGjXYqmrDMkAUQg",
   authDomain: "due37002.firebaseapp.com",
@@ -19,13 +17,10 @@ const firebaseConfig = {
   appId: "1:403739265801:web:1fcf441152563aba2e21d8"
 };
 
-
-// Initialize Firebase
+// Initialize Firebase app
 const app = initializeApp(firebaseConfig);
 
-// Get instances of Firebase services using the compat library
-export const auth = getAuth(app);
-export const db = getFirestore(app);
-export const storage = getStorage(app);
-
-export default app;
+// Export Firebase services for use in your app
+export const auth = getAuth(app);           // Authentication
+export const db = getFirestore(app);        // Firestore database
+export const storage = getStorage(app);     // Storage bucket
