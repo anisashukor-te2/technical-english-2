@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { useState, useEffect } from 'react';
 import { FeedbackData, PracticeSession, Slide, PeerFeedback } from '../types';
@@ -12,6 +13,7 @@ interface FeedbackScreenProps {
   slides?: Slide[] | null;
   sessionId: string | null;
   studentEmail: string;
+  studentUid?: string; // Added to support ownership verification on updates
   isLecturerView?: boolean;
   sessionData?: PracticeSession;
 }
@@ -123,7 +125,7 @@ const SlidesViewer: React.FC<{ slides: Slide[] }> = ({ slides }) => {
 };
 
 
-const FeedbackScreen: React.FC<FeedbackScreenProps> = ({ feedback, onPracticeAgain, onBackToMenu, recordingUrl, slides, sessionId, studentEmail, isLecturerView = false, sessionData }) => {
+const FeedbackScreen: React.FC<FeedbackScreenProps> = ({ feedback, onPracticeAgain, onBackToMenu, recordingUrl, slides, sessionId, studentEmail, studentUid, isLecturerView = false, sessionData }) => {
     const [selfReflection, setSelfReflection] = useState('');
     const [isShared, setIsShared] = useState(sessionData?.isSharedForPeerReview || false);
     const [saveStatusMessage, setSaveStatusMessage] = useState<string | null>(isLecturerView ? null : 'Session auto-saved! Add your reflections below.');
@@ -180,7 +182,15 @@ const FeedbackScreen: React.FC<FeedbackScreenProps> = ({ feedback, onPracticeAga
             return false;
         }
         try {
-            await firebaseService.updateSession('practiceSessions', sessionId, { [field]: value });
+            const payload: any = { [field]: value };
+            // Ensure studentUid is included if available and not in lecturer view.
+            // This allows the 'create' security rule to pass if the document 
+            // hasn't been created by the background task yet (race condition fix).
+            if (!isLecturerView && studentUid) {
+                payload.studentUid = studentUid;
+            }
+
+            await firebaseService.updateSession('practiceSessions', sessionId, payload);
             return true;
         } catch (error) {
             console.error("Failed to update session:", error);

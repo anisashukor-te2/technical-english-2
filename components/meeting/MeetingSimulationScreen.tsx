@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { GoogleGenAI, Chat } from '@google/genai';
 import { MeetingScenario, Student, Lecturer, MeetingSession } from '../../types';
@@ -215,12 +216,15 @@ Start the conversation with a brief opening statement to set the scene and promp
                 scenarioTitle: scenario.title,
                 userRole: userRole,
                 messages: messages,
+                isSubmitted: true, // Automatically submit for lecturer review
             };
 
             try {
                 await saveMeetingSession(newSessionData);
+                alert("Session saved and submitted to lecturer successfully!");
             } catch (e) {
                 console.error("Failed to save meeting session:", e);
+                alert("Failed to save session. Please check your connection.");
             }
         }
         onEndSession();

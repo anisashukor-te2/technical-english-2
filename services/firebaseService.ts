@@ -1,5 +1,3 @@
-
-
 import {
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
@@ -19,6 +17,7 @@ import {
   addDoc,
   orderBy,
   limit,
+  deleteField,
 } from 'firebase/firestore';
 
 import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
@@ -35,15 +34,19 @@ import {
   ComplaintEmailSession,
 } from '../types';
 
+// Helper delay function to handle race conditions (small wrapper)
+const delay = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
+
 /* ---------------------- AUTH (FINAL STABLE VERSION) ---------------------- */
 
 export const signUpStudent = async (
-  details: { email: string; courseCode: string; classCode: string },
+  email: string,
+  rawCourseCode: string,
+  rawClassCode: string,
   password: string
 ) => {
-
-  const course = details.courseCode.trim().toUpperCase();
-  const classCode = details.classCode.trim().toUpperCase();
+  const course = rawCourseCode.trim().toUpperCase();
+  const classCode = rawClassCode.trim().toUpperCase();
 
   const lecturersRef = collection(db, 'users');
   const q = query(
@@ -69,47 +72,126 @@ export const signUpStudent = async (
     throw new Error(`Class ID "${classCode}" is not registered under Course "${course}".`);
   }
 
-  const userCredential = await createUserWithEmailAndPassword(auth, details.email, password);
+  // 1. Create Authentication User
+  const userCredential = await createUserWithEmailAndPassword(auth, email, password);
   const { user } = userCredential;
 
-  const newStudent: Student = {
+  // Prepare the student object we want to persist
+  const newStudent: any = {
     uid: user.uid,
-    email: details.email.trim(),
+    email: email.trim(),
     role: 'student',
     courseCode: course,
     classCode: classCode,
     lecturerEmail: matchedLecturer.email,
   };
 
-  await setDoc(doc(db, 'users', user.uid), newStudent, { merge: false });
+  // STEP 1 — Immediately create user doc BEFORE triggers/extensions run
+  // merge: true ensures we add our data to any existing placeholder doc
+  await setDoc(doc(db, 'users', user.uid), newStudent, { merge: true });
 
-  return newStudent;
+  // STEP 2 — Wait briefly for any auth-trigger/extension to finish writing their fields
+  // 1.5 seconds is usually sufficient; you can increase if you see races
+  await delay(1500);
+
+  // STEP 3 — Re-write required fields to override any trigger overwrite and remove unwanted fields
+  await updateDoc(doc(db, 'users', user.uid), {
+    ...newStudent,
+    createdAt: deleteField(),
+    displayName: deleteField(),
+  });
+
+  return newStudent as Student;
 };
 
 
 export const signUpLecturer = async (
-  details: Omit<Lecturer, 'uid' | 'role'>,
+  email: string,
+  rawCourseCode: string,
+  rawClassCodes: string[],
   password: string
 ) => {
-
-  const userCredential = await createUserWithEmailAndPassword(auth, details.email, password);
-  const { user } = userCredential;
-
-  const upperClassCodes = details.classCodes
+  const upperClassCodes = rawClassCodes
     .map(code => code.trim().toUpperCase())
     .filter(Boolean);
 
-  const newLecturer: Lecturer = {
+  if (upperClassCodes.length === 0) {
+    throw new Error("At least one Class ID is required.");
+  }
+
+  // Check if class codes are already registered by another lecturer
+  const usersRef = collection(db, 'users');
+  // Firestore limits 'array-contains-any' to 10 items per query.
+  const chunks: string[][] = [];
+  for (let i = 0; i < upperClassCodes.length; i += 10) {
+      chunks.push(upperClassCodes.slice(i, i + 10));
+  }
+
+  for (const chunk of chunks) {
+      const q = query(
+          usersRef, 
+          where('role', '==', 'lecturer'), 
+          where('classCodes', 'array-contains-any', chunk)
+      );
+      const snapshot = await getDocs(q);
+      
+      if (!snapshot.empty) {
+          const takenCodes = new Set<string>();
+          snapshot.forEach(doc => {
+              const data = doc.data() as Lecturer;
+              if (data.classCodes) {
+                  data.classCodes.forEach(code => {
+                      if (chunk.includes(code)) takenCodes.add(code);
+                  });
+              }
+          });
+          
+          if (takenCodes.size > 0) {
+              throw new Error(`The following Class IDs are already registered by another lecturer: ${Array.from(takenCodes).join(', ')}`);
+          }
+      }
+  }
+
+  // 1. Create Authentication User
+  const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+  const { user } = userCredential;
+
+  const newLecturer: any = {
     uid: user.uid,
     role: 'lecturer',
-    email: details.email.trim(),
-    courseCode: details.courseCode.trim().toUpperCase(),
+    email: email.trim(),
+    courseCode: rawCourseCode.trim().toUpperCase(),
     classCodes: upperClassCodes,
   };
 
-  await setDoc(doc(db, 'users', user.uid), newLecturer, { merge: false });
+  // STEP 1 — Immediately create lecturer in Firestore
+  await setDoc(doc(db, 'users', user.uid), newLecturer, { merge: true });
 
-  return newLecturer;
+  // STEP 2 — Wait briefly for any auth-trigger/extension to finish writing
+  await delay(1500);
+
+  // STEP 3 — Re-write required fields to override any trigger overwrite and remove unwanted fields
+  await updateDoc(doc(db, 'users', user.uid), {
+    ...newLecturer,
+    createdAt: deleteField(),
+    displayName: deleteField(),
+  });
+
+  return newLecturer as Lecturer;
+};
+
+// Helper function to clean up legacy/unwanted fields from existing profiles
+export const cleanUserProfile = async (uid: string) => {
+  const userRef = doc(db, 'users', uid);
+  try {
+    await updateDoc(userRef, {
+      createdAt: deleteField(),
+      displayName: deleteField()
+    });
+  } catch (error) {
+    // If fields don't exist or another error occurs, log it but don't crash the app
+    console.warn(`Auto-cleanup for user ${uid} encountered an issue (possibly already clean):`, error);
+  }
 };
 
 
@@ -207,7 +289,7 @@ export const blobToBase64 = (blob: Blob): Promise<string> =>
 /* ---------------------- FIRESTORE DATA ---------------------- */
 
 export const saveSession = async (collectionName: string, id: string, data: object) => {
-  await setDoc(doc(db, collectionName, id), data);
+  await setDoc(doc(db, collectionName, id), data, { merge: true });
 };
 
 export const addSession = async (collectionName: string, data: object) => {
@@ -217,7 +299,7 @@ export const addSession = async (collectionName: string, data: object) => {
 };
 
 export const updateSession = async (collectionName: string, id: string, data: object) => {
-  await updateDoc(doc(db, collectionName, id), data);
+  await saveSession(collectionName, id, data);
 };
 
 export const getSessions = async <T extends Record<string, any>>(

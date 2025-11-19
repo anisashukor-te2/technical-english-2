@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import Card from '../Card';
 import Modal from '../common/Modal';
@@ -42,6 +43,62 @@ const ChatTranscript: React.FC<{ session: MeetingSession }> = ({ session }) => (
     </div>
 );
 
+const MeetingGradingSection: React.FC<{ session: MeetingSession, onSave: (id: string, grade: number, feedback: string) => Promise<void> }> = ({ session, onSave }) => {
+    const [grade, setGrade] = useState<number | ''>(session.grade ?? '');
+    const [feedback, setFeedback] = useState<string>(session.lecturerFeedback ?? '');
+    const [status, setStatus] = useState<'idle' | 'saving' | 'saved' | 'error'>('idle');
+
+    const handleSave = async () => {
+        if (grade === '' || !feedback.trim()) {
+            alert("Please provide both a grade and feedback.");
+            return;
+        }
+        setStatus('saving');
+        try {
+            await onSave(session.id, Number(grade), feedback);
+            setStatus('saved');
+            setTimeout(() => setStatus('idle'), 2000);
+        } catch (error) {
+            console.error(error);
+            setStatus('error');
+        }
+    };
+
+    return (
+        <Card title="Lecturer Assessment">
+            <div className="p-4 space-y-4">
+                <div>
+                    <label className="block text-sm font-medium text-slate-300">Grade (%)</label>
+                    <input
+                        type="number"
+                        value={grade}
+                        onChange={(e) => setGrade(e.target.value === '' ? '' : Number(e.target.value))}
+                        min="0"
+                        max="100"
+                        className="mt-1 w-full p-2 bg-slate-900 border border-slate-600 rounded-md focus:ring-2 focus:ring-cyan-500 text-white"
+                    />
+                </div>
+                <div>
+                    <label className="block text-sm font-medium text-slate-300">Feedback</label>
+                    <textarea
+                        value={feedback}
+                        onChange={(e) => setFeedback(e.target.value)}
+                        rows={3}
+                        className="mt-1 w-full p-2 bg-slate-900 border border-slate-600 rounded-md focus:ring-2 focus:ring-cyan-500 text-white"
+                    />
+                </div>
+                <button
+                    onClick={handleSave}
+                    disabled={status === 'saving' || status === 'saved'}
+                    className="w-full bg-green-600 text-white font-bold py-2 px-4 rounded-lg hover:bg-green-700 disabled:bg-green-700/50 transition-colors"
+                >
+                    {status === 'saving' ? 'Saving...' : status === 'saved' ? 'Saved!' : 'Save Grading'}
+                </button>
+            </div>
+        </Card>
+    );
+};
+
 const ReviewScreen: React.FC<ReviewScreenProps> = ({ onBack, user, userType, selectedClass }) => {
     const [sessions, setSessions] = useState<(MeetingSession | MinuteTakingSession)[]>([]);
     const [selectedSession, setSelectedSession] = useState<(MeetingSession | MinuteTakingSession) | null>(null);
@@ -65,6 +122,11 @@ const ReviewScreen: React.FC<ReviewScreenProps> = ({ onBack, user, userType, sel
         fetchSessions();
     }, [user, selectedClass]);
 
+    const handleMeetingGradingSave = async (id: string, grade: number, feedback: string) => {
+        await saveMeetingLecturerFeedback(id, grade, feedback);
+        // Update local state to reflect change
+        setSessions(prev => prev.map(s => s.id === id ? { ...s, grade, lecturerFeedback: feedback } : s));
+    };
 
     if (isLoading) {
         return <div className="text-center p-8 text-white">Loading sessions...</div>;
@@ -72,7 +134,75 @@ const ReviewScreen: React.FC<ReviewScreenProps> = ({ onBack, user, userType, sel
 
     // --- LECTURER VIEW ---
     if (userType === 'lecturer') {
-        // ... lecturer view logic ... (omitted for brevity, assume it's similar to student view but with grading)
+        if (sessions.length === 0) {
+             return (
+                <div className="max-w-5xl mx-auto text-center animate-fade-in">
+                    <div className="text-center bg-slate-800/60 border border-dashed border-slate-700 rounded-lg p-8">
+                        <svg xmlns="http://www.w3.org/2000/svg" className="mx-auto h-12 w-12 text-slate-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" /></svg>
+                        <h3 className="mt-4 text-xl font-semibold text-slate-300">No Submissions Found</h3>
+                        <p className="text-slate-500 mt-1">{selectedClass === 'ALL' ? 'When students submit meeting sessions, they will appear here.' : `No sessions found for class "${selectedClass}".`}</p>
+                    </div>
+                    <div className="text-center mt-8">
+                         <button onClick={onBack} className="text-sm text-cyan-400 hover:text-cyan-300">Back to Menu</button>
+                    </div>
+                </div>
+            );
+        }
+        
+        return (
+            <div className="max-w-5xl mx-auto animate-fade-in pb-24">
+                <div className="text-center mb-8">
+                    <h2 className="text-3xl font-bold text-white">Review Student Submissions</h2>
+                    <p className="mt-2 text-lg text-slate-400">Viewing submissions for: <span className="font-semibold text-cyan-400">{selectedClass === 'ALL' ? 'All Classes' : selectedClass}</span></p>
+                </div>
+                <Card title="Meeting & Minute-Taking Sessions">
+                    <div className="p-4 space-y-2 max-h-[70vh] overflow-y-auto">
+                        {sessions.map(session => {
+                            const isRolePlay = 'messages' in session;
+                            const title = isRolePlay ? `Role-Play: ${session.scenarioTitle}` : "Minute-Taking Practice";
+                            return (
+                                <div key={session.id} className={`p-3 bg-slate-900/50 rounded-lg flex items-center justify-between border-l-4 ${session.grade ? 'border-green-500' : 'border-blue-500'}`}>
+                                    <div>
+                                        <p className="font-semibold text-slate-300">{session.studentEmail} <span className="text-xs text-slate-500">({session.classCode})</span></p>
+                                        <p className="text-sm text-slate-400">{title}</p>
+                                        <p className="text-xs text-slate-500">{new Date(session.timestamp).toLocaleString()}</p>
+                                        {session.grade !== undefined && <span className="text-xs font-semibold bg-green-500/20 text-green-400 px-2 py-0.5 rounded-full mt-1 inline-block">Graded: {session.grade}%</span>}
+                                    </div>
+                                    <button onClick={() => setSelectedSession(session)} className="text-sm bg-slate-700 hover:bg-cyan-600 hover:text-white px-3 py-1 rounded text-slate-200">
+                                        View & Grade
+                                    </button>
+                                </div>
+                            );
+                        })}
+                    </div>
+                </Card>
+                 <div className="text-center mt-8">
+                     <button onClick={onBack} className="text-sm text-cyan-400 hover:text-cyan-300">Back to Menu</button>
+                </div>
+
+                {selectedSession && (
+                    <Modal isOpen={!!selectedSession} onClose={() => setSelectedSession(null)} title={`Reviewing: ${(selectedSession as any).studentEmail}`}>
+                        {'messages' in selectedSession ? (
+                            <div className="space-y-6">
+                                <ChatTranscript session={selectedSession as MeetingSession} />
+                                <MeetingGradingSection session={selectedSession as MeetingSession} onSave={handleMeetingGradingSave} />
+                            </div>
+                        ) : (
+                            <MinuteFeedbackDisplay
+                                feedback={(selectedSession as MinuteTakingSession).feedbackData}
+                                userMinutes={(selectedSession as MinuteTakingSession).userMinutes}
+                                onPracticeAgain={() => {}} 
+                                onBack={() => setSelectedSession(null)}
+                                sessionId={selectedSession.id}
+                                isStudent={false}
+                                isLecturerView={true}
+                                sessionData={selectedSession as MinuteTakingSession}
+                            />
+                        )}
+                    </Modal>
+                )}
+            </div>
+        );
     }
 
     // --- STUDENT VIEW ---
@@ -127,6 +257,7 @@ const ReviewScreen: React.FC<ReviewScreenProps> = ({ onBack, user, userType, sel
                                                 Score: <span className="font-semibold text-slate-200">{session.feedbackData.accuracyScore}%</span>
                                             </span>
                                         )}
+                                        {session.grade !== undefined && <span className="font-semibold bg-green-500/20 text-green-400 px-2 py-0.5 rounded-full">Graded: {session.grade}%</span>}
                                     </div>
                                 </div>
                                 <button onClick={() => setSelectedSession(session)} className="text-sm bg-slate-700 hover:bg-cyan-600 hover:text-white px-3 py-1 rounded text-slate-200">
@@ -143,7 +274,17 @@ const ReviewScreen: React.FC<ReviewScreenProps> = ({ onBack, user, userType, sel
             {selectedSession && (
                 <Modal isOpen={!!selectedSession} onClose={() => setSelectedSession(null)} title={`Reviewing Session`}>
                     {'messages' in selectedSession ? (
-                         <ChatTranscript session={selectedSession as MeetingSession} />
+                        <div className="space-y-6">
+                             <ChatTranscript session={selectedSession as MeetingSession} />
+                             {(selectedSession as MeetingSession).grade !== undefined && (
+                                <Card title="Lecturer Feedback">
+                                    <div className="p-4 space-y-2">
+                                        <p className="font-bold text-white">Grade: <span className="text-green-400">{(selectedSession as MeetingSession).grade}%</span></p>
+                                        <p className="text-slate-300 italic">"{(selectedSession as MeetingSession).lecturerFeedback}"</p>
+                                    </div>
+                                </Card>
+                             )}
+                        </div>
                     ) : (
                          <MinuteFeedbackDisplay
                             feedback={(selectedSession as MinuteTakingSession).feedbackData}

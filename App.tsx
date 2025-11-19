@@ -1,5 +1,6 @@
 
 
+
 import React, { useState, useEffect, useCallback } from 'react';
 // FIX: Add getFreePracticeFeedback import
 import { getPresentationFeedback, getFreePracticeFeedback } from './services/geminiService';
@@ -21,7 +22,6 @@ import { HandlingComplaintsModule } from './components/complaints/HandlingCompla
 // FIX: Change to named import for ResourceLibrary
 import { ResourceLibrary } from './components/ResourceLibrary';
 import UserTypeSelectionScreen from './components/UserTypeSelectionScreen';
-import StudentLoginScreen from './components/StudentLoginScreen';
 import LecturerLoginScreen from './components/LecturerLoginScreen';
 import Breadcrumbs from './components/common/Breadcrumbs';
 import Modal from './components/common/Modal';
@@ -68,18 +68,34 @@ const App: React.FC = () => {
       if (user) {
         try {
           const userProfile = await firebaseService.getUserProfile(user.uid);
-          if (userProfile) {
+          
+          // RACE CONDITION FIX:
+          // Background triggers might create a document with just 'createdAt' but no 'role'.
+          // We must verify 'role' exists to ensure it's a valid, fully registered profile.
+          if (userProfile && userProfile.role) {
             setCurrentUser(userProfile);
             setUserType(userProfile.role);
+            
+            // AUTO-CLEANUP: Check for unwanted fields (createdAt, displayName) and remove them.
+            // Casting to 'any' to check for fields that don't exist on the UserProfile type.
+            const rawProfile = userProfile as any;
+            if (rawProfile.createdAt || rawProfile.displayName) {
+                console.log("Detected legacy fields on user profile. Cleaning up...");
+                firebaseService.cleanUserProfile(user.uid).catch(err => console.warn("Auto-cleanup failed:", err));
+            }
+
           } else {
-            // This case might happen if user exists in Auth but not Firestore
-            // For now, we log them out to force a clean slate.
-            await firebaseService.signOutUser();
+            console.log("User authenticated but profile incomplete (ghost document). Waiting for full registration...");
+            setCurrentUser(null);
+            // Do not sign out here. Allow handleRegister to complete the DB write.
           }
         } catch (error) {
           console.error("Failed to fetch user profile:", error);
           setAuthError("Could not load your profile. Please try logging in again.");
-          await firebaseService.signOutUser();
+          // CRITICAL FIX: Do NOT sign out here. If this error occurs during the registration race condition,
+          // signing out will cause the subsequent database write to fail with a permission error.
+          // Let the user stay in a 'logged in but loading' state.
+          // await firebaseService.signOutUser(); 
         }
       } else {
         setCurrentUser(null);
@@ -112,24 +128,22 @@ const App: React.FC = () => {
     }
   };
 
-  const handleStudentRegister = async (studentDetails: { email: string; courseCode: string; classCode: string; }, password: string): Promise<void> => {
+  const handleRegister = async (details: any, password: string): Promise<void> => {
     setAuthError(null);
     try {
-        await firebaseService.signUpStudent(studentDetails, password);
-    } catch (error: any) {
-        // Handle both Firebase Auth errors (with a .code) and custom errors (with a .message)
-        if (error.code) {
-            setAuthError(firebaseService.formatAuthError(error));
-        } else {
-            setAuthError(error.message || 'An unknown registration error occurred.');
+        let newUserProfile;
+        if (userType === 'student') {
+             newUserProfile = await firebaseService.signUpStudent(details.email, details.courseCode, details.classCode, password);
+        } else if (userType === 'lecturer') {
+             newUserProfile = await firebaseService.signUpLecturer(details.email, details.courseCode, details.classCodes, password);
         }
-    }
-  };
-  
-  const handleLecturerRegister = async (lecturerDetails: Omit<Lecturer, 'uid' | 'role'>, password: string): Promise<void> => {
-    setAuthError(null);
-    try {
-      await firebaseService.signUpLecturer(lecturerDetails, password);
+
+        // Manually update state to bypass the race condition of onAuthStateChanged
+        if (newUserProfile) {
+            setCurrentUser(newUserProfile);
+            // userType is already set from the selection screen
+        }
+
     } catch (error: any) {
         // Handle both Firebase Auth errors (with a .code) and custom errors (with a .message)
         if (error.code) {
@@ -212,7 +226,7 @@ const App: React.FC = () => {
     presentationSlides?: Slide[],
     isSubmission = false
   ) => {
-    if (!currentUser) { // Allow both students and lecturers
+    if (!currentUser) {
         setPresentationError("User not found. Cannot process recording.");
         return;
     }
@@ -222,65 +236,68 @@ const App: React.FC = () => {
 
     try {
         const mimeType = recordingBlob.type;
-        
-        // Convert blob to base64 for Gemini API analysis
+
+        // --- Optimization: Get AI feedback first, as it's what the user is waiting for. ---
+        setLoadingMessage('Generating AI feedback...');
         const base64Data = await firebaseService.blobToBase64(recordingBlob);
         setRecordingBase64(base64Data);
         setRecordingMimeType(mimeType);
 
-        setLoadingMessage('Generating AI feedback...');
         const feedback = userScript
             ? await getFreePracticeFeedback(base64Data, mimeType, duration, userScript)
             : await getPresentationFeedback(base64Data, mimeType, duration);
 
-        // If user is a student, save the session.
-        if (currentUser.role === 'student') {
-            const newSessionId = `session_${Date.now()}`;
-
-            setLoadingMessage('Uploading your recording...');
-            const downloadURL = await firebaseService.uploadRecording(recordingBlob, currentUser.uid, newSessionId);
-
-            setRecordingUrl(downloadURL);
-            setSlides(presentationSlides || null);
-            
-            setLoadingMessage('Saving your session...');
-            
-            const student = currentUser as Student;
-            const newSession: Omit<PracticeSession, 'id'> = {
-                timestamp: Date.now(),
-                studentUid: currentUser.uid,
-                studentEmail: currentUser.email,
-                lecturerEmail: student.lecturerEmail || '',
-                classCode: student.classCode || '',
-                feedbackData: feedback,
-                recordingUrl: downloadURL,
-                recordingMimeType: mimeType,
-                slides: presentationSlides || [],
-                isSubmitted: isSubmission,
-                peerReviews: [],
-            };
-            
-            await firebaseService.saveSession('practiceSessions', newSessionId, newSession);
-            setSessionId(newSessionId);
-
-        } else {
-            // For lecturers, just show the feedback temporarily without saving.
-            // Create a temporary URL for the recording blob to be played back on the feedback screen.
-            const tempRecordingUrl = URL.createObjectURL(recordingBlob);
-            setRecordingUrl(tempRecordingUrl);
-            setSlides(presentationSlides || null);
-            setSessionId(null); // No session ID for lecturers
-        }
+        // --- Show feedback screen immediately ---
+        // Create a local URL for instant playback.
+        const localRecordingUrl = URL.createObjectURL(recordingBlob);
         
         setFeedbackData(feedback);
+        setRecordingUrl(localRecordingUrl); // Pass local URL for immediate playback
+        setSlides(presentationSlides || null);
         setPracticeView('FEEDBACK');
+        
+        // --- Perform upload and save in the background (fire-and-forget) ---
+        const newSessionId = `session_${Date.now()}`;
+        setSessionId(newSessionId);
+
+        (async () => {
+            try {
+                // The user is already viewing feedback, this happens in the background.
+                const downloadURL = await firebaseService.uploadRecording(recordingBlob, currentUser.uid, newSessionId);
+                
+                let sessionData: Omit<PracticeSession, 'id'> = {
+                    timestamp: Date.now(),
+                    studentUid: currentUser.uid,
+                    studentEmail: currentUser.email,
+                    feedbackData: feedback,
+                    recordingUrl: downloadURL, // The permanent URL
+                    recordingMimeType: mimeType,
+                    slides: presentationSlides || [],
+                    isSubmitted: isSubmission,
+                    peerReviews: [],
+                    lecturerEmail: '',
+                    classCode: '',
+                };
+                
+                if (currentUser.role === 'student') {
+                    sessionData.lecturerEmail = (currentUser as Student).lecturerEmail;
+                    sessionData.classCode = (currentUser as Student).classCode;
+                } else if (currentUser.role === 'lecturer') {
+                    sessionData.lecturerEmail = currentUser.email;
+                }
+        
+                await firebaseService.saveSession('practiceSessions', newSessionId, sessionData);
+
+            } catch (backgroundError) {
+                console.error("Background task failed: Could not upload recording or save session.", backgroundError);
+            }
+        })();
 
     } catch (err: any) {
         console.error("Processing failed:", err);
         setPresentationError(err.message || "An unknown error occurred during analysis.");
-        setPracticeView('PRACTICE'); // Go back to allow retrying
+        setPracticeView('PRACTICE');
     } finally {
-        setIsLoading(false);
         setLoadingMessage('');
     }
   }, [currentUser]);
@@ -311,12 +328,12 @@ const App: React.FC = () => {
                 case 'GUIDED':
                     if (practiceView === 'PRACTICE') return <PracticeScreen />;
                     if (practiceView === 'PROCESSING') return <Loader message={loadingMessage} />;
-                    if (practiceView === 'FEEDBACK' && feedbackData) return <FeedbackScreen feedback={feedbackData} onPracticeAgain={handlePracticeAgain} onBackToMenu={handleBackToSelection} recordingUrl={recordingUrl} slides={slides} sessionId={sessionId} studentEmail={currentUser!.email} />;
+                    if (practiceView === 'FEEDBACK' && feedbackData) return <FeedbackScreen feedback={feedbackData} onPracticeAgain={handlePracticeAgain} onBackToMenu={handleBackToSelection} recordingUrl={recordingUrl} slides={slides} sessionId={sessionId} studentEmail={currentUser!.email} studentUid={currentUser!.uid} />;
                     return <Loader message="Loading..." />;
                 case 'FREE':
                     if (practiceView === 'PRACTICE') return <FreePracticeScreen userType={userType!} />;
                     if (practiceView === 'PROCESSING') return <Loader message={loadingMessage} />;
-                    if (practiceView === 'FEEDBACK' && feedbackData) return <FeedbackScreen feedback={feedbackData} onPracticeAgain={handlePracticeAgain} onBackToMenu={handleBackToSelection} recordingUrl={recordingUrl} slides={slides} sessionId={sessionId} studentEmail={currentUser!.email} />;
+                    if (practiceView === 'FEEDBACK' && feedbackData) return <FeedbackScreen feedback={feedbackData} onPracticeAgain={handlePracticeAgain} onBackToMenu={handleBackToSelection} recordingUrl={recordingUrl} slides={slides} sessionId={sessionId} studentEmail={currentUser!.email} studentUid={currentUser!.uid} />;
                     return <Loader message="Loading..." />;
                 case 'REVIEW':
                     return <PresentationReviewScreen user={currentUser!} userType={userType!} selectedClass={selectedClass} />;
@@ -397,11 +414,15 @@ const App: React.FC = () => {
   }
 
   if (!currentUser) {
-      if (userType === 'student') {
-          return <StudentLoginScreen onLogin={handleLogin} onRegister={handleStudentRegister} onBack={handleBackToUserTypeSelection} error={authError} clearError={() => setAuthError(null)} />;
-      }
-      if (userType === 'lecturer') {
-          return <LecturerLoginScreen onLogin={handleLogin} onRegister={handleLecturerRegister} onBack={handleBackToUserTypeSelection} error={authError} clearError={() => setAuthError(null)} />;
+      if (userType) {
+          return <LecturerLoginScreen 
+                    userType={userType}
+                    onLogin={handleLogin} 
+                    onRegister={handleRegister} 
+                    onBack={handleBackToUserTypeSelection} 
+                    error={authError} 
+                    clearError={() => setAuthError(null)} 
+                 />;
       }
       return <UserTypeSelectionScreen onSelectType={handleSelectUserType} />;
   }

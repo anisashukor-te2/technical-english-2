@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import Modal from './Modal';
 
@@ -64,10 +65,10 @@ const ManageClassesModal: React.FC<ManageClassesModalProps> = ({ isOpen, onClose
             {classIds.length > 1 && (
               <button
                 onClick={() => handleRemoveClassId(index)}
-                className="p-3 bg-red-600 text-white rounded-lg hover:bg-red-700"
+                className="p-3 bg-red-600 text-white rounded-lg hover:bg-red-700 shadow-sm flex-shrink-0"
                 aria-label={`Remove Class ID #${index + 1}`}
               >
-                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path fillRule="evenodd" d="M5 10a1 1 0 011-1h8a1 1 0 110 2H6a1 1 0 01-1-1z" clipRule="evenodd" /></svg>
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path fillRule="evenodd" d="M3 10a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z" clipRule="evenodd" /></svg>
               </button>
             )}
           </div>

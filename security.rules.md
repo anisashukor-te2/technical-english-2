@@ -36,7 +36,9 @@ service cloud.firestore {
     }
     
     function isLecturerForSession(docData) {
-       if (request.auth == null || !exists(/databases/$(database)/documents/users/$(request.auth.uid))) {
+       // This function must be null-safe to handle partial document creation during race conditions.
+       // It now checks for the existence of `lecturerEmail` before attempting to access it.
+       if (docData == null || !('lecturerEmail' in docData) || request.auth == null || !exists(/databases/$(database)/documents/users/$(request.auth.uid))) {
         return false;
       }
       let lecturerProfile = get(/databases/$(database)/documents/users/$(request.auth.uid)).data;
@@ -45,14 +47,30 @@ service cloud.firestore {
 
     // --- PRACTICE SESSIONS (PRESENTATION) ---
     match /practiceSessions/{sessionId} {
-      allow create: if isOwner(request.resource.data);
-      allow update: if isOwner(resource.data) || isLecturerForSession(resource.data);
       allow delete: if false;
 
-      // A user can read (get/list) a session if they are the owner, their lecturer, 
+      // READ: A user can read a session if they are the owner, their lecturer, 
       // OR if the session is shared for peer review.
       allow read: if request.auth != null &&
         (isOwner(resource.data) || isLecturerForSession(resource.data) || resource.data.isSharedForPeerReview == true);
+
+      // WRITE: Combines create and update to handle a client-side race condition.
+      allow write: if (
+          // Case 1: Standard Create & Student Update.
+          // The resulting document must be owned by the writer.
+          request.resource.data.studentUid == request.auth.uid
+        ) || (
+          // Case 2: Lecturer Update.
+          // The writer is the lecturer for the existing document.
+          // This only works on updates because `resource` is null on create.
+          isLecturerForSession(resource.data)
+        ) || (
+          // Case 3: Partial Create (Race Condition Fix).
+          // Allows an authenticated user to create an initial, partial document
+          // that doesn't yet have a studentUid. The subsequent full update will be
+          // validated by Case 1.
+          resource == null && !('studentUid' in request.resource.data) && request.auth.uid != null
+        );
 
       // Peer review subcollection
       match /peerReviews/{reviewId} {
@@ -64,9 +82,21 @@ service cloud.firestore {
     // --- OTHER SESSION TYPES ---
     // These have simpler privacy rules: only the student and their lecturer can access.
     match /(meetingSessions|minuteTakingSessions|complaintSessions|complaintEmailSessions)/{sessionId} {
-      allow create: if isOwner(request.resource.data);
-      allow read, update: if request.auth != null && (isOwner(resource.data) || isLecturerForSession(resource.data));
       allow delete: if false;
+
+      allow read: if request.auth != null && (isOwner(resource.data) || isLecturerForSession(resource.data));
+
+      // WRITE: Combines create and update with the same logic as practiceSessions to prevent race conditions.
+      allow write: if (
+          // Case 1: Standard Create & Student Update.
+          request.resource.data.studentUid == request.auth.uid
+        ) || (
+          // Case 2: Lecturer Update.
+          isLecturerForSession(resource.data)
+        ) || (
+          // Case 3: Partial Create (Race Condition Fix).
+          resource == null && !('studentUid' in request.resource.data) && request.auth.uid != null
+        );
     }
   }
 }
