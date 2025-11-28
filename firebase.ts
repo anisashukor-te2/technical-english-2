@@ -12,7 +12,7 @@ const firebaseConfig = {
   apiKey: "AIzaSyCaUDH4MgOpjrcCcfWUrGjXYqmrDMkAUQg",
   authDomain: "due37002.firebaseapp.com",
   projectId: "due37002",
-  storageBucket: "due37002.appspot.com",
+  storageBucket: "due37002.firebasestorage.app",
   messagingSenderId: "403739265801",
   appId: "1:403739265801:web:1fcf441152563aba2e21d8"
 };
